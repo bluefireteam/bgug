@@ -29,3 +29,4 @@ flutter:
 
   assets:
    - assets/images/player.png
+   - assets/images/base.png
