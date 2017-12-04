@@ -7,18 +7,25 @@ import 'package:flame/sprite.dart';
 import 'package:flame/components/animation_component.dart';
 import 'package:flutter/services.dart';
 
+import 'gui.dart';
+import 'package:flutter/src/widgets/binding.dart';
+import 'package:flutter/src/material/app.dart';
+import 'package:flutter/src/material/scaffold.dart';
+
 main() async {
   Flame.audio.disableLog();
 //  Flame.util.fullScreen();
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
 
-//  Flame.audio.loop('music.ogg');
-
-  var game = new MyGame()..start();
+  var game = new MyGame();
   window.onPointerDataPacket = (packet) {
     var pointer = packet.data.first;
     game.input(pointer.physicalX, pointer.physicalY);
   };
+
+  runApp(new MaterialApp(
+      home: new Scaffold(body: new HomeScreen(game))
+  ));
 }
 
 class Floor extends SpriteComponent {
@@ -48,17 +55,20 @@ class Player extends AnimationComponent {
   }
 }
 
-class MyGame extends BaseGame {
+class MyGame extends BaseGameWidget {
 
-  @override
+  bool running = false;
+
   start() async {
-    super.start();
-
     // TODO consider both fullScreen and orientation for getDimensions
     Size _dimension = await Flame.util.initialDimensions();
     Size dimension = new Size(_dimension.height, _dimension.width);
+
     this.components.add(new Floor(dimension));
     this.components.add(new Player(dimension, 0.0, dimension.height - 72.0 - 16.0));
+
+//    Flame.audio.loop('music.ogg');
+    this.running = true;
   }
 
   input(double x, double y) {
