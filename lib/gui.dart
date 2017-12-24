@@ -34,7 +34,14 @@ class MyGameBinder extends MyGame {
 class _HomeScreenState extends State<HomeScreen> {
   MyGame game;
 
-  _HomeScreenState();
+  _HomeScreenState() {
+    Flame.util.addGestureRecognizer(new TapGestureRecognizer()
+      ..onTapUp = (TapUpDetails details) {
+        if (this.game != null && this.game.isRunning()) {
+          this.game.input(details.globalPosition.dx, details.globalPosition.dy);
+        }
+      });
+  }
 
   redraw() {
     this.setState(() => {});
@@ -55,10 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
       pad(new Text('Block Guns Using Gems', style: title), 20.0),
       btn('Start', () {
         MyGame game = new MyGameBinder(this);
-        Flame.util.addGestureRecognizer(new TapGestureRecognizer()
-          ..onTapUp = (TapUpDetails details) {
-            game.input(details.globalPosition.dx, details.globalPosition.dy);
-          });
         game.start();
         setState(() => this.game = game);
       }),

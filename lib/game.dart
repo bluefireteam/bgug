@@ -28,17 +28,16 @@ class Top extends SpriteComponent {
 }
 
 class Player extends AnimationComponent {
-  Point velocity = new Point(60.0, 0.0);
+
+  Point velocity = new Point(180.0, 0.0);
   Impulse impulse = new Impulse(20000.0);
   double y0, worldSize;
 
-  Player(double x, double y, this.worldSize)
-      : super.sequenced(64.0, 72.0, 'player.png', 8,
-            textureWidth: 16.0, textureHeight: 18.0) {
+  Player(double x, double y, this.worldSize) : super.sequenced(64.0, 72.0, 'player.png', 8, textureWidth: 16.0, textureHeight: 18.0) {
     this.x = x;
     this.y = y;
     this.y0 = 0.0;
-    this.stepTime = 0.075;
+    this.stepTime = 0.075 / 2.0;
   }
 
   @override
@@ -95,19 +94,19 @@ class MyGame extends BaseGame {
     this._running = running;
   }
 
-  start() async {
-    this.components.add(new Top(WORLD_SIZE));
-    this.components.add(new Floor(WORLD_SIZE));
-    this.components.add(new Player(0.0, 0.0, WORLD_SIZE));
+  void start() {
+    components.add(new Top(WORLD_SIZE));
+    components.add(new Floor(WORLD_SIZE));
+    components.add(new Player(0.0, 0.0, WORLD_SIZE));
 
-    this._running = true;
+    _running = true;
   }
 
   Player getPlayer() {
     return components.firstWhere((c) => c is Player, orElse: () => null) as Player;
   }
 
-  input(double x, double y) {
+  void input(double x, double y) {
     getPlayer()?.jump();
   }
 
