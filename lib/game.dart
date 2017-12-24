@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'math_util.dart';
+
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/game.dart';
@@ -20,18 +22,37 @@ class Floor extends SpriteComponent {
 
 class Player extends AnimationComponent {
 
+  Point velocity = new Point(60.0, 0.0);
+  Impulse impulse = new Impulse(20000.0);
+  double y0;
   Size size = new Size(1.0, 1.0);
 
   Player(double x, double y) : super.sequenced(64.0, 72.0, 'player.png', 8, textureWidth: 16.0, textureHeight: 18.0) {
     this.x = x;
     this.y = y;
+    this.y0 = 0.0;
     this.stepTime = 0.075;
   }
 
   @override
   void update(double t) {
-    this.x += 60 * t;
+    velocity.y -= impulse.tick(t);
+    if (falling()) {
+      velocity.y += 7500.0 * t; // gravity
+    }
+
+    x += velocity.x * t;
+    y += velocity.y * t;
+    if (y > y0) {
+      y = y0;
+      velocity.y = 0.0;
+
+    }
     super.update(t);
+  }
+
+  bool falling() {
+    return y < y0;
   }
 
   @override
@@ -42,7 +63,13 @@ class Player extends AnimationComponent {
   @override
   void resize(Size size) {
     this.size = size;
-    this.y = size.height - 72.0 - 16.0;
+    y0 = size.height - 72.0 - 16.0;
+  }
+
+  void jump() {
+    if (!falling()) {
+      impulse.impulse(0.1);
+    }
   }
 }
 
@@ -66,8 +93,12 @@ class MyGame extends BaseGame {
     this._running = true;
   }
 
+  Player getPlayer() {
+    return components.firstWhere((c) => c is Player, orElse: () => null) as Player;
+  }
+
   input(double x, double y) {
-    // TODO
+    getPlayer()?.jump();
   }
 
   @override
@@ -78,7 +109,7 @@ class MyGame extends BaseGame {
 
     super.update(dt);
 
-    if (!components.any((c) => c is Player)) {
+    if (getPlayer() == null) {
       this.setRunning(false);
     }
   }

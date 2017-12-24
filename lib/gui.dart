@@ -25,7 +25,6 @@ class MyGameBinder extends MyGame {
   @override
   void setRunning(bool running) {
     super.setRunning(running);
-    print('hereeee ' + running.toString());
     if (this.state != null) {
       this.state.redraw();
     }
