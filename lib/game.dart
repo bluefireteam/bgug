@@ -1,50 +1,92 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'math_util.dart';
 
-import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/animation.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 
+class Block extends SpriteComponent {
+  Block(double x) : super.fromSprite(64.0, 64.0, new Sprite('block.png')) {
+    this.x = x;
+    this.y = 0.0;
+  }
+
+  Rect toRect() {
+    return new Rect.fromLTWH(x, y, width, height);
+  }
+
+  @override
+  void resize(Size size) {
+    y = size.height - height - 16.0;
+  }
+}
+
 class Floor extends SpriteComponent {
   Floor(double width) : super.fromSprite(1.0, 16.0, new Sprite('base.png')) {
-    this.x = 0.0;
+    x = 0.0;
     this.width = width;
   }
 
   @override
   void resize(Size size) {
-    this.y = size.height - 16.0;
+    y = size.height - 16.0;
   }
 }
 
 class Top extends SpriteComponent {
   Top(double width) : super.fromSprite(1.0, 16.0, new Sprite('base.png')) {
-    this.x = 0.0;
-    this.y = 0.0;
+    x = 0.0;
+    y = 0.0;
     this.width = width;
   }
 }
 
-class Player extends AnimationComponent {
+class Player extends PositionComponent {
 
-  Point velocity = new Point(180.0, 0.0);
-  Impulse impulse = new Impulse(20000.0);
+  Map<String, Animation> animations;
+  Point velocity = new Point(240.0, 0.0);
+  Impulse impulse = new Impulse(20000.0/2);
   double y0, worldSize;
+  double width, height;
+  String state;
 
-  Player(double x, double y, this.worldSize) : super.sequenced(64.0, 72.0, 'player.png', 8, textureWidth: 16.0, textureHeight: 18.0) {
+  Player(double x, double y, this.worldSize) {
     this.x = x;
     this.y = y;
-    this.y0 = 0.0;
-    this.stepTime = 0.075 / 2.0;
+    y0 = 0.0;
+    width = 64.0;
+    height = 72.0;
+
+    animations = new Map<String, Animation>();
+    animations['running'] = new Animation.sequenced('player.png', 8, textureWidth: 16.0, textureHeight: 18.0)..stepTime = 0.0375;
+    animations['dead'] = new Animation.sequenced('player.png', 3, textureWidth: 16.0, textureHeight: 18.0, textureX: 16.0 * 8)..stepTime = 0.075;
+    state = 'running';
+  }
+
+  Rect toRect() {
+    return new Rect.fromLTWH(x, y, width, height);
+  }
+
+  @override
+  void render(Canvas canvas) {
+    prepareCanvas(canvas);
+    animations[state].getSprite().render(canvas, width, height);
   }
 
   @override
   void update(double t) {
+    animations[state].update(t);
+
+    if (dead()) {
+      return;
+    }
+
     velocity.y -= impulse.tick(t);
     if (falling()) {
-      velocity.y += 7500.0 * t; // gravity
+      velocity.y += 7500.0/4 * t; // gravity
     }
 
     x += velocity.x * t;
@@ -53,7 +95,10 @@ class Player extends AnimationComponent {
       y = y0;
       velocity.y = 0.0;
     }
-    super.update(t);
+  }
+
+  bool dead() {
+    return state == 'dead';
   }
 
   bool falling() {
@@ -71,19 +116,15 @@ class Player extends AnimationComponent {
   }
 
   void jump() {
-    if (!falling()) {
+    if (!falling() && !dead()) {
       impulse.impulse(0.1);
-    } else
-      print('Can\'t jump in the air, mate');
+    }
   }
 }
 
 class MyGame extends BaseGame {
 
-  static const double WORLD_SIZE = 1000.0;
-
-  Size size;
-  Point camera = new Point(0.0, 0.0);
+  static const double WORLD_SIZE = 2000.0;
   bool _running = false;
 
   bool isRunning() {
@@ -98,6 +139,7 @@ class MyGame extends BaseGame {
     components.add(new Top(WORLD_SIZE));
     components.add(new Floor(WORLD_SIZE));
     components.add(new Player(0.0, 0.0, WORLD_SIZE));
+    components.add(new Block(450.0));
 
     _running = true;
   }
@@ -107,7 +149,14 @@ class MyGame extends BaseGame {
   }
 
   void input(double x, double y) {
-    getPlayer()?.jump();
+    final player = getPlayer();
+    if (player != null) {
+      if (player.dead()) {
+        setRunning(false);
+      } else {
+        player.jump();
+      }
+    }
   }
 
   @override
@@ -117,40 +166,39 @@ class MyGame extends BaseGame {
     }
 
     super.update(dt);
-    cameraFollow(getPlayer());
 
-    if (getPlayer() == null) {
+    Player player = getPlayer();
+
+    if (player != null) {
+      Rect playerRect = player.toRect();
+      components.forEach((c) {
+        if (c is Block) {
+          Block b = c;
+          if (b.toRect().overlaps(playerRect)) {
+            if (player.velocity.x.abs() >= player.velocity.y.abs()) {
+              player.x = b.x - player.width;
+            } else {
+              player.y = b.y - player.height;
+              player.angle = math.PI / 2;
+            }
+            player.velocity = new Point(0.0, 0.0);
+            player.state = 'dead';
+          }
+        }
+      });
+
+      cameraFollow(player);
+    } else {
       this.setRunning(false);
     }
   }
 
-  @override
-  void render(Canvas canvas) {
-    canvas.save();
-    components.forEach((comp) {
-      canvas.translate(-camera.x, -camera.y);
-      comp.render(canvas);
-      canvas.restore();
-      canvas.save();
-    });
-    canvas.restore();
-  }
-
   void cameraFollow(Player c) {
-    if (c != null) {
-      camera.x = c.x - size.width / 2 + c.width/2;
-      if (camera.x < 0.0) {
-        camera.x = 0.0;
-      } else if (camera.x > WORLD_SIZE - size.width) {
-        camera.x = WORLD_SIZE - size.width;
-      }
+    camera.x = c.x - size.width / 2 + c.width/2;
+    if (camera.x < 0.0) {
+      camera.x = 0.0;
+    } else if (camera.x > WORLD_SIZE - size.width) {
+      camera.x = WORLD_SIZE - size.width;
     }
-  }
-
-  // TODO BaseGame should do this
-  @override
-  void resize(Size size) {
-    this.size = size;
-    this.components.forEach((c) => c.resize(size));
   }
 }

@@ -4,7 +4,8 @@ description: A new Flutter project.
 dependencies:
   flutter:
     sdk: flutter
-  flame: 0.8.1
+  flame:
+    path: ../../flame
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -29,3 +30,4 @@ flutter:
   assets:
    - assets/images/player.png
    - assets/images/base.png
+   - assets/images/block.png
