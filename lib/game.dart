@@ -1,12 +1,95 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flame/animation.dart';
+import 'package:flame/components/component.dart';
+import 'package:flame/components/animation_component.dart';
+import 'package:flame/game.dart';
+import 'package:flame/position.dart';
+import 'package:flame/sprite.dart';
+
 import 'math_util.dart';
 
-import 'package:flame/components/component.dart';
-import 'package:flame/animation.dart';
-import 'package:flame/game.dart';
-import 'package:flame/sprite.dart';
+math.Random random = new math.Random();
+
+class Bullet extends AnimationComponent {
+  static const double SPEED = 1000.0;
+
+  Bullet(Position p) : super(64.0, 64.0, new Animation.sequenced('bullet.png', 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
+    this.x = p.x;
+    this.y = p.y;
+  }
+
+  @override
+  void update(double dt) {
+    this.x -= SPEED * dt;
+  }
+}
+
+class ShooterCane extends PositionComponent {
+
+  static final Paint paint = new Paint()..color = const Color(0xFF626262);
+
+  ShooterCane() {
+    this.y = 0.0;
+    this.width = 2.0;
+  }
+
+  @override
+  void render(Canvas c) {
+    prepareCanvas(c);
+    c.drawRect(new Rect.fromLTWH(0.0, 0.0, width, height), paint);
+  }
+
+  @override
+  void update(double t) {}
+
+  @override
+  void resize(Size size) {
+    this.x = size.width - 8.0;
+    this.height = size.height;
+  }
+
+  @override
+  bool isHud() {
+    return true;
+  }
+}
+
+class Shooter extends SpriteComponent {
+
+  double speed;
+  Size size;
+
+  Shooter(double y) : super.fromSprite(32.0, 46.0, new Sprite('shooter.png')) {
+    this.x = 0.0;
+    this.y = y;
+    this.speed = 240.0;
+  }
+
+  @override
+  void update(double dt) {
+    y += speed * dt;
+    if (y < 0) {
+      speed *= -1;
+      y = 1.0;
+    } else if (y > size.height - height) {
+      speed *= -1;
+      y = size.height - height - 1;
+    }
+  }
+
+  @override
+  void resize(Size size) {
+    this.size = size;
+    x = size.width - width;
+  }
+
+  @override
+  bool isHud() {
+    return true;
+  }
+}
 
 class UpBlock extends SpriteComponent {
   UpBlock(double x) : super.fromSprite(64.0, 64.0, new Sprite('block.png')) {
@@ -45,12 +128,10 @@ class Top extends SpriteComponent {
 }
 
 class Player extends PositionComponent {
-
   Map<String, Animation> animations;
   Point velocity = new Point(240.0, 0.0);
-  Impulse impulse = new Impulse(20000.0/2);
+  Impulse impulse = new Impulse(20000.0 / 2);
   double y0, worldSize;
-  double width, height;
   String state;
 
   Player(double x, double y, this.worldSize) {
@@ -82,7 +163,7 @@ class Player extends PositionComponent {
 
     velocity.y -= impulse.tick(t);
     if (falling()) {
-      velocity.y += 7500.0/4 * t; // gravity
+      velocity.y += 7500.0 / 4 * t; // gravity
     }
 
     x += velocity.x * t;
@@ -119,7 +200,6 @@ class Player extends PositionComponent {
 }
 
 class MyGame extends BaseGame {
-
   static const double WORLD_SIZE = 2000.0;
   bool _running = false;
 
@@ -138,6 +218,8 @@ class MyGame extends BaseGame {
     components.add(new Block(450.0));
     components.add(new Block(750.0));
     components.add(new UpBlock(1000.0));
+    components.add(new ShooterCane());
+    components.add(new Shooter(200.0));
 
     _running = true;
   }
@@ -163,10 +245,13 @@ class MyGame extends BaseGame {
       return;
     }
 
+    if (false && random.nextDouble() < dt) {
+      components.add(new Bullet((components.firstWhere((c) => c is Shooter, orElse: () => null) as Shooter).toPosition()));
+    }
+
     super.update(dt);
 
     Player player = getPlayer();
-
     if (player != null) {
       Rect playerRect = player.toRect();
       components.forEach((c) {
@@ -195,7 +280,7 @@ class MyGame extends BaseGame {
   }
 
   void cameraFollow(Player c) {
-    camera.x = c.x - size.width / 2 + c.width/2;
+    camera.x = c.x - size.width / 2 + c.width / 2;
     if (camera.x < 0.0) {
       camera.x = 0.0;
     } else if (camera.x > WORLD_SIZE - size.width) {

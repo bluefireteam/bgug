@@ -31,3 +31,5 @@ flutter:
    - assets/images/player.png
    - assets/images/base.png
    - assets/images/block.png
+   - assets/images/shooter.png
+   - assets/images/bullet.png
