@@ -8,15 +8,15 @@ import 'package:flame/animation.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 
-class Block extends SpriteComponent {
-  Block(double x) : super.fromSprite(64.0, 64.0, new Sprite('block.png')) {
+class UpBlock extends SpriteComponent {
+  UpBlock(double x) : super.fromSprite(64.0, 64.0, new Sprite('block.png')) {
     this.x = x;
-    this.y = 0.0;
+    this.y = 16.0;
   }
+}
 
-  Rect toRect() {
-    return new Rect.fromLTWH(x, y, width, height);
-  }
+class Block extends UpBlock {
+  Block(double x) : super(x);
 
   @override
   void resize(Size size) {
@@ -64,10 +64,6 @@ class Player extends PositionComponent {
     animations['running'] = new Animation.sequenced('player.png', 8, textureWidth: 16.0, textureHeight: 18.0)..stepTime = 0.0375;
     animations['dead'] = new Animation.sequenced('player.png', 3, textureWidth: 16.0, textureHeight: 18.0, textureX: 16.0 * 8)..stepTime = 0.075;
     state = 'running';
-  }
-
-  Rect toRect() {
-    return new Rect.fromLTWH(x, y, width, height);
   }
 
   @override
@@ -140,6 +136,8 @@ class MyGame extends BaseGame {
     components.add(new Floor(WORLD_SIZE));
     components.add(new Player(0.0, 0.0, WORLD_SIZE));
     components.add(new Block(450.0));
+    components.add(new Block(750.0));
+    components.add(new UpBlock(1000.0));
 
     _running = true;
   }
@@ -172,14 +170,17 @@ class MyGame extends BaseGame {
     if (player != null) {
       Rect playerRect = player.toRect();
       components.forEach((c) {
-        if (c is Block) {
-          Block b = c;
+        if (c is UpBlock) {
+          UpBlock b = c;
           if (b.toRect().overlaps(playerRect)) {
             if (player.velocity.x.abs() >= player.velocity.y.abs()) {
               player.x = b.x - player.width;
-            } else {
+            } else if (player.velocity.y > 0) {
               player.y = b.y - player.height;
               player.angle = math.PI / 2;
+            } else {
+              player.y = b.y + b.height;
+              player.angle = 3 * math.PI / 2;
             }
             player.velocity = new Point(0.0, 0.0);
             player.state = 'dead';
