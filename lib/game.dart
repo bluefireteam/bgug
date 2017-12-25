@@ -133,10 +133,13 @@ class Top extends SpriteComponent {
   }
 }
 
+const GRAVITY_IMPULSE = 1875.0;
+
 class Player extends PositionComponent {
   Map<String, Animation> animations;
-  Point velocity = new Point(240.0, 0.0);
-  Impulse impulse = new Impulse(20000.0 / 2);
+  Point velocity = new Point(320.0, 0.0);
+  Impulse jumpImpulse = new Impulse(-10000.0);
+  Impulse diveImpulse = new Impulse(20000.0);
   double y0, worldSize;
   String state;
 
@@ -167,9 +170,10 @@ class Player extends PositionComponent {
       return;
     }
 
-    velocity.y -= impulse.tick(t);
+    velocity.y += jumpImpulse.tick(t);
+    velocity.y += diveImpulse.tick(t);
     if (falling()) {
-      velocity.y += 7500.0 / 4 * t; // gravity
+      velocity.y += GRAVITY_IMPULSE * t;
     }
 
     x += velocity.x * t;
@@ -199,8 +203,14 @@ class Player extends PositionComponent {
   }
 
   void jump() {
-    if (!falling() && !dead()) {
-      impulse.impulse(0.1);
+    if (!falling()) {
+      jumpImpulse.impulse(0.1);
+    }
+  }
+
+  void dive() {
+    if (falling()) {
+      diveImpulse.impulse(0.1);
     }
   }
 }
@@ -244,7 +254,11 @@ class MyGame extends BaseGame {
       if (player.dead()) {
         setRunning(false);
       } else {
-        player.jump();
+        if (x > size.width / 2) {
+          player.jump();
+        } else {
+          player.dive();
+        }
       }
     }
   }
@@ -269,7 +283,7 @@ class MyGame extends BaseGame {
         if (c is UpBlock || c is Bullet) {
           PositionComponent b = c as PositionComponent;
           if (b.toRect().overlaps(playerRect)) {
-            if (player.velocity.x.abs() >= player.velocity.y.abs()) {
+            if (b is Bullet || player.velocity.x.abs() >= player.velocity.y.abs()) {
               player.x = b.x - player.width;
             } else if (player.velocity.y > 0) {
               player.y = b.y - player.height;
