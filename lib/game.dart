@@ -13,7 +13,7 @@ import 'math_util.dart';
 math.Random random = new math.Random();
 
 class Bullet extends AnimationComponent {
-  static const double SPEED = 1000.0;
+  static const double SPEED = 500.0;
 
   Bullet(Position p) : super(64.0, 64.0, new Animation.sequenced('bullet.png', 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
     this.x = p.x;
@@ -22,7 +22,13 @@ class Bullet extends AnimationComponent {
 
   @override
   void update(double dt) {
+    super.update(dt);
     this.x -= SPEED * dt;
+  }
+
+  @override
+  bool destroy() {
+    return this.x < - this.width;
   }
 }
 
@@ -228,6 +234,10 @@ class MyGame extends BaseGame {
     return components.firstWhere((c) => c is Player, orElse: () => null) as Player;
   }
 
+  Shooter getShooter() {
+    return components.firstWhere((c) => c is Shooter) as Shooter;
+  }
+
   void input(double x, double y) {
     final player = getPlayer();
     if (player != null) {
@@ -245,8 +255,9 @@ class MyGame extends BaseGame {
       return;
     }
 
-    if (false && random.nextDouble() < dt) {
-      components.add(new Bullet((components.firstWhere((c) => c is Shooter, orElse: () => null) as Shooter).toPosition()));
+    // TODO think about prob
+    if (random.nextDouble() < dt / 4) {
+      components.add(new Bullet(getShooter().toPosition().add(camera)));
     }
 
     super.update(dt);
@@ -255,8 +266,8 @@ class MyGame extends BaseGame {
     if (player != null) {
       Rect playerRect = player.toRect();
       components.forEach((c) {
-        if (c is UpBlock) {
-          UpBlock b = c;
+        if (c is UpBlock || c is Bullet) {
+          PositionComponent b = c as PositionComponent;
           if (b.toRect().overlaps(playerRect)) {
             if (player.velocity.x.abs() >= player.velocity.y.abs()) {
               player.x = b.x - player.width;
