@@ -357,7 +357,7 @@ class MyGame extends BaseGame {
 
     getShooters().forEach((shooter) {
       if (shooter.shoot()) {
-        components.add(new Bullet(shooter.toPosition().add(camera)));
+        components.add(new Bullet(shooter.toPosition().add(camera).add(new Position(-64.0, 0.0))));
       }
     });
 
