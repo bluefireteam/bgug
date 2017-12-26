@@ -74,13 +74,27 @@ class Shooter extends SpriteComponent {
   String action;
   bool down = true;
 
-  Shooter(this.kind) : super.fromSprite(32.0, 46.0, new Sprite('shooter.png'));
+  Animation shooting = new Animation.sequenced('shooter.png', 2, textureWidth: 32.0, textureX: 32.0);
+
+  Shooter(this.kind) : super.fromSprite(32.0, 46.0, new Sprite('shooter.png', width: 32.0));
+
+  @override
+  void render(Canvas c) {
+      if (action == 'shooting') {
+        if (shooting.loaded() && x != null && y != null) {
+          prepareCanvas(c);
+          shooting.getSprite().render(c, width, height);
+        }
+      } else {
+        super.render(c);
+      }
+  }
 
   @override
   void update(double dt) {
     clock += dt;
-    if (clock > 2.0) {
-      clock -= 2.0;
+    if (clock > 1.0) {
+      clock -= 1.0;
       nextAction();
     }
 
@@ -89,7 +103,7 @@ class Shooter extends SpriteComponent {
     } else if (action == 'moveDown') {
       moveDown(dt, SPEED);
     } else if (action == 'shoot') {
-      // shoot ?
+      // shoot animation?
     }
   }
 
@@ -125,8 +139,11 @@ class Shooter extends SpriteComponent {
   }
 
   void nextAction() {
-    if (random.nextDouble() > 10.33) {
+    if (action == 'shooting') {
       action = 'shoot';
+    } else if (random.nextDouble() < 0.25) {
+      action = 'shooting';
+      shooting.lifeTime = 0.0;
     } else {
       if (y <= yi) {
         y = yi;
@@ -145,16 +162,15 @@ class Shooter extends SpriteComponent {
     x = size.width - width;
 
     step = size.height / 10;
+    action = '';
     if (kind == 'up') {
       yi = step;
       yf = step * 4;
       y = yi;
-      action = '';
     } else {
       yi = step * 5;
       yf = step * 8;
       y = yf;
-      action = '';
     }
   }
 
@@ -312,8 +328,8 @@ class MyGame extends BaseGame {
     return components.firstWhere((c) => c is Player, orElse: () => null) as Player;
   }
 
-  Shooter getShooter() {
-    return components.firstWhere((c) => c is Shooter) as Shooter;
+  Set<Shooter> getShooters() {
+    return components.where((c) => c is Shooter).map((c) => c as Shooter).toSet();
   }
 
   void input(double x, double y) {
@@ -339,10 +355,11 @@ class MyGame extends BaseGame {
 
     super.update(dt);
 
-    Shooter shooter = getShooter();
-    if (shooter.shoot()) {
-      components.add(new Bullet(getShooter().toPosition().add(camera)));
-    }
+    getShooters().forEach((shooter) {
+      if (shooter.shoot()) {
+        components.add(new Bullet(shooter.toPosition().add(camera)));
+      }
+    });
 
     Player player = getPlayer();
     if (player != null) {
