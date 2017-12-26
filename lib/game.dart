@@ -64,24 +64,78 @@ class ShooterCane extends PositionComponent {
 
 class Shooter extends SpriteComponent {
 
-  double speed;
-  Size size;
+  static const double SPEED = 120.0;
 
-  Shooter(double y) : super.fromSprite(32.0, 46.0, new Sprite('shooter.png')) {
-    this.x = 0.0;
-    this.y = y;
-    this.speed = 240.0;
-  }
+  Size size;
+  String kind;
+  double yi, yf;
+  double step;
+  double clock = 0.0;
+  String action;
+  bool down = true;
+
+  Shooter(this.kind) : super.fromSprite(32.0, 46.0, new Sprite('shooter.png'));
 
   @override
   void update(double dt) {
-    y += speed * dt;
-    if (y < 0) {
-      speed *= -1;
-      y = 1.0;
-    } else if (y > size.height - height) {
-      speed *= -1;
-      y = size.height - height - 1;
+    clock += dt;
+    if (clock > 2.0) {
+      clock -= 2.0;
+      nextAction();
+    }
+
+    if (action == 'moveUp') {
+      moveUp(dt, -SPEED);
+    } else if (action == 'moveDown') {
+      moveDown(dt, SPEED);
+    } else if (action == 'shoot') {
+      // shoot ?
+    }
+  }
+
+  bool shoot() {
+    if (action == 'shoot') {
+      action = '';
+      return true;
+    }
+    return false;
+  }
+
+  void moveDown(double dt, double speed) {
+    double currentBit = (y - yi) % step;
+    var dy = dt * speed;
+    if (currentBit + dy >= step) {
+      dy = step - currentBit;
+      action = '';
+    }
+    y += dy;
+  }
+
+  void moveUp(double dt, double speed) {
+    double currentBit = (y - yf) % step;
+    while (currentBit > 0) {
+      currentBit -= step;
+    }
+    var dy = dt * speed;
+    if (currentBit + dy <= -step) {
+      dy = - step - currentBit;
+      action = '';
+    }
+    y += dy;
+  }
+
+  void nextAction() {
+    if (random.nextDouble() > 10.33) {
+      action = 'shoot';
+    } else {
+      if (y <= yi) {
+        y = yi;
+        down = true;
+      } else if (y >= yf) {
+        y = yf;
+        down = false;
+      }
+      action = down ? 'moveDown' : 'moveUp';
     }
   }
 
@@ -89,6 +143,19 @@ class Shooter extends SpriteComponent {
   void resize(Size size) {
     this.size = size;
     x = size.width - width;
+
+    step = size.height / 10;
+    if (kind == 'up') {
+      yi = step;
+      yf = step * 4;
+      y = yi;
+      action = '';
+    } else {
+      yi = step * 5;
+      yf = step * 8;
+      y = yf;
+      action = '';
+    }
   }
 
   @override
@@ -235,7 +302,8 @@ class MyGame extends BaseGame {
     components.add(new Block(750.0));
     components.add(new UpBlock(1000.0));
     components.add(new ShooterCane());
-    components.add(new Shooter(200.0));
+    components.add(new Shooter('up'));
+    components.add(new Shooter('down'));
 
     _running = true;
   }
@@ -269,12 +337,12 @@ class MyGame extends BaseGame {
       return;
     }
 
-    // TODO think about prob
-    if (random.nextDouble() < dt / 4) {
+    super.update(dt);
+
+    Shooter shooter = getShooter();
+    if (shooter.shoot()) {
       components.add(new Bullet(getShooter().toPosition().add(camera)));
     }
-
-    super.update(dt);
 
     Player player = getPlayer();
     if (player != null) {
