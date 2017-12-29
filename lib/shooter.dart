@@ -11,8 +11,6 @@ import 'constants.dart';
 
 math.Random random = new math.Random();
 
-final tenth = (size) => (size.height - 2 * BAR_SIZE) / 10;
-
 class Bullet extends AnimationComponent {
   static const double FRAC = 8.0 / 46.0;
   static const double SPEED = 500.0;
@@ -172,11 +170,11 @@ class Shooter extends SpriteComponent {
     action = '';
     if (kind == 'up') {
       yi = BAR_SIZE + step;
-      yf = BAR_SIZE + step * 4;
+      yf = BAR_SIZE + step * 3;
       y = yi;
     } else {
-      yi = BAR_SIZE + step * 5;
-      yf = BAR_SIZE + step * 8;
+      yi = BAR_SIZE + step * 4;
+      yf = BAR_SIZE + step * 6;
       y = yf;
     }
   }

@@ -7,12 +7,18 @@ import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 
 import 'math_util.dart';
+import 'constants.dart';
 import 'shooter.dart';
 
 class UpObstacle extends SpriteComponent {
   UpObstacle(double x) : super.fromSprite(48.0, 48.0, new Sprite('obstacle.png')) {
     this.x = x;
-    this.y = 16.0;
+    this.y = BAR_SIZE;
+  }
+
+  @override
+  void resize(Size size) {
+    width = height = tenth(size);
   }
 }
 
@@ -21,24 +27,25 @@ class Obstacle extends UpObstacle {
 
   @override
   void resize(Size size) {
-    y = size.height - height - 16.0;
+    super.resize(size);
+    y = size.height - height - BAR_SIZE;
   }
 }
 
 class Floor extends SpriteComponent {
-  Floor(double width) : super.fromSprite(1.0, 16.0, new Sprite('base.png')) {
+  Floor(double width) : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png')) {
     x = 0.0;
     this.width = width;
   }
 
   @override
   void resize(Size size) {
-    y = size.height - 16.0;
+    y = size.height - BAR_SIZE;
   }
 }
 
 class Top extends SpriteComponent {
-  Top(double width) : super.fromSprite(1.0, 16.0, new Sprite('base.png')) {
+  Top(double width) : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png')) {
     x = 0.0;
     y = 0.0;
     this.width = width;
@@ -59,8 +66,6 @@ class Player extends PositionComponent {
     this.x = x;
     this.y = y;
     y0 = 0.0;
-    width = 48.0;
-    height = 54.0;
 
     animations = new Map<String, Animation>();
     animations['running'] = new Animation.sequenced('player.png', 8, textureWidth: 16.0, textureHeight: 18.0)..stepTime = 0.0375;
@@ -111,7 +116,9 @@ class Player extends PositionComponent {
 
   @override
   void resize(Size size) {
-    y0 = size.height - this.height - 16.0;
+    height = tenth(size);
+    width = 48.0/54.0 * height;
+    y0 = size.height - height - BAR_SIZE;
   }
 
   void jump() {
@@ -151,7 +158,7 @@ class MyGame extends BaseGame {
     add(new Shooter('down'));
 
     add(new Block(0));
-    add(new Block(9));
+    add(new Block(7));
 
     _running = true;
   }
