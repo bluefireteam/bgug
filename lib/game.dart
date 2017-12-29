@@ -162,6 +162,7 @@ class Shooter extends SpriteComponent {
     x = size.width - width;
 
     step = size.height / 10;
+    height = step;
     action = '';
     if (kind == 'up') {
       yi = step;
@@ -180,15 +181,34 @@ class Shooter extends SpriteComponent {
   }
 }
 
-class UpBlock extends SpriteComponent {
-  UpBlock(double x) : super.fromSprite(64.0, 64.0, new Sprite('block.png')) {
+class Block extends SpriteComponent {
+
+  int slot;
+
+  Block(this.slot) : super.fromSprite(16.0, 16.0, new Sprite('block.png'));
+
+  @override
+  void resize(Size size) {
+    this.width = this.height = size.height / 10.0;
+    this.x = size.width - this.width;
+    this.y = this.slot * this.height;
+  }
+
+  @override
+  bool isHud() {
+    return true;
+  }
+}
+
+class UpObstacle extends SpriteComponent {
+  UpObstacle(double x) : super.fromSprite(48.0, 48.0, new Sprite('obstacle.png')) {
     this.x = x;
     this.y = 16.0;
   }
 }
 
-class Block extends UpBlock {
-  Block(double x) : super(x);
+class Obstacle extends UpObstacle {
+  Obstacle(double x) : super(x);
 
   @override
   void resize(Size size) {
@@ -230,8 +250,8 @@ class Player extends PositionComponent {
     this.x = x;
     this.y = y;
     y0 = 0.0;
-    width = 64.0;
-    height = 72.0;
+    width = 48.0;
+    height = 54.0;
 
     animations = new Map<String, Animation>();
     animations['running'] = new Animation.sequenced('player.png', 8, textureWidth: 16.0, textureHeight: 18.0)..stepTime = 0.0375;
@@ -282,7 +302,7 @@ class Player extends PositionComponent {
 
   @override
   void resize(Size size) {
-    y0 = size.height - 72.0 - 16.0;
+    y0 = size.height - this.height - 16.0;
   }
 
   void jump() {
@@ -314,12 +334,15 @@ class MyGame extends BaseGame {
     components.add(new Top(WORLD_SIZE));
     components.add(new Floor(WORLD_SIZE));
     components.add(new Player(0.0, 0.0, WORLD_SIZE));
-    components.add(new Block(450.0));
-    components.add(new Block(750.0));
-    components.add(new UpBlock(1000.0));
+    components.add(new Obstacle(450.0));
+    components.add(new Obstacle(750.0));
+    components.add(new UpObstacle(1000.0));
     components.add(new ShooterCane());
     components.add(new Shooter('up'));
     components.add(new Shooter('down'));
+
+    components.add(new Block(0));
+    components.add(new Block(9));
 
     _running = true;
   }
@@ -365,7 +388,7 @@ class MyGame extends BaseGame {
     if (player != null) {
       Rect playerRect = player.toRect();
       components.forEach((c) {
-        if (c is UpBlock || c is Bullet) {
+        if (c is UpObstacle || c is Bullet) {
           PositionComponent b = c as PositionComponent;
           if (b.toRect().overlaps(playerRect)) {
             if (b is Bullet || player.velocity.x.abs() >= player.velocity.y.abs()) {
