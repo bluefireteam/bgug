@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/game.dart';
-import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
 import 'math_util.dart';
@@ -141,18 +140,18 @@ class MyGame extends BaseGame {
   }
 
   void start() {
-    components.add(new Top(WORLD_SIZE));
-    components.add(new Floor(WORLD_SIZE));
-    components.add(new Player(0.0, 0.0, WORLD_SIZE));
-    components.add(new Obstacle(450.0));
-    components.add(new Obstacle(750.0));
-    components.add(new UpObstacle(1000.0));
-    components.add(new ShooterCane());
-    components.add(new Shooter('up'));
-    components.add(new Shooter('down'));
+    add(new Top(WORLD_SIZE));
+    add(new Floor(WORLD_SIZE));
+    add(new Player(0.0, 0.0, WORLD_SIZE));
+    add(new Obstacle(450.0));
+    add(new Obstacle(750.0));
+    add(new UpObstacle(1000.0));
+    add(new ShooterCane());
+    add(new Shooter('up'));
+    add(new Shooter('down'));
 
-    components.add(new Block(0));
-    components.add(new Block(9));
+    add(new Block(0));
+    add(new Block(9));
 
     _running = true;
   }
@@ -190,7 +189,7 @@ class MyGame extends BaseGame {
 
     getShooters().forEach((shooter) {
       if (shooter.shoot()) {
-        components.add(new Bullet(shooter.toPosition().add(camera).add(new Position(-64.0, 0.0))));
+        add(new Bullet(size, shooter.toPosition().add(camera)));
       }
     });
 

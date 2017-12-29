@@ -1,0 +1,1 @@
+const double BAR_SIZE = 16.0;

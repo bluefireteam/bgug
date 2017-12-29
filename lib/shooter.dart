@@ -7,14 +7,20 @@ import 'package:flame/components/animation_component.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
+import 'constants.dart';
+
 math.Random random = new math.Random();
 
+final tenth = (size) => (size.height - 2 * BAR_SIZE) / 10;
+
 class Bullet extends AnimationComponent {
+  static const double FRAC = 8.0 / 46.0;
   static const double SPEED = 500.0;
 
-  Bullet(Position p) : super(64.0, 64.0, new Animation.sequenced('bullet.png', 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
-    this.x = p.x;
-    this.y = p.y;
+  Bullet(Size size, Position p) : super.byAnimation(new Animation.sequenced('bullet.png', 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
+    this.width = this.height = (1.0 - 2 * FRAC) * tenth(size);
+    this.x = p.x - this.width + 7.0;
+    this.y = p.y + FRAC * tenth(size);
   }
 
   @override
@@ -27,6 +33,11 @@ class Bullet extends AnimationComponent {
   bool destroy() {
     return this.x < - this.width;
   }
+
+  @override
+  void resize(Size size) {
+    this.width = this.height = (1.0 - 2 * FRAC) * tenth(size);
+  }
 }
 
 class ShooterCane extends PositionComponent {
@@ -34,7 +45,7 @@ class ShooterCane extends PositionComponent {
   static final Paint paint = new Paint()..color = const Color(0xFF626262);
 
   ShooterCane() {
-    this.y = 0.0;
+    this.y = BAR_SIZE;
     this.width = 2.0;
   }
 
@@ -50,7 +61,7 @@ class ShooterCane extends PositionComponent {
   @override
   void resize(Size size) {
     this.x = size.width - 8.0;
-    this.height = size.height;
+    this.height = tenth(size) * 10;
   }
 
   @override
@@ -63,7 +74,6 @@ class Shooter extends SpriteComponent {
 
   static const double SPEED = 120.0;
 
-  Size size;
   String kind;
   double yi, yf;
   double step;
@@ -155,19 +165,18 @@ class Shooter extends SpriteComponent {
 
   @override
   void resize(Size size) {
-    this.size = size;
     x = size.width - width;
 
-    step = size.height / 10;
+    step = tenth(size);
     height = step;
     action = '';
     if (kind == 'up') {
-      yi = step;
-      yf = step * 4;
+      yi = BAR_SIZE + step;
+      yf = BAR_SIZE + step * 4;
       y = yi;
     } else {
-      yi = step * 5;
-      yf = step * 8;
+      yi = BAR_SIZE + step * 5;
+      yf = BAR_SIZE + step * 8;
       y = yf;
     }
   }
@@ -186,9 +195,9 @@ class Block extends SpriteComponent {
 
   @override
   void resize(Size size) {
-    this.width = this.height = size.height / 10.0;
+    this.width = this.height = tenth(size);
     this.x = size.width - this.width;
-    this.y = this.slot * this.height;
+    this.y = this.slot * this.height + BAR_SIZE;
   }
 
   @override
