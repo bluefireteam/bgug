@@ -22,4 +22,8 @@ class Impulse {
     time -= dt;
     return force * dt;
   }
+
+  void clear() {
+    this.time = 0.0;
+  }
 }

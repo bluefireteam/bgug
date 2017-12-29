@@ -1,4 +1,5 @@
 import 'package:flame/flame.dart';
+import 'package:flame/position.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -34,11 +35,19 @@ class MyGameBinder extends MyGame {
 class _HomeScreenState extends State<HomeScreen> {
   MyGame game;
 
+  int lastTimestamp;
+  Position lastPost;
+
   _HomeScreenState() {
     Flame.util.addGestureRecognizer(new TapGestureRecognizer()
+      ..onTapDown = (TapDownDetails details) {
+        lastPost = new Position(details.globalPosition.dx, details.globalPosition.dy);
+        lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
+      }
       ..onTapUp = (TapUpDetails details) {
+        int dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
         if (this.game != null && this.game.isRunning()) {
-          this.game.input(details.globalPosition.dx, details.globalPosition.dy);
+          this.game.input(lastPost, dt);
         }
       });
   }

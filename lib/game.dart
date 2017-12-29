@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flame/animation.dart';
+import 'package:flame/position.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
@@ -59,13 +60,11 @@ class Player extends PositionComponent {
   Point velocity = new Point(320.0, 0.0);
   Impulse jumpImpulse = new Impulse(-10000.0);
   Impulse diveImpulse = new Impulse(20000.0);
-  double y0, worldSize;
+  double y0, yf, worldSize;
   String state;
 
   Player(double x, double y, this.worldSize) {
     this.x = x;
-    this.y = y;
-    y0 = 0.0;
 
     animations = new Map<String, Animation>();
     animations['running'] = new Animation.sequenced('player.png', 8, textureWidth: 16.0, textureHeight: 18.0)..stepTime = 0.0375;
@@ -97,8 +96,17 @@ class Player extends PositionComponent {
     y += velocity.y * t;
     if (y > y0) {
       y = y0;
-      velocity.y = 0.0;
+      clearVerticalSpeed();
+    } else if (y < yf) {
+      y = yf;
+      clearVerticalSpeed();
     }
+  }
+
+  void clearVerticalSpeed() {
+    velocity.y = 0.0;
+    jumpImpulse.clear();
+    diveImpulse.clear();
   }
 
   bool dead() {
@@ -118,12 +126,13 @@ class Player extends PositionComponent {
   void resize(Size size) {
     height = tenth(size);
     width = 48.0/54.0 * height;
-    y0 = size.height - height - BAR_SIZE;
+    y = y0 = size.height - height - BAR_SIZE;
+    yf = BAR_SIZE;
   }
 
-  void jump() {
+  void jump(int dt) {
     if (!falling()) {
-      jumpImpulse.impulse(0.1);
+      jumpImpulse.impulse(dt.toDouble() / 2500.0);
     }
   }
 
@@ -153,6 +162,7 @@ class MyGame extends BaseGame {
     add(new Obstacle(450.0));
     add(new Obstacle(750.0));
     add(new UpObstacle(1000.0));
+    add(new UpObstacle(1200.0));
     add(new ShooterCane());
     add(new Shooter('up'));
     add(new Shooter('down'));
@@ -171,14 +181,14 @@ class MyGame extends BaseGame {
     return components.where((c) => c is Shooter).map((c) => c as Shooter).toSet();
   }
 
-  void input(double x, double y) {
+  void input(Position p, int dt) {
     final player = getPlayer();
     if (player != null) {
       if (player.dead()) {
         setRunning(false);
       } else {
-        if (x > size.width / 2) {
-          player.jump();
+        if (p.x > size.width / 2) {
+          player.jump(dt);
         } else {
           player.dive();
         }
@@ -209,7 +219,7 @@ class MyGame extends BaseGame {
           if (b.toRect().overlaps(playerRect)) {
             if (b is Bullet || player.velocity.x.abs() >= player.velocity.y.abs()) {
               player.x = b.x - player.width;
-            } else if (player.velocity.y > 0) {
+            } else if (player.y > size.height / 2) {
               player.y = b.y - player.height;
               player.angle = math.PI / 2;
             } else {
