@@ -65,7 +65,7 @@ class Gem extends SpriteComponent {
 
   @override
   void resize(Size size) {
-    this.width = this.height = tenth(size);
+    this.width = this.height = 0.8 * tenth(size);
   }
 
   void collect() {
@@ -228,8 +228,8 @@ class MyGame extends BaseGame {
   @override
   void render(Canvas c) {
     super.render(c);
-    Paragraph p = Flame.util.text(points.toString(), fontFamily: 'Blox2', fontSize: 32.0, color: material.Colors.green);
-    c.drawParagraph(p, new Offset(size.width - 120.0, size.height - 60.0));
+    material.TextPainter tp = Flame.util.text(points.toString(), fontFamily: 'Blox2', fontSize: 32.0, color: material.Colors.green);
+    tp.paint(c, new Offset(size.width - tp.width - 8.0, size.height - tp.height - 8.0));
   }
 
   @override
