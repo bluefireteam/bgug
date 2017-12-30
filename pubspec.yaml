@@ -19,6 +19,7 @@ flutter:
    - assets/images/obstacle.png
    - assets/images/shooter.png
    - assets/images/bullet.png
+   - assets/images/bg.png
   fonts:
     - family: Blox2
       fonts:
