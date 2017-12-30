@@ -1,11 +1,13 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flame/flame.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/position.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
+import 'package:flutter/material.dart' as material;
 
 import 'math_util.dart';
 import 'constants.dart';
@@ -50,6 +52,29 @@ class Top extends SpriteComponent {
     x = 0.0;
     y = 0.0;
     this.width = width;
+  }
+}
+
+class Gem extends SpriteComponent {
+  bool collected = false;
+
+  Gem(double x, double y) : super.fromSprite(1.0, 1.0, new Sprite('gem.png')) {
+    this.x = x;
+    this.y = y;
+  }
+
+  @override
+  void resize(Size size) {
+    this.width = this.height = tenth(size);
+  }
+
+  void collect() {
+    this.collected = true;
+  }
+
+  @override
+  bool destroy() {
+    return this.collected;
   }
 }
 
@@ -146,6 +171,7 @@ class Player extends PositionComponent {
 class MyGame extends BaseGame {
   static const double WORLD_SIZE = 2000.0;
   bool _running = false;
+  int points = 0;
 
   bool isRunning() {
     return this._running;
@@ -169,6 +195,9 @@ class MyGame extends BaseGame {
 
     add(new Block(0));
     add(new Block(7));
+
+    add(new Gem(450.0, 250.0));
+    add(new Gem(1100.0, 40.0));
 
     _running = true;
   }
@@ -197,6 +226,13 @@ class MyGame extends BaseGame {
   }
 
   @override
+  void render(Canvas c) {
+    super.render(c);
+    Paragraph p = Flame.util.text(points.toString(), fontFamily: 'Blox2', fontSize: 32.0, color: material.Colors.green);
+    c.drawParagraph(p, new Offset(size.width - 120.0, size.height - 60.0));
+  }
+
+  @override
   void update(double dt) {
     if (!isRunning()) {
       return;
@@ -214,7 +250,12 @@ class MyGame extends BaseGame {
     if (player != null) {
       Rect playerRect = player.toRect();
       components.forEach((c) {
-        if (c is UpObstacle || c is Bullet) {
+        if (c is Gem) {
+          if (c.toRect().overlaps(playerRect)) {
+            c.collect();
+            points++;
+          }
+        } else if (c is UpObstacle || c is Bullet) {
           PositionComponent b = c as PositionComponent;
           if (b.toRect().overlaps(playerRect)) {
             if (b is Bullet || player.velocity.x.abs() >= player.velocity.y.abs()) {
