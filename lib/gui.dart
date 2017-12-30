@@ -1,6 +1,7 @@
 import 'package:flame/flame.dart';
 import 'package:flame/position.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'game.dart';
@@ -10,8 +11,8 @@ class HomeScreen extends StatefulWidget {
   State<StatefulWidget> createState() => new _HomeScreenState();
 }
 
-const title = const TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0);
-const text = const TextStyle(fontWeight: FontWeight.bold);
+const title = const TextStyle(fontSize: 64.0, fontFamily: 'Blox2');
+const text = const TextStyle(fontSize: 32.0, fontFamily: 'Squared Display');
 
 var pad = (Widget w, double p) =>
     new Container(child: w, padding: new EdgeInsets.all(p));
@@ -41,7 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
   _HomeScreenState() {
     Flame.util.addGestureRecognizer(new TapGestureRecognizer()
       ..onTapDown = (TapDownDetails details) {
-        lastPost = new Position(details.globalPosition.dx, details.globalPosition.dy);
+        lastPost =
+            new Position(details.globalPosition.dx, details.globalPosition.dy);
         lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
       }
       ..onTapUp = (TapUpDetails details) {
@@ -67,15 +69,22 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return new Center(
-        child: new Column(children: [
-      pad(new Text('Block Guns Using Gems', style: title), 20.0),
-      btn('Start', () {
-        MyGame game = new MyGameBinder(this);
-        game.start();
-        setState(() => this.game = game);
-      }),
-      btn('Score', () => print('clicked score')),
-      btn('Exit', () => print('clicked exit'))
-    ], mainAxisAlignment: MainAxisAlignment.center));
+        child: new Row(children: [
+      new Column(children: [
+        pad(new Text('BLOCK', style: title), 2.0),
+        pad(new Text('guns', style: title), 2.0),
+        pad(new Text('USING', style: title), 2.0),
+        pad(new Text('gems', style: title), 2.0),
+      ], mainAxisAlignment: MainAxisAlignment.center),
+      new Column(children: [
+        btn('Start', () {
+          MyGame game = new MyGameBinder(this);
+          game.start();
+          setState(() => this.game = game);
+        }),
+        btn('Score', () => print('clicked score!')),
+        btn('Exit', () => SystemNavigator.pop())
+      ], mainAxisAlignment: MainAxisAlignment.center)
+    ], mainAxisAlignment: MainAxisAlignment.spaceEvenly));
   }
 }
