@@ -13,6 +13,23 @@ import 'math_util.dart';
 import 'constants.dart';
 import 'shooter.dart';
 
+import 'background.dart' as bg;
+
+class Background extends SpriteComponent {
+  @override
+  void resize(Size size) {
+    this.width = size.width;
+    this.height = size.height;
+    this.x = this.y = 0.0;
+    this.sprite = new Sprite.fromImage(bg.generate(this.width.toInt() ~/ 4, this.height.toInt() ~/ 4));
+  }
+
+  @override
+  bool isHud() {
+    return true;
+  }
+}
+
 class UpObstacle extends SpriteComponent {
   UpObstacle(double x) : super.fromSprite(48.0, 48.0, new Sprite('obstacle.png')) {
     this.x = x;
@@ -182,6 +199,8 @@ class MyGame extends BaseGame {
   }
 
   void start() {
+    add(new Background());
+
     add(new Top(WORLD_SIZE));
     add(new Floor(WORLD_SIZE));
     add(new Player(0.0, 0.0, WORLD_SIZE));
