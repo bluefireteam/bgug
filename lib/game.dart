@@ -122,7 +122,7 @@ const GRAVITY_IMPULSE = 1875.0;
 class Player extends PositionComponent {
   Map<String, Animation> animations;
   Point velocity = new Point(320.0, 0.0);
-  Impulse jumpImpulse = new Impulse(-10000.0);
+  Impulse jumpImpulse = new Impulse(-15000.0);
   Impulse diveImpulse = new Impulse(20000.0);
   double y0, yf, worldSize;
   String state;
@@ -208,9 +208,10 @@ class Player extends PositionComponent {
 }
 
 class MyGame extends BaseGame {
-  static const double WORLD_SIZE = 2000.0;
+  static const double WORLD_SIZE = 20000.0;
   bool _running = false;
   int points = 0;
+  int lastGeneratedSector = -1;
 
   bool isRunning() {
     return this._running;
@@ -226,21 +227,27 @@ class MyGame extends BaseGame {
     add(new Top(WORLD_SIZE));
     add(new Floor(WORLD_SIZE));
     add(new Player(0.0, 0.0, WORLD_SIZE));
-    add(new Obstacle(450.0));
-    add(new Obstacle(750.0));
-    add(new UpObstacle(1000.0));
-    add(new UpObstacle(1200.0));
+
     add(new ShooterCane());
     add(new Shooter('up'));
     add(new Shooter('down'));
-
     add(new Block(0));
     add(new Block(7));
 
-    add(new Gem(450.0, 250.0));
-    add(new Gem(1100.0, 40.0));
-
     _running = true;
+  }
+
+  generateSector(int sector) {
+    double start = sector * SECTOR_LENGTH;
+
+    for (int i = random.nextInt(4); i > 0; i--) {
+      var x = start + random.nextInt(1000);
+      add(random.nextBool() ? new Obstacle(x) : new UpObstacle(x));
+    }
+    for (int i = random.nextInt(6); i > 0; i--) {
+      var x = start + random.nextInt(1000);
+      add(new Gem(x, BAR_SIZE + random.nextInt(8) * tenth(size)));
+    }
   }
 
   Player getPlayer() {
@@ -279,6 +286,13 @@ class MyGame extends BaseGame {
       return;
     }
 
+    Player player = getPlayer();
+
+    while (player.x + 2 * SECTOR_LENGTH >= SECTOR_LENGTH * lastGeneratedSector) {
+      lastGeneratedSector++;
+      generateSector(lastGeneratedSector);
+    }
+
     super.update(dt);
 
     getShooters().forEach((shooter) {
@@ -287,7 +301,6 @@ class MyGame extends BaseGame {
       }
     });
 
-    Player player = getPlayer();
     if (player != null) {
       Rect playerRect = player.toRect();
       components.forEach((c) {
