@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flame/flame.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/animation_component.dart';
@@ -146,9 +147,11 @@ class Shooter extends SpriteComponent {
   void nextAction() {
     if (action == 'shooting') {
       action = 'shoot';
+      Flame.audio.play('laser_shoot.wav');
     } else if (random.nextDouble() < 0.25) {
       action = 'shooting';
       shooting.lifeTime = 0.0;
+      Flame.audio.play('laser_load.wav');
     } else {
       if (y <= yi) {
         y = yi;

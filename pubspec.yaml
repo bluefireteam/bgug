@@ -21,6 +21,11 @@ flutter:
    - assets/images/bullet.png
    - assets/images/gem.png
    - assets/images/bg.png
+   - assets/audio/death.wav
+   - assets/audio/gem_collect.wav
+   - assets/audio/jump.wav
+   - assets/audio/laser_load.wav
+   - assets/audio/laser_shoot.wav
   fonts:
     - family: Blox2
       fonts:

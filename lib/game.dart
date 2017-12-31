@@ -197,6 +197,7 @@ class Player extends PositionComponent {
   void jump(int dt) {
     if (!falling()) {
       jumpImpulse.impulse(dt.toDouble() / 2500.0);
+      Flame.audio.play('jump.wav');
     }
   }
 
@@ -308,6 +309,7 @@ class MyGame extends BaseGame {
           if (c.toRect().overlaps(playerRect)) {
             c.collect();
             points++;
+            Flame.audio.play('gem_collect.wav');
           }
         } else if (c is UpObstacle || c is Bullet) {
           PositionComponent b = c as PositionComponent;
@@ -322,7 +324,10 @@ class MyGame extends BaseGame {
               player.angle = 3 * math.PI / 2;
             }
             player.velocity = new Point(0.0, 0.0);
-            player.state = 'dead';
+            if (!player.dead()) {
+              player.state = 'dead';
+              Flame.audio.play('death.wav');
+            }
           }
         }
       });
