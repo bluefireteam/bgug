@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:audioplayers/audioplayer.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/position.dart';
@@ -214,6 +215,7 @@ class MyGame extends BaseGame {
   bool _running = false;
   int points = 0;
   int lastGeneratedSector = 0;
+  AudioPlayer music;
 
   bool isRunning() {
     return this._running;
@@ -221,6 +223,9 @@ class MyGame extends BaseGame {
 
   void setRunning(bool running) {
     this._running = running;
+    if (!_running) {
+      music?.stop();
+    }
   }
 
   void start() {
@@ -240,6 +245,7 @@ class MyGame extends BaseGame {
     add(new Gem(500.0, (size) => size.height - BAR_SIZE - 0.9 * tenth(size)));
 
     _running = true;
+    Flame.audio.loop('music.wav').then((player) => music = player);
   }
 
   generateSector(int sector) {

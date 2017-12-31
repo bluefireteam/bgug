@@ -26,6 +26,7 @@ flutter:
    - assets/audio/jump.wav
    - assets/audio/laser_load.wav
    - assets/audio/laser_shoot.wav
+   - assets/audio/music.wav
   fonts:
     - family: Blox2
       fonts:
