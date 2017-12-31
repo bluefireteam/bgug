@@ -108,8 +108,12 @@ class Shooter extends SpriteComponent {
       moveUp(dt, -SPEED);
     } else if (action == 'moveDown') {
       moveDown(dt, SPEED);
-    } else if (action == 'shoot') {
-      // shoot animation?
+    }
+
+    if (y < yi) {
+      y = yi;
+    } else if (y > yf) {
+      y = yf;
     }
   }
 

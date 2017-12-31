@@ -366,7 +366,7 @@ class MyGame extends BaseGame {
   }
 
   void cameraFollow(Player c) {
-    camera.x = c.x - size.width / 2 + c.width / 2;
+    camera.x = c.x - size.width / 2 + c.width / 2 + size.width / 4;
     if (camera.x < 0.0) {
       camera.x = 0.0;
     } else if (camera.x > WORLD_SIZE - size.width) {
