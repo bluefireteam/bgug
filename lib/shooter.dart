@@ -148,7 +148,7 @@ class Shooter extends SpriteComponent {
     if (action == 'shooting') {
       action = 'shoot';
       Flame.audio.play('laser_shoot.wav');
-    } else if (random.nextDouble() < 0.25) {
+    } else if (random.nextDouble() < 0.2) {
       action = 'shooting';
       shooting.lifeTime = 0.0;
       Flame.audio.play('laser_load.wav');

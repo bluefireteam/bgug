@@ -96,15 +96,16 @@ class Top extends SpriteComponent {
 
 class Gem extends SpriteComponent {
   bool collected = false;
+  double Function(Size) yGen;
 
-  Gem(double x, double y) : super.fromSprite(1.0, 1.0, new Sprite('gem.png')) {
+  Gem(double x, this.yGen) : super.fromSprite(1.0, 1.0, new Sprite('gem.png')) {
     this.x = x;
-    this.y = y;
   }
 
   @override
   void resize(Size size) {
     this.width = this.height = 0.8 * tenth(size);
+    this.y = yGen(size);
   }
 
   void collect() {
@@ -212,7 +213,7 @@ class MyGame extends BaseGame {
   static const double WORLD_SIZE = 20000.0;
   bool _running = false;
   int points = 0;
-  int lastGeneratedSector = -1;
+  int lastGeneratedSector = 0;
 
   bool isRunning() {
     return this._running;
@@ -235,19 +236,39 @@ class MyGame extends BaseGame {
     add(new Block(0));
     add(new Block(7));
 
+    // sector 0
+    add(new Gem(500.0, (size) => size.height - BAR_SIZE - 0.9 * tenth(size)));
+
     _running = true;
   }
 
   generateSector(int sector) {
     double start = sector * SECTOR_LENGTH;
 
+    List<SpriteComponent> stuffSoFar = new List();
     for (int i = random.nextInt(4); i > 0; i--) {
       var x = start + random.nextInt(1000);
-      add(random.nextBool() ? new Obstacle(x) : new UpObstacle(x));
+      var obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
+      if (stuffSoFar.any((box) => box.toRect().overlaps(obstacle.toRect()) || (box.x - obstacle.x).abs() < 20.0)) {
+        if (random.nextBool()) {
+          i++;
+        }
+        continue;
+      }
+      stuffSoFar.add(obstacle);
+      add(obstacle);
     }
     for (int i = random.nextInt(6); i > 0; i--) {
       var x = start + random.nextInt(1000);
-      add(new Gem(x, BAR_SIZE + random.nextInt(8) * tenth(size)));
+      var gem = new Gem(x, (size) => BAR_SIZE + random.nextInt(8) * tenth(size));
+      if (stuffSoFar.any((box) => box.toRect().overlaps(gem.toRect()))) {
+        if (random.nextBool()) {
+          i++;
+        }
+        continue;
+      }
+      stuffSoFar.add(gem);
+      add(gem);
     }
   }
 
