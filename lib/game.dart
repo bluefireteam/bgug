@@ -288,7 +288,7 @@ class MyGame extends BaseGame {
 
   void input(Position p, int dt) {
     final player = getPlayer();
-    if (player != null) {
+    if (p != null && player != null) {
       if (player.dead()) {
         setRunning(false);
       } else {

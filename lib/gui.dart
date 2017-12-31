@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flame/flame.dart';
 import 'package:flame/position.dart';
 import 'package:flutter/gestures.dart';
@@ -36,10 +38,17 @@ class MyGameBinder extends MyGame {
 class _HomeScreenState extends State<HomeScreen> {
   MyGame game;
 
+  bool loading = true;
   int lastTimestamp;
   Position lastPost;
 
   _HomeScreenState() {
+    var ps = [
+      Flame.audio.loadAll([ 'death.wav', 'gem_collect.wav', 'jump.wav', 'laser_load.wav', 'laser_shoot.wav', 'music.wav' ]).then((audios) => print('Done loading ' + audios.length.toString() + ' audios.')),
+      Flame.images.loadAll([ 'base.png', 'bg.png', 'block.png', 'bullet.png', 'gem.png', 'obstacle.png', 'player.png', 'shooter.png' ]).then((images) => print('Done loading ' + images.length.toString() + ' images.')),
+    ];
+    Future.wait(ps).then((rs) => this.setState(() => loading = false));
+
     Flame.util.addGestureRecognizer(new TapGestureRecognizer()
       ..onTapDown = (TapDownDetails details) {
         lastPost =
@@ -47,9 +56,16 @@ class _HomeScreenState extends State<HomeScreen> {
         lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
       }
       ..onTapUp = (TapUpDetails details) {
+        if (lastTimestamp == null || lastPost == null) {
+          return;
+        }
         int dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
+        if (dt > 3000) {
+          dt = 3000;
+        }
         if (this.game != null && this.game.isRunning()) {
           this.game.input(lastPost, dt);
+          lastTimestamp = lastPost = null;
         }
       });
   }
@@ -60,6 +76,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (loading) {
+      return new Center(child: new Text('Loading...'));
+    }
+
     if (game != null) {
       if (game.isRunning()) {
         return this.game.widget;
