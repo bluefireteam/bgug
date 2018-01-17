@@ -4,6 +4,7 @@ description: Break Guns Using Blocks!
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: 0.3.1
   flame:
     path: ../../flame
 

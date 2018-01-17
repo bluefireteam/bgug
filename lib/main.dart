@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'gui.dart';
+import 'options_gui.dart';
 
 main() async {
   Flame.audio.disableLog();
@@ -11,6 +12,9 @@ main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
 
   runApp(new MaterialApp(
-      home: new Scaffold(body: new HomeScreen())
+    home: new HomeScreen(),
+    routes: {
+      '/options': (BuildContext ctx) => new OptionsWidget(),
+    },
   ));
 }
