@@ -100,43 +100,41 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    return new Scaffold(
-      body: new Container(
-        decoration: new BoxDecoration(
-          image: new DecorationImage(
-            image: new AssetImage('assets/images/bg.png'),
-            fit: BoxFit.fill,
-          ),
+    return new Container(
+      decoration: new BoxDecoration(
+        image: new DecorationImage(
+          image: new AssetImage('assets/images/bg.png'),
+          fit: BoxFit.fill,
         ),
-        child: new Center(
-          child: new Row(
-            children: [
-              new Column(
-                children: [
-                  pad(new Text('BLOCK', style: title), 2.0),
-                  pad(new Text('guns', style: title), 2.0),
-                  pad(new Text('USING', style: title), 2.0),
-                  pad(new Text('gems', style: title), 2.0),
-                ],
-                mainAxisAlignment: MainAxisAlignment.center,
-              ),
-              new Column(
-                children: [
-                  btn('Start', () {
-                    MyGame game = new MyGameBinder(this);
-                    game.start();
-                    setState(() => this.game = game);
-                  }),
-                  btn('Score', () => print('clicked score!')),
-                  btn('Options',
-                      () => Navigator.of(context).pushNamed('/options')),
-                  btn('Exit', () => SystemNavigator.pop()),
-                ],
-                mainAxisAlignment: MainAxisAlignment.center,
-              ),
-            ],
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          ),
+      ),
+      child: new Center(
+        child: new Row(
+          children: [
+            new Column(
+              children: [
+                pad(new Text('BLOCK', style: title), 2.0),
+                pad(new Text('guns', style: title), 2.0),
+                pad(new Text('USING', style: title), 2.0),
+                pad(new Text('gems', style: title), 2.0),
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
+            new Column(
+              children: [
+                btn('Start', () {
+                  MyGame game = new MyGameBinder(this);
+                  game.start();
+                  setState(() => this.game = game);
+                }),
+                btn('Score', () => print('clicked score!')),
+                btn('Options',
+                    () => Navigator.of(context).pushNamed('/options')),
+                btn('Exit', () => SystemNavigator.pop()),
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
+          ],
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         ),
       ),
     );

@@ -12,9 +12,9 @@ main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
 
   runApp(new MaterialApp(
-    home: new HomeScreen(),
+    home: new Scaffold(body: new HomeScreen()),
     routes: {
-      '/options': (BuildContext ctx) => new OptionsWidget(),
+      '/options': (BuildContext ctx) => new Scaffold(body: new OptionsWidget()),
     },
   ));
 }

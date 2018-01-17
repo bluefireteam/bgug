@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Options {
   double bulletSpeed;
@@ -10,20 +10,22 @@ class Options {
     return {"bulletSpeed": bulletSpeed};
   }
 
-  Options();
+  Options() {
+    this.bulletSpeed = 2.0;
+  }
 
   Options.fromMap(Map map) {
     bulletSpeed = map["bulletSpeed"];
   }
 
   Future save() async {
-//    SharedPreferences prefs = await SharedPreferences.getInstance();
-//    prefs.setString("options", JSON.encode(toMap()));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("options", JSON.encode(toMap()));
   }
 
   static Future<Options> fetch() async {
-//    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String json = null; // prefs.getString("options");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String json = prefs.getString("options");
     if (json == null) {
       return new Options();
     }
