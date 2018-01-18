@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'options.dart';
+import 'score.dart';
 import 'game.dart';
 import 'gui_commons.dart';
 
@@ -25,7 +26,12 @@ class MyGameBinder extends MyGame {
   void setRunning(bool running) {
     super.setRunning(running);
     if (this.state != null) {
-      this.state.redraw();
+      (() async {
+        if (!running) {
+          await this.state.addToScore('Score: ' + points.toString());
+        }
+        this.state.redraw();
+      })();
     }
   }
 }
@@ -81,6 +87,12 @@ class _HomeScreenState extends State<HomeScreen> {
           lastTimestamp = lastPost = null;
         }
       });
+  }
+
+  addToScore(String newScore) async {
+    Score score = await Score.fetch();
+    score.scores.add(newScore);
+    score.save();
   }
 
   redraw() {
