@@ -19,7 +19,7 @@ import 'background.dart' as bg;
 
 class Button extends SpriteComponent {
   static const MARGIN = 4.0;
-  int cost = 7;
+  int cost = 1; // 15
   bool active = false;
 
   Button() : super.square(64.0, 'button.png');
@@ -31,7 +31,7 @@ class Button extends SpriteComponent {
   int click(int points) {
     if (active) {
       int currentCost = cost;
-      cost += 5;
+      cost += 1; // 5
       return currentCost;
     }
     return 0;
@@ -46,10 +46,9 @@ class Button extends SpriteComponent {
         toUpperCaseNumber(cost.toString()),
         fontFamily: 'Blox2',
         fontSize: 32.0,
-        color: active ? material.Colors.green : material.Colors.blueGrey,
-        textAlign: TextAlign.center,
+        color: active ? material.Colors.green : material.Colors.blueGrey
       );
-      tp.paint(canvas, new Offset(32.0, 32.0));
+      tp.paint(canvas, new Offset(32.0 - tp.width / 2, 32.0));
     }
   }
 
@@ -277,11 +276,23 @@ class MyGame extends BaseGame {
   int _points = 0;
   int lastGeneratedSector = 0;
   AudioPlayer music;
+  int _currentSlot;
 
   int get points => _points;
   set points(int points) {
     _points = points;
     button.evaluate(points);
+  }
+
+  int get currentSlot => _currentSlot;
+  set currentSlot(int currentSlot) {
+    _currentSlot = currentSlot;
+    getShooters().forEach((shooter) {
+      shooter.currentSlot = currentSlot;
+      if (size != null) {
+        shooter.resize(size);
+      }
+    });
   }
 
   MyGame(this.options);
@@ -307,8 +318,8 @@ class MyGame extends BaseGame {
     add(new ShooterCane());
     add(new Shooter('up'));
     add(new Shooter('down'));
-    add(new Block(0));
-    add(new Block(7));
+    add(new Block(currentSlot = Block.nextSlot(-1)));
+    add(new Block(currentSlot = Block.nextSlot(currentSlot)));
 
     // sector 0
     add(new Gem(500.0, (size) => size.height - BAR_SIZE - 0.9 * tenth(size)));
@@ -374,7 +385,7 @@ class MyGame extends BaseGame {
           int dPoint = button.click(points);
           if (dPoint != 0) {
             points -= dPoint;
-            Flame.audio.play('death.wav');
+            add(new Block(currentSlot = Block.nextSlot(currentSlot)));
           }
         } else if (p.x > size.width / 2) {
           player.jump(dt);

@@ -80,6 +80,7 @@ class Shooter extends SpriteComponent {
   double clock = 0.0;
   String action;
   bool down = true;
+  int currentSlot;
 
   Animation shooting = new Animation.sequenced('shooter.png', 2, textureWidth: 32.0, textureX: 32.0);
 
@@ -177,12 +178,12 @@ class Shooter extends SpriteComponent {
     height = step;
     action = '';
     if (kind == 'up') {
-      yi = BAR_SIZE + step;
+      yi = BAR_SIZE + step * Block.minUp(currentSlot);
       yf = BAR_SIZE + step * 3;
       y = yi;
     } else {
       yi = BAR_SIZE + step * 4;
-      yf = BAR_SIZE + step * 6;
+      yf = BAR_SIZE + step * Block.maxDown(currentSlot);
       y = yf;
     }
   }
@@ -194,6 +195,39 @@ class Shooter extends SpriteComponent {
 }
 
 class Block extends SpriteComponent {
+
+  static int minUp(int currentSlot) {
+    if (currentSlot <= 0 || currentSlot == 7) {
+      return 1;
+    } else if (currentSlot == 1 || currentSlot == 6) {
+      return 2;
+    } else {
+      return 3;
+    }
+  }
+
+  static int maxDown(int currentSlot) {
+    if (currentSlot <= 0 || currentSlot == 7 || currentSlot == 1) {
+      return 6;
+    } else if (currentSlot == 6 || currentSlot == 2) {
+      return 5;
+    } else {
+      return 4;
+    }
+  }
+
+  static int nextSlot(int currentSlot) {
+    const Map<int, int> MAP = const {
+      -1: 0,
+      0: 7,
+      7: 1,
+      1: 6,
+      6: 2,
+      2: 5,
+      5: 3
+    };
+    return MAP[currentSlot];
+  }
 
   int slot;
 
