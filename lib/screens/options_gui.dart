@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../options.dart';
 import 'gui_commons.dart';
-import 'options.dart';
 
 class OptionsScreen extends StatefulWidget {
   @override

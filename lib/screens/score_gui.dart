@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'score.dart';
+import '../score.dart';
 import 'gui_commons.dart';
 
 class ScoreScreen extends StatefulWidget {

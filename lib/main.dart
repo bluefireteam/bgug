@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import 'gui.dart';
-import 'options_gui.dart';
-import 'score_gui.dart';
+import 'package:bgug/screens/home_gui.dart';
+import 'package:bgug/screens/options_gui.dart';
+import 'package:bgug/screens/score_gui.dart';
 
 main() async {
   Flame.audio.disableLog();

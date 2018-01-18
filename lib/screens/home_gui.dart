@@ -7,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'options.dart';
-import 'score.dart';
-import 'game.dart';
+import '../options.dart';
+import '../score.dart';
+import '../game.dart';
 import 'gui_commons.dart';
 
 class HomeScreen extends StatefulWidget {
