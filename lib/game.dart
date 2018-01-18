@@ -13,6 +13,7 @@ import 'package:flutter/material.dart' as material;
 import 'math_util.dart';
 import 'constants.dart';
 import 'shooter.dart';
+import 'options.dart';
 
 import 'background.dart' as bg;
 
@@ -211,11 +212,14 @@ class Player extends PositionComponent {
 }
 
 class MyGame extends BaseGame {
+  Options options;
   static const double WORLD_SIZE = 20000.0;
   bool _running = false;
   int points = 0;
   int lastGeneratedSector = 0;
   AudioPlayer music;
+
+  MyGame(this.options);
 
   bool isRunning() {
     return this._running;
@@ -325,7 +329,7 @@ class MyGame extends BaseGame {
 
     getShooters().forEach((shooter) {
       if (shooter.shoot()) {
-        add(new Bullet(size, shooter.toPosition().add(camera)));
+        add(new Bullet(options.bulletSpeed, size, shooter.toPosition().add(camera)));
       }
     });
 

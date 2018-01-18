@@ -11,7 +11,7 @@ class Options {
   }
 
   Options() {
-    this.bulletSpeed = 2.0;
+    this.bulletSpeed = 500.0;
   }
 
   Options.fromMap(Map map) {

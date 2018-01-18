@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'options.dart';
 import 'game.dart';
 import 'gui_commons.dart';
 
@@ -18,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 class MyGameBinder extends MyGame {
   _HomeScreenState state;
 
-  MyGameBinder(this.state);
+  MyGameBinder(this.state, Options options) : super(options);
 
   @override
   void setRunning(bool running) {
@@ -121,8 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             new Column(
               children: [
-                btn('Start', () {
-                  MyGame game = new MyGameBinder(this);
+                btn('Start', () async {
+                  MyGame game = new MyGameBinder(this, await Options.fetch());
                   game.start();
                   setState(() => this.game = game);
                 }),

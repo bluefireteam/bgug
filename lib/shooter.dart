@@ -13,10 +13,11 @@ import 'constants.dart';
 math.Random random = new math.Random();
 
 class Bullet extends AnimationComponent {
-  static const double FRAC = 8.0 / 46.0;
-  static const double SPEED = 500.0;
 
-  Bullet(Size size, Position p) : super.byAnimation(new Animation.sequenced('bullet.png', 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
+  static const double FRAC = 8.0 / 46.0;
+  double speed;
+
+  Bullet(this.speed, Size size, Position p) : super.byAnimation(new Animation.sequenced('bullet.png', 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
     this.width = this.height = (1.0 - 2 * FRAC) * tenth(size);
     this.x = p.x - this.width + 7.0;
     this.y = p.y + FRAC * tenth(size);
@@ -25,7 +26,7 @@ class Bullet extends AnimationComponent {
   @override
   void update(double dt) {
     super.update(dt);
-    this.x -= SPEED * dt;
+    this.x -= speed * dt;
   }
 
   @override
