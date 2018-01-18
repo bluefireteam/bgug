@@ -10,6 +10,8 @@ class OptionsWidget extends StatefulWidget {
 }
 
 class _OptionsState extends State<OptionsWidget> {
+
+  final TextEditingController _controller = new TextEditingController();
   Options options;
 
   _OptionsState() {
@@ -33,13 +35,14 @@ class _OptionsState extends State<OptionsWidget> {
         ),
       ),
       child: new Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          new Column(
+          new Expanded(
+              child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               pad(new Text('OpTiOnS', style: title), 20.0),
               btn('Save', () {
+                options.bulletSpeed = double.parse(_controller.text);
                 options.save().then((a) {
                   Navigator.of(context).pop();
                 });
@@ -48,17 +51,24 @@ class _OptionsState extends State<OptionsWidget> {
                 Navigator.of(context).pop();
               }),
             ],
-          ),
-          new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              new Row(
-                children: [
-                  new Text('Bullet Speed', style: text),
-                  new Text(options.bulletSpeed.toString(), style: text),
-                ],
+          )),
+          new Expanded(
+            child: new Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: new Form(
+                child: new Column(
+                  children: [
+                    new TextFormField(
+                      decoration:
+                          new InputDecoration(labelText: 'Bullet Speed'),
+                      controller: _controller,
+                      validator: (v) => double.parse(v, (v) => null) == null ? 'Must be a double!' : null,
+                      initialValue: options.bulletSpeed.toString(),
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
         ],
       ),
