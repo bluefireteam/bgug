@@ -4,12 +4,12 @@ import 'package:flutter/widgets.dart';
 import 'gui_commons.dart';
 import 'options.dart';
 
-class OptionsWidget extends StatefulWidget {
+class OptionsScreen extends StatefulWidget {
   @override
-  State<OptionsWidget> createState() => new _OptionsState();
+  State<OptionsScreen> createState() => new _OptionsState();
 }
 
-class _OptionsState extends State<OptionsWidget> {
+class _OptionsState extends State<OptionsScreen> {
 
   final TextEditingController _controller = new TextEditingController();
   Options options;

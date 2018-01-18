@@ -127,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   game.start();
                   setState(() => this.game = game);
                 }),
-                btn('Score', () => print('clicked score!')),
+                btn('Score', () => Navigator.of(context).pushNamed('/score')),
                 btn('Options',
                     () => Navigator.of(context).pushNamed('/options')),
                 btn('Exit', () => SystemNavigator.pop()),
