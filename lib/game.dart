@@ -10,15 +10,62 @@ import 'package:flame/game.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart' as material;
 
-import 'math_util.dart';
+import 'util.dart';
 import 'constants.dart';
 import 'shooter.dart';
 import 'options.dart';
 
 import 'background.dart' as bg;
 
-class Background extends SpriteComponent {
+class Button extends SpriteComponent {
+  static const MARGIN = 4.0;
+  int cost = 7;
+  bool active = false;
 
+  Button() : super.square(64.0, 'button.png');
+
+  void evaluate(int points) {
+    active = points >= cost;
+  }
+
+  int click(int points) {
+    if (active) {
+      int currentCost = cost;
+      cost += 5;
+      return currentCost;
+    }
+    return 0;
+  }
+
+  @override
+  render(Canvas canvas) {
+    if (sprite != null && sprite.loaded() && x != null && y != null) {
+      prepareCanvas(canvas);
+      sprite.render(canvas, width, height);
+      material.TextPainter tp = Flame.util.text(
+        toUpperCaseNumber(cost.toString()),
+        fontFamily: 'Blox2',
+        fontSize: 32.0,
+        color: active ? material.Colors.green : material.Colors.blueGrey,
+        textAlign: TextAlign.center,
+      );
+      tp.paint(canvas, new Offset(32.0, 32.0));
+    }
+  }
+
+  @override
+  void resize(Size size) {
+    x = MARGIN;
+    y = MARGIN;
+  }
+
+  @override
+  bool isHud() {
+    return true;
+  }
+}
+
+class Background extends SpriteComponent {
   static const SPEED = 50.0;
   Position speed;
 
@@ -27,15 +74,20 @@ class Background extends SpriteComponent {
     this.width = size.width;
     this.height = size.height;
     this.x = this.y = 0.0;
-    this.sprite = new Sprite.fromImage(bg.generate(this.width.toInt() ~/ 4, this.height.toInt() ~/ 4));
-    this.speed = new Position(SPEED, 0.0).rotate(random.nextDouble() * 2 * math.PI);
+    this.sprite = new Sprite.fromImage(
+        bg.generate(this.width.toInt() ~/ 4, this.height.toInt() ~/ 4));
+    this.speed =
+        new Position(SPEED, 0.0).rotate(random.nextDouble() * 2 * math.PI);
   }
 
   @override
   void render(Canvas c) {
-    Flame.util.drawWhere(c, new Position(x - width, y - height), (c) => sprite.render(c, width, height));
-    Flame.util.drawWhere(c, new Position(x, y - height), (c) => sprite.render(c, width, height));
-    Flame.util.drawWhere(c, new Position(x - width, y), (c) => sprite.render(c, width, height));
+    Flame.util.drawWhere(c, new Position(x - width, y - height),
+        (c) => sprite.render(c, width, height));
+    Flame.util.drawWhere(
+        c, new Position(x, y - height), (c) => sprite.render(c, width, height));
+    Flame.util.drawWhere(
+        c, new Position(x - width, y), (c) => sprite.render(c, width, height));
     super.render(c);
   }
 
@@ -55,7 +107,8 @@ class Background extends SpriteComponent {
 }
 
 class UpObstacle extends SpriteComponent {
-  UpObstacle(double x) : super.fromSprite(48.0, 48.0, new Sprite('obstacle.png')) {
+  UpObstacle(double x)
+      : super.fromSprite(48.0, 48.0, new Sprite('obstacle.png')) {
     this.x = x;
     this.y = BAR_SIZE;
   }
@@ -77,7 +130,8 @@ class Obstacle extends UpObstacle {
 }
 
 class Floor extends SpriteComponent {
-  Floor(double width) : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png')) {
+  Floor(double width)
+      : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png')) {
     x = 0.0;
     this.width = width;
   }
@@ -124,7 +178,7 @@ const GRAVITY_IMPULSE = 1875.0;
 
 class Player extends PositionComponent {
   Map<String, Animation> animations;
-  Point velocity = new Point(320.0, 0.0);
+  Position velocity = new Position(320.0, 0.0);
   Impulse jumpImpulse = new Impulse(-15000.0);
   Impulse diveImpulse = new Impulse(20000.0);
   double y0, yf, worldSize;
@@ -134,8 +188,12 @@ class Player extends PositionComponent {
     this.x = x;
 
     animations = new Map<String, Animation>();
-    animations['running'] = new Animation.sequenced('player.png', 8, textureWidth: 16.0, textureHeight: 18.0)..stepTime = 0.0375;
-    animations['dead'] = new Animation.sequenced('player.png', 3, textureWidth: 16.0, textureHeight: 18.0, textureX: 16.0 * 8)..stepTime = 0.075;
+    animations['running'] = new Animation.sequenced('player.png', 8,
+        textureWidth: 16.0, textureHeight: 18.0)
+      ..stepTime = 0.0375;
+    animations['dead'] = new Animation.sequenced('player.png', 3,
+        textureWidth: 16.0, textureHeight: 18.0, textureX: 16.0 * 8)
+      ..stepTime = 0.075;
     state = 'running';
   }
 
@@ -192,7 +250,7 @@ class Player extends PositionComponent {
   @override
   void resize(Size size) {
     height = tenth(size);
-    width = 48.0/54.0 * height;
+    width = 48.0 / 54.0 * height;
     y = y0 = size.height - height - BAR_SIZE;
     yf = BAR_SIZE;
   }
@@ -212,12 +270,19 @@ class Player extends PositionComponent {
 }
 
 class MyGame extends BaseGame {
+  Button button;
   Options options;
   static const double WORLD_SIZE = 20000.0;
   bool _running = false;
-  int points = 0;
+  int _points = 0;
   int lastGeneratedSector = 0;
   AudioPlayer music;
+
+  int get points => _points;
+  set points(int points) {
+    _points = points;
+    button.evaluate(points);
+  }
 
   MyGame(this.options);
 
@@ -248,6 +313,8 @@ class MyGame extends BaseGame {
     // sector 0
     add(new Gem(500.0, (size) => size.height - BAR_SIZE - 0.9 * tenth(size)));
 
+    add(button = new Button());
+
     _running = true;
     Flame.audio.loop('music.wav').then((player) => music = player);
   }
@@ -259,7 +326,9 @@ class MyGame extends BaseGame {
     for (int i = random.nextInt(4); i > 0; i--) {
       var x = start + random.nextInt(1000);
       var obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
-      if (stuffSoFar.any((box) => box.toRect().overlaps(obstacle.toRect()) || (box.x - obstacle.x).abs() < 20.0)) {
+      if (stuffSoFar.any((box) =>
+          box.toRect().overlaps(obstacle.toRect()) ||
+          (box.x - obstacle.x).abs() < 20.0)) {
         if (random.nextBool()) {
           i++;
         }
@@ -270,7 +339,8 @@ class MyGame extends BaseGame {
     }
     for (int i = random.nextInt(6); i > 0; i--) {
       var x = start + random.nextInt(1000);
-      var gem = new Gem(x, (size) => BAR_SIZE + random.nextInt(8) * tenth(size));
+      var gem =
+          new Gem(x, (size) => BAR_SIZE + random.nextInt(8) * tenth(size));
       if (stuffSoFar.any((box) => box.toRect().overlaps(gem.toRect()))) {
         if (random.nextBool()) {
           i++;
@@ -283,11 +353,15 @@ class MyGame extends BaseGame {
   }
 
   Player getPlayer() {
-    return components.firstWhere((c) => c is Player, orElse: () => null) as Player;
+    return components.firstWhere((c) => c is Player, orElse: () => null)
+        as Player;
   }
 
   Set<Shooter> getShooters() {
-    return components.where((c) => c is Shooter).map((c) => c as Shooter).toSet();
+    return components
+        .where((c) => c is Shooter)
+        .map((c) => c as Shooter)
+        .toSet();
   }
 
   void input(Position p, int dt) {
@@ -296,7 +370,13 @@ class MyGame extends BaseGame {
       if (player.dead()) {
         setRunning(false);
       } else {
-        if (p.x > size.width / 2) {
+        if (button.toRect().contains(p.toOffset())) {
+          int dPoint = button.click(points);
+          if (dPoint != 0) {
+            points -= dPoint;
+            Flame.audio.play('death.wav');
+          }
+        } else if (p.x > size.width / 2) {
           player.jump(dt);
         } else {
           player.dive();
@@ -308,8 +388,10 @@ class MyGame extends BaseGame {
   @override
   void render(Canvas c) {
     super.render(c);
-    material.TextPainter tp = Flame.util.text(points.toString(), fontFamily: 'Blox2', fontSize: 32.0, color: material.Colors.green);
-    tp.paint(c, new Offset(size.width - tp.width - 8.0, size.height - tp.height - 8.0));
+    material.TextPainter tp = Flame.util.text(points.toString(),
+        fontFamily: 'Blox2', fontSize: 32.0, color: material.Colors.green);
+    tp.paint(c,
+        new Offset(size.width - tp.width - 8.0, size.height - tp.height - 8.0));
   }
 
   @override
@@ -320,7 +402,8 @@ class MyGame extends BaseGame {
 
     Player player = getPlayer();
 
-    while (player.x + 2 * SECTOR_LENGTH >= SECTOR_LENGTH * lastGeneratedSector) {
+    while (
+        player.x + 2 * SECTOR_LENGTH >= SECTOR_LENGTH * lastGeneratedSector) {
       lastGeneratedSector++;
       generateSector(lastGeneratedSector);
     }
@@ -329,7 +412,8 @@ class MyGame extends BaseGame {
 
     getShooters().forEach((shooter) {
       if (shooter.shoot()) {
-        add(new Bullet(options.bulletSpeed, size, shooter.toPosition().add(camera)));
+        add(new Bullet(
+            options.bulletSpeed, size, shooter.toPosition().add(camera)));
       }
     });
 
@@ -345,7 +429,8 @@ class MyGame extends BaseGame {
         } else if (c is UpObstacle || c is Bullet) {
           PositionComponent b = c as PositionComponent;
           if (b.toRect().overlaps(playerRect)) {
-            if (b is Bullet || player.velocity.x.abs() >= player.velocity.y.abs()) {
+            if (b is Bullet ||
+                player.velocity.x.abs() >= player.velocity.y.abs()) {
               player.x = b.x - player.width;
             } else if (player.y > size.height / 2) {
               player.y = b.y - player.height;
@@ -354,7 +439,7 @@ class MyGame extends BaseGame {
               player.y = b.y + b.height;
               player.angle = 3 * math.PI / 2;
             }
-            player.velocity = new Point(0.0, 0.0);
+            player.velocity = new Position(0.0, 0.0);
             if (!player.dead()) {
               player.state = 'dead';
               Flame.audio.play('death.wav');
