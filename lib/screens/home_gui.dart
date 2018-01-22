@@ -1,15 +1,11 @@
 import 'dart:async';
 
 import 'package:flame/flame.dart';
-import 'package:flame/position.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import '../options.dart';
 import '../score.dart';
-import '../game.dart';
 import 'gui_commons.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,31 +13,8 @@ class HomeScreen extends StatefulWidget {
   State<StatefulWidget> createState() => new _HomeScreenState();
 }
 
-class MyGameBinder extends MyGame {
-  _HomeScreenState state;
-
-  MyGameBinder(this.state, Options options) : super(options);
-
-  @override
-  void setRunning(bool running) {
-    super.setRunning(running);
-    if (this.state != null) {
-      (() async {
-        if (!running) {
-          await this.state.addToScore(score());
-        }
-        this.state.redraw();
-      })();
-    }
-  }
-}
-
 class _HomeScreenState extends State<HomeScreen> {
-  MyGame game;
-
   bool loading = true;
-  int lastTimestamp;
-  Position lastPost;
 
   _HomeScreenState() {
     var ps = [
@@ -67,26 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
           print('Done loading ' + images.length.toString() + ' images.')),
     ];
     Future.wait(ps).then((rs) => this.setState(() => loading = false));
-
-    Flame.util.addGestureRecognizer(new TapGestureRecognizer()
-      ..onTapDown = (TapDownDetails details) {
-        lastPost =
-            new Position(details.globalPosition.dx, details.globalPosition.dy);
-        lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
-      }
-      ..onTapUp = (TapUpDetails details) {
-        if (lastTimestamp == null || lastPost == null) {
-          return;
-        }
-        int dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
-        if (dt > 3000) {
-          dt = 3000;
-        }
-        if (this.game != null && this.game.isRunning()) {
-          this.game.input(lastPost, dt);
-          lastTimestamp = lastPost = null;
-        }
-      });
   }
 
   addToScore(String newScore) async {
@@ -103,14 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (loading) {
       return new Center(child: new Text('Loading...'));
-    }
-
-    if (game != null) {
-      if (game.isRunning()) {
-        return this.game.widget;
-      } else {
-        setState(() => this.game = null);
-      }
     }
 
     return new Container(
@@ -134,11 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             new Column(
               children: [
-                btn('Start', () async {
-                  MyGame game = new MyGameBinder(this, await Options.fetch());
-                  game.start();
-                  setState(() => this.game = game);
-                }),
+                btn('Start', () => Navigator.of(context).pushNamed('/start')),
                 btn('Score', () => Navigator.of(context).pushNamed('/score')),
                 btn('Options',
                     () => Navigator.of(context).pushNamed('/options')),

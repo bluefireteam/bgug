@@ -2,20 +2,20 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:audioplayers/audioplayer.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/animation.dart';
-import 'package:flame/position.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart' as material;
 
-import 'util.dart';
-import 'constants.dart';
-import 'shooter.dart';
-import 'options.dart';
-
 import 'background.dart' as bg;
+import 'constants.dart';
+import 'game_mode.dart';
+import 'options.dart';
+import 'shooter.dart';
+import 'util.dart';
 
 class Button extends SpriteComponent {
   static const MARGIN = 4.0;
@@ -129,23 +129,34 @@ class Obstacle extends UpObstacle {
 }
 
 class Floor extends SpriteComponent {
-  Floor(double width)
-      : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png')) {
-    x = 0.0;
-    this.width = width;
+  Floor() : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png'));
+
+  @override
+  bool isHud() {
+    return true;
   }
 
   @override
-  void resize(Size size) {
+  resize(Size size) {
+    x = 0.0;
     y = size.height - BAR_SIZE;
+    width = size.width;
   }
 }
 
 class Top extends SpriteComponent {
-  Top(double width) : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png')) {
+  Top() : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png'));
+
+  @override
+  bool isHud() {
+    return true;
+  }
+
+  @override
+  resize(Size size) {
     x = 0.0;
     y = 0.0;
-    this.width = width;
+    width = size.width;
   }
 }
 
@@ -180,10 +191,10 @@ class Player extends PositionComponent {
   Position velocity = new Position(320.0, 0.0);
   Impulse jumpImpulse = new Impulse(-15000.0);
   Impulse diveImpulse = new Impulse(20000.0);
-  double y0, yf, worldSize;
+  double y0, yf;
   String state;
 
-  Player(double x, double y, this.worldSize) {
+  Player(double x, double y) {
     this.x = x;
 
     animations = new Map<String, Animation>();
@@ -242,11 +253,6 @@ class Player extends PositionComponent {
   }
 
   @override
-  bool destroy() {
-    return x > worldSize;
-  }
-
-  @override
   void resize(Size size) {
     height = tenth(size);
     width = 48.0 / 54.0 * height;
@@ -271,7 +277,7 @@ class Player extends PositionComponent {
 class MyGame extends BaseGame {
   Button button;
   Options options;
-  static const double WORLD_SIZE = 20000.0;
+  GameMode gameMode;
   bool _running = false;
   bool won = false;
   int _points = 0;
@@ -298,7 +304,9 @@ class MyGame extends BaseGame {
     });
   }
 
-  MyGame(this.options);
+  MyGame(this.gameMode, this.options) {
+    _start();
+  }
 
   bool isRunning() {
     return this._running;
@@ -311,18 +319,20 @@ class MyGame extends BaseGame {
     }
   }
 
-  void start() {
+  void _start() {
     add(new Background());
 
-    add(new Top(WORLD_SIZE));
-    add(new Floor(WORLD_SIZE));
-    add(new Player(0.0, 0.0, WORLD_SIZE));
+    add(new Top());
+    add(new Floor());
+    add(new Player(0.0, 0.0));
 
-    add(new ShooterCane());
-    add(new Shooter('up'));
-    add(new Shooter('down'));
-    add(new Block(currentSlot = Block.nextSlot(-1)));
-    add(new Block(currentSlot = Block.nextSlot(currentSlot)));
+    if (gameMode.hasGuns) {
+      add(new ShooterCane());
+      add(new Shooter('up'));
+      add(new Shooter('down'));
+      add(new Block(currentSlot = Block.nextSlot(-1)));
+      add(new Block(currentSlot = Block.nextSlot(currentSlot)));
+    }
 
     // sector 0
     add(new Gem(500.0, (size) => size.height - BAR_SIZE - 0.9 * tenth(size)));
@@ -389,7 +399,7 @@ class MyGame extends BaseGame {
           if (dPoint != 0) {
             points -= dPoint;
             currentSlot = Block.nextSlot(currentSlot);
-            if (currentSlot == Block.WIN) {
+            if (currentSlot == Block.WIN && !gameMode.gunRespawn) {
               won = true;
               setRunning(false);
             } else {
@@ -408,10 +418,21 @@ class MyGame extends BaseGame {
   @override
   void render(Canvas c) {
     super.render(c);
-    material.TextPainter tp = Flame.util.text(points.toString(),
-        fontFamily: 'Blox2', fontSize: 32.0, color: material.Colors.green);
-    tp.paint(c,
-        new Offset(size.width - tp.width - 8.0, size.height - tp.height - 8.0));
+    renderPoints(c);
+  }
+
+  void renderPoints(Canvas c) {
+    material.TextPainter tp = Flame.util.text(
+      points.toString(),
+      fontFamily: 'Blox2',
+      fontSize: 32.0,
+      color: material.Colors.green,
+    );
+    var where = new Offset(
+      size.width - tp.width - 8.0,
+      size.height - tp.height - 8.0,
+    );
+    tp.paint(c, where);
   }
 
   @override
@@ -469,6 +490,11 @@ class MyGame extends BaseGame {
       });
 
       cameraFollow(player);
+
+      if (gameMode.hasLimit && player.x >= gameMode.mapSize) {
+        won = true;
+        setRunning(false);
+      }
     } else {
       this.setRunning(false);
     }
@@ -478,8 +504,8 @@ class MyGame extends BaseGame {
     camera.x = c.x - size.width / 2 + c.width / 2 + size.width / 4;
     if (camera.x < 0.0) {
       camera.x = 0.0;
-    } else if (camera.x > WORLD_SIZE - size.width) {
-      camera.x = WORLD_SIZE - size.width;
+    } else if (gameMode.hasLimit && camera.x > gameMode.mapSize - size.width) {
+      camera.x = gameMode.mapSize - size.width;
     }
   }
 
