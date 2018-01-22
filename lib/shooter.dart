@@ -13,11 +13,13 @@ import 'constants.dart';
 math.Random random = new math.Random();
 
 class Bullet extends AnimationComponent {
-
   static const double FRAC = 8.0 / 46.0;
   double speed;
 
-  Bullet(this.speed, Size size, Position p) : super.byAnimation(new Animation.sequenced('bullet.png', 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
+  Bullet(this.speed, Size size, Position p)
+      : super.byAnimation(new Animation.sequenced('bullet.png', 3,
+            textureWidth: 16.0, textureHeight: 16.0)
+          ..stepTime = 0.075) {
     this.width = this.height = (1.0 - 2 * FRAC) * tenth(size);
     this.x = p.x - this.width + 7.0;
     this.y = p.y + FRAC * tenth(size);
@@ -31,7 +33,7 @@ class Bullet extends AnimationComponent {
 
   @override
   bool destroy() {
-    return this.x < - this.width;
+    return this.x < -this.width;
   }
 
   @override
@@ -41,7 +43,6 @@ class Bullet extends AnimationComponent {
 }
 
 class ShooterCane extends PositionComponent {
-
   static final Paint paint = new Paint()..color = const Color(0xFF626262);
 
   ShooterCane() {
@@ -71,7 +72,6 @@ class ShooterCane extends PositionComponent {
 }
 
 class Shooter extends SpriteComponent {
-
   static const double SPEED = 120.0;
 
   String kind;
@@ -81,10 +81,13 @@ class Shooter extends SpriteComponent {
   String action;
   bool down = true;
   int currentSlot;
+  bool _destroy = false;
 
-  Animation shooting = new Animation.sequenced('shooter.png', 2, textureWidth: 32.0, textureX: 32.0);
+  Animation shooting = new Animation.sequenced('shooter.png', 2,
+      textureWidth: 32.0, textureX: 32.0);
 
-  Shooter(this.kind) : super.fromSprite(32.0, 46.0, new Sprite('shooter.png', width: 32.0));
+  Shooter(this.kind)
+      : super.fromSprite(32.0, 46.0, new Sprite('shooter.png', width: 32.0));
 
   @override
   void render(Canvas c) {
@@ -144,7 +147,7 @@ class Shooter extends SpriteComponent {
     }
     var dy = dt * speed;
     if (currentBit + dy <= -step) {
-      dy = - step - currentBit;
+      dy = -step - currentBit;
       action = '';
     }
     y += dy;
@@ -178,12 +181,22 @@ class Shooter extends SpriteComponent {
     height = step;
     action = '';
     if (kind == 'up') {
-      yi = BAR_SIZE + step * Block.minUp(currentSlot);
+      var minUp = Block.minUp(currentSlot);
+      if (minUp == 3) {
+        // TODO Flame.audio.play('?') destruction audio
+        _destroy = true;
+      }
+      yi = BAR_SIZE + step * minUp;
       yf = BAR_SIZE + step * 3;
       y = yi;
     } else {
+      var maxDown = Block.maxDown(currentSlot);
+      if (maxDown == 4) {
+        // TODO Flame.audio.play('?') destruction audio
+        _destroy = true;
+      }
       yi = BAR_SIZE + step * 4;
-      yf = BAR_SIZE + step * Block.maxDown(currentSlot);
+      yf = BAR_SIZE + step * maxDown;
       y = yf;
     }
   }
@@ -192,10 +205,14 @@ class Shooter extends SpriteComponent {
   bool isHud() {
     return true;
   }
+
+  @override
+  bool destroy() {
+    return _destroy;
+  }
 }
 
 class Block extends SpriteComponent {
-
   static int minUp(int currentSlot) {
     if (currentSlot <= 0 || currentSlot == 7) {
       return 1;
@@ -216,6 +233,8 @@ class Block extends SpriteComponent {
     }
   }
 
+  static const int WIN = -2;
+
   static int nextSlot(int currentSlot) {
     const Map<int, int> MAP = const {
       -1: 0,
@@ -224,7 +243,9 @@ class Block extends SpriteComponent {
       1: 6,
       6: 2,
       2: 5,
-      5: 3
+      5: 3,
+      3: 4,
+      4: Block.WIN
     };
     return MAP[currentSlot];
   }

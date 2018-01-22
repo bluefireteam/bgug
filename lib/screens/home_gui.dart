@@ -28,7 +28,7 @@ class MyGameBinder extends MyGame {
     if (this.state != null) {
       (() async {
         if (!running) {
-          await this.state.addToScore('Score: ' + points.toString());
+          await this.state.addToScore(score());
         }
         this.state.redraw();
       })();

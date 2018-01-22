@@ -31,7 +31,7 @@ class Button extends SpriteComponent {
   int click(int points) {
     if (active) {
       int currentCost = cost;
-      cost += 1; // 5
+      cost += 0; // 5
       return currentCost;
     }
     return 0;
@@ -46,7 +46,7 @@ class Button extends SpriteComponent {
         toUpperCaseNumber(cost.toString()),
         fontFamily: 'Blox2',
         fontSize: 32.0,
-        color: active ? material.Colors.green : material.Colors.blueGrey
+        color: active ? material.Colors.green : material.Colors.blueGrey,
       );
       tp.paint(canvas, new Offset(32.0 - tp.width / 2, 32.0));
     }
@@ -273,18 +273,21 @@ class MyGame extends BaseGame {
   Options options;
   static const double WORLD_SIZE = 20000.0;
   bool _running = false;
+  bool won = false;
   int _points = 0;
   int lastGeneratedSector = 0;
   AudioPlayer music;
   int _currentSlot;
 
   int get points => _points;
+
   set points(int points) {
     _points = points;
     button.evaluate(points);
   }
 
   int get currentSlot => _currentSlot;
+
   set currentSlot(int currentSlot) {
     _currentSlot = currentSlot;
     getShooters().forEach((shooter) {
@@ -385,7 +388,13 @@ class MyGame extends BaseGame {
           int dPoint = button.click(points);
           if (dPoint != 0) {
             points -= dPoint;
-            add(new Block(currentSlot = Block.nextSlot(currentSlot)));
+            currentSlot = Block.nextSlot(currentSlot);
+            if (currentSlot == Block.WIN) {
+              won = true;
+              setRunning(false);
+            } else {
+              add(new Block(currentSlot));
+            }
           }
         } else if (p.x > size.width / 2) {
           player.jump(dt);
@@ -472,5 +481,12 @@ class MyGame extends BaseGame {
     } else if (camera.x > WORLD_SIZE - size.width) {
       camera.x = WORLD_SIZE - size.width;
     }
+  }
+
+  String score() {
+    return won
+        ? 'Won with ${points.toString()} points!'
+        : 'Lost with ${points
+        .toString()} points.';
   }
 }
