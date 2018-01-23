@@ -9,3 +9,4 @@ packages
 pubspec.lock
 .flutter-plugins
 *.iml
+google-services.json
