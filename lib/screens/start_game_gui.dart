@@ -1,11 +1,9 @@
-import 'package:flame/flame.dart';
-import 'package:flame/position.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../game.dart';
 import '../game_mode.dart';
+import '../main.dart';
 import '../options.dart';
 import '../score.dart';
 import 'gui_commons.dart';
@@ -36,33 +34,6 @@ class MyGameBinder extends MyGame {
 }
 
 class _StartGameScreenState extends State<StartGameScreen> {
-  MyGame game;
-
-  int lastTimestamp;
-  Position lastPost;
-
-  _StartGameScreenState() {
-    Flame.util.addGestureRecognizer(new TapGestureRecognizer()
-      ..onTapDown = (TapDownDetails details) {
-        lastPost =
-            new Position(details.globalPosition.dx, details.globalPosition.dy);
-        lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
-      }
-      ..onTapUp = (TapUpDetails details) {
-        if (lastTimestamp == null || lastPost == null) {
-          return;
-        }
-        int dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
-        if (dt > 3000) {
-          dt = 3000;
-        }
-        if (this.game != null && this.game.isRunning()) {
-          this.game.input(lastPost, dt);
-          lastTimestamp = lastPost = null;
-        }
-      });
-  }
-
   addToScore(String newScore) async {
     Score score = await Score.fetch();
     score.scores.add(newScore);
@@ -75,11 +46,12 @@ class _StartGameScreenState extends State<StartGameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (game != null) {
-      if (game.isRunning()) {
-        return this.game.widget;
+    if (Main.game != null) {
+      if (Main.game.isRunning()) {
+        return Main.game.widget;
       } else {
-        setState(() => this.game = null);
+        Main.game = null;
+        setState(() {});
       }
     }
 
@@ -118,7 +90,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
   }
 
   startGame(GameMode mode) async {
-    MyGame game = new MyGameBinder(this, mode, await Options.fetch());
-    setState(() => this.game = game);
+    Main.game = new MyGameBinder(this, mode, await Options.fetch());
+    setState(() {});
   }
 }

@@ -510,8 +510,6 @@ class MyGame extends BaseGame {
   }
 
   String score() {
-    return won
-        ? 'Won with ${points.toString()} points!'
-        : 'Lost with ${points.toString()} points.';
+    return gameMode.score(points, won);
   }
 }

@@ -48,7 +48,7 @@ class _ScoreState extends State<ScoreScreen> {
           new Expanded(
             child: new Padding(
               padding: const EdgeInsets.all(16.0),
-              child: new Column(
+              child: new ListView(
                 children: score.scores.map((s) => new Text(s)).toList(),
               ),
             ),
