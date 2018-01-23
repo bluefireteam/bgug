@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             new Column(
               children: [
-                btn('Start', () => Navigator.of(context).pushNamed('/start')),
+                btn('Play', () => Navigator.of(context).pushNamed('/start')),
                 btn('Score', () => Navigator.of(context).pushNamed('/score')),
                 btn('Options',
                     () => Navigator.of(context).pushNamed('/options')),

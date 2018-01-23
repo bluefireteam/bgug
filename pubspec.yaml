@@ -5,6 +5,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: 0.3.1
+  firebase_admob: 0.2.3
   flame:
     path: ../../flame
 

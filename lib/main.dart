@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'game.dart';
+import 'ads.dart';
 import 'screens/home_gui.dart';
 import 'screens/options_gui.dart';
 import 'screens/score_gui.dart';
@@ -16,6 +17,7 @@ class Main {
 }
 
 main() async {
+  Ad.startup();
   Flame.audio.disableLog();
   Flame.util.fullScreen();
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);

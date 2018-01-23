@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
+
+import 'package:flame/flame.dart';
 
 const MIN_SIZE = 45;
 const MAX_SIZE = 100;
@@ -22,6 +25,10 @@ class ImageBuilder {
   }
 
   void set(int x, int y, Color c) {
+    if (pixels.length <= x || pixels[x].length <= y) {
+      // don't draw out of range
+      return;
+    }
     pixels[x][y] = c;
     pixelMap.putIfAbsent(c, () => new List());
     pixelMap[c].add(new Offset(x.toDouble(), y.toDouble()));
@@ -33,10 +40,17 @@ class ImageBuilder {
 
   Image toImage() {
     PictureRecorder recorder = new PictureRecorder();
-    Rect everything = new Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble());
+    Rect everything =
+        new Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble());
     Canvas c = new Canvas(recorder, everything);
     c.drawRect(everything, new Paint()..color = FILL);
-    pixelMap.forEach((color, points) => c.drawPoints(PointMode.points, points, new Paint()..color = color..strokeWidth = 1.0..strokeCap = StrokeCap.square));
+    pixelMap.forEach((color, points) => c.drawPoints(
+        PointMode.points,
+        points,
+        new Paint()
+          ..color = color
+          ..strokeWidth = 1.0
+          ..strokeCap = StrokeCap.square));
     return recorder.endRecording().toImage(width, height);
   }
 }
@@ -108,6 +122,20 @@ void drawScrew(ImageBuilder image, int x, int y) {
 }
 
 Image generate(int width, int height) {
+  try {
+    ImageBuilder image = drawOnBuilder(width, height);
+    return image.toImage();
+  } on Error {
+    Image image;
+    Flame.images.load('bg.png').then((img) => image = img);
+    while (image == null) {
+      sleep(new Duration(milliseconds: 50));
+    }
+    return image;
+  }
+}
+
+ImageBuilder drawOnBuilder(int width, int height) {
   ImageBuilder image = new ImageBuilder(width, height);
 
   int count = 0;
@@ -142,6 +170,5 @@ Image generate(int width, int height) {
     drawSquare(image, next, nextWidth, nextHeight);
     count++;
   }
-
-  return image.toImage();
+  return image;
 }

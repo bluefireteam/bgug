@@ -16,6 +16,7 @@ import 'game_mode.dart';
 import 'options.dart';
 import 'shooter.dart';
 import 'util.dart';
+import 'ads.dart';
 
 class Button extends SpriteComponent {
   static const MARGIN = 4.0;
@@ -284,6 +285,7 @@ class MyGame extends BaseGame {
   int lastGeneratedSector = 0;
   AudioPlayer music;
   int _currentSlot;
+  Ad endGameAd;
 
   int get points => _points;
 
@@ -310,6 +312,17 @@ class MyGame extends BaseGame {
 
   bool isRunning() {
     return this._running;
+  }
+
+  void quitGame() {
+    if (endGameAd.loaded) {
+      endGameAd.ad.show().then((played) {
+        print('Played: ${played.toString()}');
+        setRunning(false);
+      });
+    } else {
+      setRunning(false);
+    }
   }
 
   void setRunning(bool running) {
@@ -341,6 +354,7 @@ class MyGame extends BaseGame {
 
     _running = true;
     Flame.audio.loop('music.wav').then((player) => music = player);
+    endGameAd = Ad.loadAd();
   }
 
   generateSector(int sector) {
@@ -392,7 +406,7 @@ class MyGame extends BaseGame {
     final player = getPlayer();
     if (p != null && player != null) {
       if (player.dead()) {
-        setRunning(false);
+        quitGame();
       } else {
         if (button.toRect().contains(p.toOffset())) {
           int dPoint = button.click(points);
@@ -401,7 +415,7 @@ class MyGame extends BaseGame {
             currentSlot = Block.nextSlot(currentSlot);
             if (currentSlot == Block.WIN && !gameMode.gunRespawn) {
               won = true;
-              setRunning(false);
+              quitGame();
             } else {
               add(new Block(currentSlot));
             }
@@ -493,10 +507,10 @@ class MyGame extends BaseGame {
 
       if (gameMode.hasLimit && player.x >= gameMode.mapSize) {
         won = true;
-        setRunning(false);
+        quitGame();
       }
     } else {
-      this.setRunning(false);
+      quitGame();
     }
   }
 
