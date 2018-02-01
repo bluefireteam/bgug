@@ -3,6 +3,17 @@ import 'package:flutter/widgets.dart';
 
 const title = const TextStyle(fontSize: 64.0, fontFamily: 'Blox2');
 const text = const TextStyle(fontSize: 32.0, fontFamily: 'Squared Display');
+const small_text = const TextStyle(fontSize: 16.0, fontFamily: 'Squared Display');
+
+final rootContainer = (Widget child) => new Container(
+      decoration: new BoxDecoration(
+        image: new DecorationImage(
+          image: new AssetImage('assets/images/bg.png'),
+          fit: BoxFit.fill,
+        ),
+      ),
+      child: child,
+    );
 
 final pad = (Widget w, double p) =>
     new Container(child: w, padding: new EdgeInsets.all(p));

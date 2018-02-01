@@ -1,8 +1,23 @@
+import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../options.dart';
 import 'gui_commons.dart';
+
+final optionLine = (String label, String value, VoidCallback onTap) => pad(
+      new GestureDetector(
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            new Text(label + ': ', style: small_text),
+            new Text(value, style: small_text),
+          ],
+        ),
+        onTap: onTap,
+      ),
+      12.0,
+    );
 
 class OptionsScreen extends StatefulWidget {
   @override
@@ -11,6 +26,7 @@ class OptionsScreen extends StatefulWidget {
 
 class _OptionsState extends State<OptionsScreen> {
   Options options;
+  TextFormField currentTextField;
 
   _OptionsState() {
     start();
@@ -25,14 +41,17 @@ class _OptionsState extends State<OptionsScreen> {
     if (options == null) {
       return new Center(child: new Text('Loading...'));
     }
-    return new Container(
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          image: new AssetImage('assets/images/bg.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: new Row(
+    if (currentTextField != null) {
+      return rootContainer(new Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          currentTextField,
+          btn('Go back', () => setState(() => currentTextField = null)),
+        ],
+      ));
+    }
+    return rootContainer(
+      new Row(
         children: [
           new Expanded(
               child: new Column(
@@ -55,24 +74,36 @@ class _OptionsState extends State<OptionsScreen> {
               child: new Form(
                 child: new ListView(
                   children: [
-                    textField(
-                      'Bullet Speed',
-                      doubleValidator,
-                      options.bulletSpeed.toString(),
-                      (newValue) => options.bulletSpeed = double.parse(newValue),
-                    ),
-                    textField(
-                      'Block Button Starting Cost',
-                      intValidator,
-                      options.buttonCost.toString(),
-                          (newValue) => options.buttonCost = int.parse(newValue),
-                    ),
-                    textField(
-                      'Block Button Inc Cost',
-                      intValidator,
-                      options.buttonIncCost.toString(),
-                          (newValue) => options.buttonIncCost = int.parse(newValue),
-                    ),
+                    optionLine('Bullet Speed', options.bulletSpeed.toString(),
+                        () {
+                      this.setState(() => currentTextField = textField(
+                            'Bullet Speed',
+                            doubleValidator,
+                            options.bulletSpeed.toString(),
+                            (newValue) =>
+                                options.bulletSpeed = double.parse(newValue),
+                          ));
+                    }),
+                    optionLine('Block Button Starting Cost',
+                        options.buttonCost.toString(), () {
+                      this.setState(() => currentTextField = textField(
+                            'Block Button Starting Cost',
+                            doubleValidator,
+                            options.buttonCost.toString(),
+                            (newValue) =>
+                                options.buttonCost = int.parse(newValue),
+                          ));
+                    }),
+                    optionLine('Block Button Inc Cost',
+                        options.buttonIncCost.toString(), () {
+                      this.setState(() => currentTextField = textField(
+                            'Block Button Inc Cost',
+                            doubleValidator,
+                            options.buttonIncCost.toString(),
+                            (newValue) =>
+                                options.buttonIncCost = int.parse(newValue),
+                          ));
+                    }),
                   ],
                 ),
               ),
