@@ -350,10 +350,12 @@ class MyGame extends BaseGame {
       add(new Block(currentSlot = Block.nextSlot(currentSlot)));
     }
 
-    // sector 0
+    // sector 0 pre-gen
     add(new Gem(500.0, (size) => size.height - BAR_SIZE - 0.9 * tenth(size)));
 
-    add(button = new Button(options));
+    if (gameMode != GameMode.PLAYGROUND) {
+      add(button = new Button(options));
+    }
 
     _running = true;
     Flame.audio.loop('music.wav').then((player) => music = player);
