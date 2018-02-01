@@ -23,8 +23,7 @@ class Ad {
       testDevices: ["7C7297F768C9EDFA141F5C3E1821C8E2"],
     );
     return new Ad(new InterstitialAd(
-      unitId: 'ca-app-pub-3940256099942544/1033173712',
-          // 'ca-app-pub-1451557002406313/3919043844',
+      unitId: 'ca-app-pub-1451557002406313/3919043844',
       targetingInfo: targetingInfo,
     ));
   }
