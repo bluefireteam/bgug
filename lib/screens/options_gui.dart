@@ -10,8 +10,6 @@ class OptionsScreen extends StatefulWidget {
 }
 
 class _OptionsState extends State<OptionsScreen> {
-
-  final TextEditingController _controller = new TextEditingController();
   Options options;
 
   _OptionsState() {
@@ -42,7 +40,6 @@ class _OptionsState extends State<OptionsScreen> {
             children: [
               pad(new Text('OpTiOnS', style: title), 20.0),
               btn('Save', () {
-                options.bulletSpeed = double.parse(_controller.text);
                 options.save().then((a) {
                   Navigator.of(context).pop();
                 });
@@ -56,14 +53,25 @@ class _OptionsState extends State<OptionsScreen> {
             child: new Padding(
               padding: const EdgeInsets.all(16.0),
               child: new Form(
-                child: new Column(
+                child: new ListView(
                   children: [
-                    new TextFormField(
-                      decoration:
-                          new InputDecoration(labelText: 'Bullet Speed'),
-                      controller: _controller,
-                      validator: (v) => double.parse(v, (v) => null) == null ? 'Must be a double!' : null,
-                      initialValue: options.bulletSpeed.toString(),
+                    textField(
+                      'Bullet Speed',
+                      doubleValidator,
+                      options.bulletSpeed.toString(),
+                      (newValue) => options.bulletSpeed = double.parse(newValue),
+                    ),
+                    textField(
+                      'Block Button Starting Cost',
+                      intValidator,
+                      options.buttonCost.toString(),
+                          (newValue) => options.buttonCost = int.parse(newValue),
+                    ),
+                    textField(
+                      'Block Button Inc Cost',
+                      intValidator,
+                      options.buttonIncCost.toString(),
+                          (newValue) => options.buttonIncCost = int.parse(newValue),
                     ),
                   ],
                 ),

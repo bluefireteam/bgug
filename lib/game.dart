@@ -20,10 +20,13 @@ import 'ads.dart';
 
 class Button extends SpriteComponent {
   static const MARGIN = 4.0;
-  int cost = 1; // 15
+  int cost, incCost;
   bool active = false;
 
-  Button() : super.square(64.0, 'button.png');
+  Button(Options options) : super.square(64.0, 'button.png') {
+    cost = options.buttonCost;
+    incCost = options.buttonIncCost;
+  }
 
   void evaluate(int points) {
     active = points >= cost;
@@ -32,7 +35,7 @@ class Button extends SpriteComponent {
   int click(int points) {
     if (active) {
       int currentCost = cost;
-      cost += 0; // 5
+      cost += incCost;
       return currentCost;
     }
     return 0;
@@ -350,7 +353,7 @@ class MyGame extends BaseGame {
     // sector 0
     add(new Gem(500.0, (size) => size.height - BAR_SIZE - 0.9 * tenth(size)));
 
-    add(button = new Button());
+    add(button = new Button(options));
 
     _running = true;
     Flame.audio.loop('music.wav').then((player) => music = player);
