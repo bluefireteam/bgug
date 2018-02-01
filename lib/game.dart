@@ -294,7 +294,7 @@ class MyGame extends BaseGame {
 
   set points(int points) {
     _points = points;
-    button.evaluate(points);
+    button?.evaluate(points);
   }
 
   int get currentSlot => _currentSlot;
@@ -413,7 +413,7 @@ class MyGame extends BaseGame {
       if (player.dead()) {
         quitGame();
       } else {
-        if (button.toRect().contains(p.toOffset())) {
+        if (button != null && button.toRect().contains(p.toOffset())) {
           int dPoint = button.click(points);
           if (dPoint != 0) {
             points -= dPoint;
