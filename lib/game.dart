@@ -188,18 +188,19 @@ class Gem extends SpriteComponent {
   }
 }
 
-const GRAVITY_IMPULSE = 1875.0;
-
 class Player extends PositionComponent {
   Map<String, Animation> animations;
   Position velocity = new Position(320.0, 0.0);
-  Impulse jumpImpulse = new Impulse(-15000.0);
-  Impulse diveImpulse = new Impulse(20000.0);
   double y0, yf;
   String state;
 
-  Player(double x, double y) {
-    this.x = x;
+  Options options;
+  Impulse jumpImpulse;
+  Impulse diveImpulse;
+
+  Player(this.options) {
+    jumpImpulse = new Impulse(-1 * options.jumpImpulse);
+    diveImpulse = new Impulse(options.diveImpulse);
 
     animations = new Map<String, Animation>();
     animations['running'] = new Animation.sequenced('player.png', 8,
@@ -228,7 +229,7 @@ class Player extends PositionComponent {
     velocity.y += jumpImpulse.tick(t);
     velocity.y += diveImpulse.tick(t);
     if (falling()) {
-      velocity.y += GRAVITY_IMPULSE * t;
+      velocity.y += options.gravityImpulse * t;
     }
 
     x += velocity.x * t;
@@ -266,7 +267,7 @@ class Player extends PositionComponent {
 
   void jump(int dt) {
     if (!falling()) {
-      jumpImpulse.impulse(dt.toDouble() / 2500.0);
+      jumpImpulse.impulse(options.jumpTimeMultiplier * dt);
       Flame.audio.play('jump.wav');
     }
   }
@@ -340,7 +341,7 @@ class MyGame extends BaseGame {
 
     add(new Top());
     add(new Floor());
-    add(new Player(0.0, 0.0));
+    add(new Player(options));
 
     if (gameMode.hasGuns) {
       add(new ShooterCane());
@@ -408,6 +409,9 @@ class MyGame extends BaseGame {
   }
 
   void input(Position p, int dt) {
+    if (dt > options.maxHoldJumpMillis) {
+      dt = options.maxHoldJumpMillis;
+    }
     final player = getPlayer();
     if (p != null && player != null) {
       if (player.dead()) {

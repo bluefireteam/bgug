@@ -1,4 +1,3 @@
-import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -50,6 +49,20 @@ class _OptionsState extends State<OptionsScreen> {
         ],
       ));
     }
+    final optionItemBuilder = (String title, String value, Validator validator,
+            void Function(String) setter) =>
+        optionLine(title, value, () {
+          this.setState(() =>
+              currentTextField = textField(title, validator, value, setter));
+        });
+    final intItemBuilder =
+        (String title, int value, void Function(int) setter) =>
+            optionItemBuilder(title, value.toString(), intValidator,
+                (str) => setter(int.parse(str)));
+    final doubleItemBuilder =
+        (String title, double value, void Function(double) setter) =>
+            optionItemBuilder(title, value.toString(), doubleValidator,
+                (str) => setter(double.parse(str)));
     return rootContainer(
       new Row(
         children: [
@@ -74,36 +87,46 @@ class _OptionsState extends State<OptionsScreen> {
               child: new Form(
                 child: new ListView(
                   children: [
-                    optionLine('Bullet Speed', options.bulletSpeed.toString(),
-                        () {
-                      this.setState(() => currentTextField = textField(
-                            'Bullet Speed',
-                            doubleValidator,
-                            options.bulletSpeed.toString(),
-                            (newValue) =>
-                                options.bulletSpeed = double.parse(newValue),
-                          ));
-                    }),
-                    optionLine('Block Button Starting Cost',
-                        options.buttonCost.toString(), () {
-                      this.setState(() => currentTextField = textField(
-                            'Block Button Starting Cost',
-                            doubleValidator,
-                            options.buttonCost.toString(),
-                            (newValue) =>
-                                options.buttonCost = int.parse(newValue),
-                          ));
-                    }),
-                    optionLine('Block Button Inc Cost',
-                        options.buttonIncCost.toString(), () {
-                      this.setState(() => currentTextField = textField(
-                            'Block Button Inc Cost',
-                            doubleValidator,
-                            options.buttonIncCost.toString(),
-                            (newValue) =>
-                                options.buttonIncCost = int.parse(newValue),
-                          ));
-                    }),
+                    doubleItemBuilder(
+                      'Bullet Speed',
+                      options.bulletSpeed,
+                      (v) => options.bulletSpeed = v,
+                    ),
+                    intItemBuilder(
+                      'Block Button Starting Cost',
+                      options.buttonCost,
+                      (v) => options.buttonCost = v,
+                    ),
+                    intItemBuilder(
+                      'Block Button Inc Cost',
+                      options.buttonIncCost,
+                      (v) => options.buttonIncCost = v,
+                    ),
+                    intItemBuilder(
+                      'Max Hold Jump (millis)',
+                      options.maxHoldJumpMillis,
+                      (v) => options.maxHoldJumpMillis = v,
+                    ),
+                    doubleItemBuilder(
+                      'Gravity Impulse',
+                      options.gravityImpulse,
+                      (v) => options.gravityImpulse = v,
+                    ),
+                    doubleItemBuilder(
+                      'Jump Impulse',
+                      options.jumpImpulse,
+                      (v) => options.jumpImpulse = v,
+                    ),
+                    doubleItemBuilder(
+                      'Dive Impulse',
+                      options.diveImpulse,
+                      (v) => options.diveImpulse = v,
+                    ),
+                    doubleItemBuilder(
+                      'Jump Time Multiplier',
+                      options.jumpTimeMultiplier,
+                      (v) => options.jumpTimeMultiplier = v,
+                    ),
                   ],
                 ),
               ),

@@ -38,8 +38,10 @@ final TextFormField Function(
   );
 };
 
-final doubleValidator =
+typedef String Validator(String value);
+
+final Validator doubleValidator =
     (v) => double.parse(v, (v) => null) == null ? 'Must be a double!' : null;
 
-final intValidator = (v) =>
+final Validator intValidator = (v) =>
     int.parse(v, onError: (v) => null) == null ? 'Must be an integer!' : null;

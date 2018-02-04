@@ -36,8 +36,7 @@ main() async {
 
   Flame.util.addGestureRecognizer(new TapGestureRecognizer()
     ..onTapDown = (TapDownDetails details) {
-      lastPost =
-          new Position(details.globalPosition.dx, details.globalPosition.dy);
+      lastPost = new Position.fromOffset(details.globalPosition);
       lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
     }
     ..onTapUp = (TapUpDetails details) {
@@ -45,9 +44,6 @@ main() async {
         return;
       }
       int dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
-      if (dt > 3000) {
-        dt = 3000;
-      }
       if (Main.game != null && Main.game.isRunning()) {
         Main.game.input(lastPost, dt);
         lastTimestamp = lastPost = null;
