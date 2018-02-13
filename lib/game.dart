@@ -330,8 +330,7 @@ class MyGame extends BaseGame {
   }
 
   void quitGame() {
-    print(endGameAd.loaded);
-    if (endGameAd.loaded) {
+    if (endGameAd != null && endGameAd.loaded) {
       state = GameState.AD;
       endGameAd.listener = (evt) {
         print('Event : ${evt.toString()}');
@@ -369,7 +368,7 @@ class MyGame extends BaseGame {
 
     state = GameState.RUNNING;
     Flame.audio.loop('music.wav').then((player) => music = player);
-    endGameAd = Ad.loadAd();
+    endGameAd = random.nextDouble() < 0.25 ? Ad.loadAd() : null;
   }
 
   generateSector(int sector) {
