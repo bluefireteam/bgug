@@ -14,20 +14,20 @@ class StartGameScreen extends StatefulWidget {
 }
 
 class MyGameBinder extends MyGame {
-  _StartGameScreenState state;
+  _StartGameScreenState screen;
 
-  MyGameBinder(this.state, GameMode mode, Options options)
+  MyGameBinder(this.screen, GameMode mode, Options options)
       : super(mode, options);
 
   @override
-  void setRunning(bool running) {
-    super.setRunning(running);
-    if (this.state != null) {
+  set state(GameState state) {
+    super.state = state;
+    if (this.screen != null) {
       (() async {
-        if (!running) {
-          await this.state.addToScore(score());
+        if (state == GameState.STOPPED) {
+          await this.screen.addToScore(score());
         }
-        this.state.redraw();
+        this.screen.redraw();
       })();
     }
   }
@@ -47,7 +47,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
   @override
   Widget build(BuildContext context) {
     if (Main.game != null) {
-      if (Main.game.isRunning()) {
+      if (Main.game.state != GameState.STOPPED) {
         return Main.game.widget;
       } else {
         Main.game = null;

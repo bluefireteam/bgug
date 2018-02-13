@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:audioplayers/audioplayer.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/flame.dart';
@@ -188,6 +189,10 @@ class Gem extends SpriteComponent {
   }
 }
 
+enum GameState {
+  RUNNING, DEAD, AD, STOPPED
+}
+
 class Player extends PositionComponent {
   Map<String, Animation> animations;
   Position velocity = new Position(320.0, 0.0);
@@ -280,16 +285,26 @@ class Player extends PositionComponent {
 }
 
 class MyGame extends BaseGame {
-  Button button;
   Options options;
   GameMode gameMode;
-  bool _running = false;
+
+  Button button;
   bool won = false;
   int _points = 0;
   int lastGeneratedSector = 0;
   AudioPlayer music;
   int _currentSlot;
   Ad endGameAd;
+  GameState _state;
+
+  GameState get state => _state;
+
+  set state(GameState state) {
+    if (state == GameState.STOPPED) {
+      music?.stop();
+    }
+    _state = state;
+  }
 
   int get points => _points;
 
@@ -314,25 +329,19 @@ class MyGame extends BaseGame {
     _start();
   }
 
-  bool isRunning() {
-    return this._running;
-  }
-
   void quitGame() {
+    print(endGameAd.loaded);
     if (endGameAd.loaded) {
-      endGameAd.ad.show().then((played) {
-        print('Played: ${played.toString()}');
-        setRunning(false);
-      });
+      state = GameState.AD;
+      endGameAd.listener = (evt) {
+        print('Event : ${evt.toString()}');
+        if (evt == MobileAdEvent.closed) {
+          state = GameState.STOPPED;
+        }
+      };
+      endGameAd.show();
     } else {
-      setRunning(false);
-    }
-  }
-
-  void setRunning(bool running) {
-    this._running = running;
-    if (!_running) {
-      music?.stop();
+      state = GameState.STOPPED;
     }
   }
 
@@ -358,7 +367,7 @@ class MyGame extends BaseGame {
       add(button = new Button(options));
     }
 
-    _running = true;
+    state = GameState.RUNNING;
     Flame.audio.loop('music.wav').then((player) => music = player);
     endGameAd = Ad.loadAd();
   }
@@ -440,8 +449,12 @@ class MyGame extends BaseGame {
 
   @override
   void render(Canvas c) {
-    super.render(c);
-    renderPoints(c);
+    if (state == GameState.RUNNING || state == GameState.DEAD) {
+      super.render(c);
+      renderPoints(c);
+    } else {
+      c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height), new Paint()..color = material.Colors.black);
+    }
   }
 
   void renderPoints(Canvas c) {
@@ -460,7 +473,7 @@ class MyGame extends BaseGame {
 
   @override
   void update(double dt) {
-    if (!isRunning()) {
+    if (state != GameState.RUNNING) {
       return;
     }
 

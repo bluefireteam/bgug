@@ -44,7 +44,7 @@ main() async {
         return;
       }
       int dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
-      if (Main.game != null && Main.game.isRunning()) {
+      if (Main.game != null && Main.game.state == GameState.RUNNING) {
         Main.game.input(lastPost, dt);
         lastTimestamp = lastPost = null;
       }

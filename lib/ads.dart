@@ -1,15 +1,25 @@
 import 'package:firebase_admob/firebase_admob.dart';
 
 class Ad {
-  InterstitialAd ad;
+  InterstitialAd _ad;
+  MobileAdListener listener;
   bool loaded;
 
-  Ad(this.ad) {
+  set ad(InterstitialAd ad) {
     loaded = false;
-    ad.load().then((loaded) {
-      print('Loaded ad: ${loaded.toString()}');
-      this.loaded = loaded;
-    });
+    _ad = ad..load();
+  }
+
+  void show() {
+    _ad.show();
+  }
+
+  void handle(MobileAdEvent evt) {
+    if (evt == MobileAdEvent.loaded) {
+      loaded = true;
+    } else {
+      listener(evt);
+    }
   }
 
   static void startup() {
@@ -22,9 +32,12 @@ class Ad {
       keywords: ['game', 'blocks', 'guns'],
       testDevices: ["7C7297F768C9EDFA141F5C3E1821C8E2"],
     );
-    return new Ad(new InterstitialAd(
+    var ad = new Ad();
+    ad.ad = new InterstitialAd(
       unitId: 'ca-app-pub-1451557002406313/3919043844',
       targetingInfo: targetingInfo,
-    ));
+      listener: (evt) => ad.handle(evt),
+    );
+    return ad;
   }
 }
