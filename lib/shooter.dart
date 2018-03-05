@@ -17,7 +17,7 @@ class Bullet extends AnimationComponent {
   double speed;
 
   Bullet(this.speed, Size size, Position p)
-      : super.byAnimation(new Animation.sequenced('bullet.png', 3,
+      : super(16.0, 16.0, new Animation.sequenced('bullet.png', 3,
             textureWidth: 16.0, textureHeight: 16.0)
           ..stepTime = 0.075) {
     this.width = this.height = (1.0 - 2 * FRAC) * tenth(size);
