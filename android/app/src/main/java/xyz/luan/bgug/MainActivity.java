@@ -1,4 +1,4 @@
-package com.yourcompany.bgug;
+package xyz.luan.bgug;
 
 import android.os.Bundle;
 
