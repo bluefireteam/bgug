@@ -11,6 +11,7 @@ import 'screens/home_gui.dart';
 import 'screens/options_gui.dart';
 import 'screens/score_gui.dart';
 import 'screens/start_game_gui.dart';
+import 'screens/buy_gui.dart';
 
 class Main {
   static MyGame game;
@@ -28,6 +29,7 @@ main() async {
       '/start': (BuildContext ctx) => new Scaffold(body: new StartGameScreen()),
       '/options': (BuildContext ctx) => new Scaffold(body: new OptionsScreen()),
       '/score': (BuildContext ctx) => new Scaffold(body: new ScoreScreen()),
+      '/buy': (BuildContext ctx) => new Scaffold(body: new BuyScreen()),
     },
   ));
 

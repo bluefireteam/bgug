@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayer.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/animation_component.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/position.dart';
@@ -14,19 +15,19 @@ import 'package:flutter/material.dart' as material;
 import 'background.dart' as bg;
 import 'constants.dart';
 import 'game_mode.dart';
-import 'options.dart';
 import 'shooter.dart';
 import 'util.dart';
 import 'ads.dart';
+import 'data.dart';
 
 class Button extends SpriteComponent {
   static const MARGIN = 4.0;
   int cost, incCost;
   bool active = false;
 
-  Button(Options options) : super.square(64.0, 'button.png') {
-    cost = options.buttonCost;
-    incCost = options.buttonIncCost;
+  Button() : super.square(64.0, 'button.png') {
+    cost = Data.options.buttonCost;
+    incCost = Data.options.buttonIncCost;
   }
 
   void evaluate(int points) {
@@ -165,6 +166,25 @@ class Top extends SpriteComponent {
   }
 }
 
+class Coin extends AnimationComponent {
+  bool collected = false;
+
+  Coin(double x, double y) : super.sequenced(1.0, 1.0, 'coin.png', 6, textureWidth: 18.0, textureHeight: 20.0) {
+    this.x = x;
+    this.y = y;
+  }
+
+  @override
+  void resize(Size size) {
+    this.width = this.height = 0.8 * tenth(size);
+  }
+
+  @override
+  bool destroy() {
+    return this.collected;
+  }
+}
+
 class Gem extends SpriteComponent {
   bool collected = false;
   double Function(Size) yGen;
@@ -199,20 +219,19 @@ class Player extends PositionComponent {
   double y0, yf;
   String state;
 
-  Options options;
   Impulse jumpImpulse;
   Impulse diveImpulse;
 
-  Player(this.options) {
-    jumpImpulse = new Impulse(-1 * options.jumpImpulse);
-    diveImpulse = new Impulse(options.diveImpulse);
+  Player() {
+    jumpImpulse = new Impulse(-1 * Data.options.jumpImpulse);
+    diveImpulse = new Impulse(Data.options.diveImpulse);
 
     animations = new Map<String, Animation>();
-    animations['running'] = new Animation.sequenced('player.png', 8,
-        textureWidth: 16.0, textureHeight: 18.0)
+    animations['running'] = new Animation.sequenced('player_2.png', 8,
+        textureWidth: 16.0)
       ..stepTime = 0.0375;
-    animations['dead'] = new Animation.sequenced('player.png', 3,
-        textureWidth: 16.0, textureHeight: 18.0, textureX: 16.0 * 8)
+    animations['dead'] = new Animation.sequenced('player_2.png', 3,
+        textureWidth: 16.0, textureX: 16.0 * 8)
       ..stepTime = 0.075;
     state = 'running';
   }
@@ -234,7 +253,7 @@ class Player extends PositionComponent {
     velocity.y += jumpImpulse.tick(t);
     velocity.y += diveImpulse.tick(t);
     if (falling()) {
-      velocity.y += options.gravityImpulse * t;
+      velocity.y += Data.options.gravityImpulse * t;
     }
 
     x += velocity.x * t;
@@ -272,7 +291,7 @@ class Player extends PositionComponent {
 
   void jump(int dt) {
     if (!falling()) {
-      jumpImpulse.impulse(options.jumpTimeMultiplier * dt);
+      jumpImpulse.impulse(Data.options.jumpTimeMultiplier * dt);
       Flame.audio.play('jump.wav');
     }
   }
@@ -285,9 +304,7 @@ class Player extends PositionComponent {
 }
 
 class MyGame extends BaseGame {
-  Options options;
   GameMode gameMode;
-
   Button button;
   bool won = false;
   int _points = 0;
@@ -325,7 +342,7 @@ class MyGame extends BaseGame {
     });
   }
 
-  MyGame(this.gameMode, this.options) {
+  MyGame(this.gameMode) {
     _start();
   }
 
@@ -349,7 +366,7 @@ class MyGame extends BaseGame {
 
     add(new Top());
     add(new Floor());
-    add(new Player(options));
+    add(new Player());
 
     if (gameMode.hasGuns) {
       add(new ShooterCane());
@@ -361,9 +378,10 @@ class MyGame extends BaseGame {
 
     // sector 0 pre-gen
     add(new Gem(500.0, (size) => size.height - BAR_SIZE - 0.9 * tenth(size)));
+    add(new Coin(500.0, 200.0));
 
     if (gameMode != GameMode.PLAYGROUND) {
-      add(button = new Button(options));
+      add(button = new Button());
     }
 
     state = GameState.RUNNING;
@@ -417,8 +435,8 @@ class MyGame extends BaseGame {
   }
 
   void input(Position p, int dt) {
-    if (dt > options.maxHoldJumpMillis) {
-      dt = options.maxHoldJumpMillis;
+    if (dt > Data.options.maxHoldJumpMillis) {
+      dt = Data.options.maxHoldJumpMillis;
     }
     final player = getPlayer();
     if (p != null && player != null) {
@@ -489,7 +507,7 @@ class MyGame extends BaseGame {
     getShooters().forEach((shooter) {
       if (shooter.shoot()) {
         add(new Bullet(
-            options.bulletSpeed, size, shooter.toPosition().add(camera)));
+            Data.options.bulletSpeed, size, shooter.toPosition().add(camera)));
       }
     });
 
@@ -500,6 +518,12 @@ class MyGame extends BaseGame {
           if (c.toRect().overlaps(playerRect)) {
             c.collect();
             points++;
+            Flame.audio.play('gem_collect.wav');
+          }
+        } else if (c is Coin) {
+          if (c.toRect().overlaps(playerRect)) {
+            c.collected = true;
+            Data.buy.coins++;
             Flame.audio.play('gem_collect.wav');
           }
         } else if (c is UpObstacle || c is Bullet) {

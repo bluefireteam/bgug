@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../data.dart';
 import '../game.dart';
 import '../game_mode.dart';
 import '../main.dart';
-import '../options.dart';
-import '../score.dart';
 import 'gui_commons.dart';
 
 class StartGameScreen extends StatefulWidget {
@@ -16,8 +15,7 @@ class StartGameScreen extends StatefulWidget {
 class MyGameBinder extends MyGame {
   _StartGameScreenState screen;
 
-  MyGameBinder(this.screen, GameMode mode, Options options)
-      : super(mode, options);
+  MyGameBinder(this.screen, GameMode mode) : super(mode);
 
   @override
   set state(GameState state) {
@@ -25,6 +23,7 @@ class MyGameBinder extends MyGame {
     if (this.screen != null) {
       (() async {
         if (state == GameState.STOPPED) {
+          Data.buy.save();
           await this.screen.addToScore(score());
         }
         this.screen.redraw();
@@ -35,9 +34,8 @@ class MyGameBinder extends MyGame {
 
 class _StartGameScreenState extends State<StartGameScreen> {
   addToScore(String newScore) async {
-    Score score = await Score.fetch();
-    score.scores.add(newScore);
-    score.save();
+    Data.score.scores.add(newScore);
+    Data.score.save();
   }
 
   redraw() {
@@ -90,7 +88,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
   }
 
   startGame(GameMode mode) async {
-    Main.game = new MyGameBinder(this, mode, await Options.fetch());
+    Main.game = new MyGameBinder(this, mode);
     setState(() {});
   }
 }

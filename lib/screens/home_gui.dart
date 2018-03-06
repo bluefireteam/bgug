@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import '../score.dart';
+import '../data.dart';
 import 'gui_commons.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool loading = true;
 
   _HomeScreenState() {
-    var ps = [
+    var ps = <Future>[
       Flame.audio.loadAll([
         'death.wav',
         'gem_collect.wav',
@@ -38,18 +38,32 @@ class _HomeScreenState extends State<HomeScreen> {
         'shooter.png'
       ]).then((images) =>
           print('Done loading ' + images.length.toString() + ' images.')),
+      Data.loadAll(),
     ];
     Future.wait(ps).then((rs) => this.setState(() => loading = false));
   }
 
   addToScore(String newScore) async {
-    Score score = await Score.fetch();
-    score.scores.add(newScore);
-    score.save();
+    Data.score.scores.add(newScore);
+    Data.score.save();
   }
 
   redraw() {
     this.setState(() => {});
+  }
+
+  Widget coin() {
+    final stack = new Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        new Image.asset('assets/images/coin_button.png'),
+        new Positioned(child: new Text(Data.buy.coins.toString()), bottom: 2.0),
+      ],
+    );
+    return new GestureDetector(
+      child: stack,
+      onTap: () => Navigator.of(context).pushNamed('/buy'),
+    );
   }
 
   @override
@@ -58,6 +72,33 @@ class _HomeScreenState extends State<HomeScreen> {
       return new Center(child: new Text('Loading...'));
     }
 
+    final child = new Center(
+      child: new Row(
+        children: [
+          new Column(
+            children: [
+              pad(new Text('BLOCK', style: title), 2.0),
+              pad(new Text('guns', style: title), 2.0),
+              pad(new Text('USING', style: title), 2.0),
+              pad(new Text('gems', style: title), 2.0),
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+          new Column(
+            children: [
+              btn('Play', () => Navigator.of(context).pushNamed('/start')),
+              btn('Score', () => Navigator.of(context).pushNamed('/score')),
+              btn('Options',
+                  () => Navigator.of(context).pushNamed('/options')),
+              btn('Exit', () => SystemNavigator.pop()),
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      ),
+    );
+
     return new Container(
       decoration: new BoxDecoration(
         image: new DecorationImage(
@@ -65,31 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
           fit: BoxFit.fill,
         ),
       ),
-      child: new Center(
-        child: new Row(
-          children: [
-            new Column(
-              children: [
-                pad(new Text('BLOCK', style: title), 2.0),
-                pad(new Text('guns', style: title), 2.0),
-                pad(new Text('USING', style: title), 2.0),
-                pad(new Text('gems', style: title), 2.0),
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-            new Column(
-              children: [
-                btn('Play', () => Navigator.of(context).pushNamed('/start')),
-                btn('Score', () => Navigator.of(context).pushNamed('/score')),
-                btn('Options',
-                    () => Navigator.of(context).pushNamed('/options')),
-                btn('Exit', () => SystemNavigator.pop()),
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-          ],
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        ),
+      child: new Stack(
+        children: [
+          child,
+          new Positioned(child: coin(), top: 12.0, right: 12.0),
+        ],
       ),
     );
   }
