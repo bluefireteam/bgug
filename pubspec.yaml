@@ -14,7 +14,10 @@ dev_dependencies:
 
 flutter:
   assets:
-   - assets/images/player.png
+   - assets/images/btns/coin.png
+   - assets/images/btns/player_1.png
+   - assets/images/btns/player_2.png
+   - assets/images/player_1.png
    - assets/images/player_2.png
    - assets/images/base.png
    - assets/images/block.png

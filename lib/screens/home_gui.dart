@@ -32,9 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
         'bg.png',
         'block.png',
         'bullet.png',
+        'button.png',
+        'coin.png',
         'gem.png',
         'obstacle.png',
-        'player.png',
+        'player_1.png',
+        'player_2.png',
         'shooter.png'
       ]).then((images) =>
           print('Done loading ' + images.length.toString() + ' images.')),
