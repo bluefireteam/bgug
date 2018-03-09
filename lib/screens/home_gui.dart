@@ -1,12 +1,17 @@
 import 'dart:async';
 
-import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flame/flame.dart';
+
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../data.dart';
 import 'gui_commons.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -15,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool loading = true;
+  String username = '-';
 
   _HomeScreenState() {
     var ps = <Future>[
@@ -44,6 +50,25 @@ class _HomeScreenState extends State<HomeScreen> {
       Data.loadAll(),
     ];
     Future.wait(ps).then((rs) => this.setState(() => loading = false));
+    _handleSignIn();
+  }
+
+  Future<FirebaseUser> _handleSignIn() async {
+    GoogleSignIn _googleSignIn = new GoogleSignIn(
+      scopes: [
+        'email',
+        'https://www.googleapis.com/auth/contacts.readonly',
+      ],
+    );
+    GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    FirebaseUser user = await _auth.signInWithGoogle(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    print("signed in " + user.displayName);
+    setState(() => username = user.displayName);
+    return user;
   }
 
   addToScore(String newScore) async {
@@ -53,6 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   redraw() {
     this.setState(() => {});
+  }
+
+  Widget userCard() {
+    return new Text(username);
   }
 
   Widget coin() {
@@ -113,6 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           child,
           new Positioned(child: coin(), top: 12.0, right: 12.0),
+          new Positioned(child: userCard(), bottom: 12.0, left: 12.0),
         ],
       ),
     );
