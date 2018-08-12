@@ -47,7 +47,8 @@ class Buy {
   }
 
   Buy.fromMap(Map map) {
-    owned = map["owned"].toString().split(';').map(getPlayer).toList();
+    owned = [];
+    map["owned"].toString().split(';').forEach((s) => owned.add(getPlayer(s)));
     selected = getPlayer(map["selected"].toString());
     coins = map["coins"];
   }

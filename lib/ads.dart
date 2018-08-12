@@ -23,8 +23,7 @@ class Ad {
   }
 
   static void startup() {
-    FirebaseAdMob.instance
-        .initialize(appId: 'ca-app-pub-1451557002406313~7960207117');
+    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-1451557002406313~7960207117');
   }
 
   static Ad loadAd() {
@@ -34,7 +33,7 @@ class Ad {
     );
     var ad = new Ad();
     ad.ad = new InterstitialAd(
-      unitId: 'ca-app-pub-1451557002406313/3919043844',
+      adUnitId: 'ca-app-pub-1451557002406313/3919043844',
       targetingInfo: targetingInfo,
       listener: (evt) => ad.handle(evt),
     );

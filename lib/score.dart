@@ -11,7 +11,8 @@ class Score {
   }
 
   Score.fromMap(Map map) {
-    scores = map["scores"];
+    scores = [];
+    (map["scores"] as List).forEach((s) => scores.add(s.toString()));
   }
 
   Map toMap() {

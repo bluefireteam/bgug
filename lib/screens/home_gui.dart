@@ -50,7 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
       Data.loadAll(),
     ];
     Future.wait(ps).then((rs) => this.setState(() => loading = false));
-    _handleSignIn();
+    // _handleSignIn();
+    username = 'test user';
   }
 
   Future<FirebaseUser> _handleSignIn() async {
