@@ -1,8 +1,8 @@
 
 class GameMode {
-  static String singlePattern(int score, bool won) => won ? "Won Single; ${score.toString()} points" : "Lost Single; ${score.toString()} points";
-  static String endlessPattern(int score, bool won) => "Endless; ${score.toString()} points";
-  static String playgroundPattern(int score, bool won) => "Playground; ${score.toString()} points";
+  static String singlePattern(int score, bool won) => won ? 'Won Single; ${score.toString()} points' : 'Lost Single; ${score.toString()} points';
+  static String endlessPattern(int score, bool won) => 'Endless; ${score.toString()} points';
+  static String playgroundPattern(int score, bool won) => 'Playground; ${score.toString()} points';
 
   static const SINGLE = const GameMode(15000, true, false, singlePattern);
   static const ENDLESS = const GameMode(-1, true, true, endlessPattern);

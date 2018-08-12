@@ -23,33 +23,33 @@ class _ScoreState extends State<ScoreScreen> {
   @override
   Widget build(BuildContext context) {
     if (score == null) {
-      return new Center(child: new Text('Loading...'));
+      return Center(child: Text('Loading...'));
     }
-    return new Container(
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          image: new AssetImage('assets/images/bg.png'),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/bg.png'),
           fit: BoxFit.fill,
         ),
       ),
-      child: new Row(
+      child: Row(
         children: [
-          new Expanded(
-            child: new Column(
+          Expanded(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                pad(new Text('sCoRe', style: title), 20.0),
+                pad(Text('sCoRe', style: title), 20.0),
                 btn('Go back', () {
                   Navigator.of(context).pop();
                 }),
               ],
             ),
           ),
-          new Expanded(
-            child: new Padding(
+          Expanded(
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: new ListView(
-                children: score.scores.map((s) => new Text(s)).toList(),
+              child: ListView(
+                children: score.scores.map((s) => Text(s)).toList(),
               ),
             ),
           ),

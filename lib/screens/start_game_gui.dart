@@ -53,26 +53,26 @@ class _StartGameScreenState extends State<StartGameScreen> {
       }
     }
 
-    return new Container(
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          image: new AssetImage('assets/images/bg.png'),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/bg.png'),
           fit: BoxFit.fill,
         ),
       ),
-      child: new Center(
-        child: new Row(
+      child: Center(
+        child: Row(
           children: [
-            new Column(
+            Column(
               children: [
-                pad(new Text('pLaY', style: title), 20.0),
+                pad(Text('pLaY', style: title), 20.0),
                 btn('Go back', () {
                   Navigator.of(context).pop();
                 }),
               ],
               mainAxisAlignment: MainAxisAlignment.center,
             ),
-            new Column(
+            Column(
               children: [
                 btn('Single', () => startGame(GameMode.SINGLE)),
                 btn('Endless', () => startGame(GameMode.ENDLESS)),

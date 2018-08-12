@@ -5,10 +5,10 @@ const title = const TextStyle(fontSize: 64.0, fontFamily: 'Blox2');
 const text = const TextStyle(fontSize: 32.0, fontFamily: 'Squared Display');
 const small_text = const TextStyle(fontSize: 16.0, fontFamily: 'Squared Display');
 
-final rootContainer = (Widget child) => new Container(
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          image: new AssetImage('assets/images/bg.png'),
+final rootContainer = (Widget child) => Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/bg.png'),
           fit: BoxFit.fill,
         ),
       ),
@@ -16,22 +16,22 @@ final rootContainer = (Widget child) => new Container(
     );
 
 final pad = (Widget w, double p) =>
-    new Container(child: w, padding: new EdgeInsets.all(p));
-final btn = (String txt, VoidCallback handle) => new FlatButton(
-    onPressed: handle, child: pad(new Text(txt, style: text), 10.0));
+    Container(child: w, padding: EdgeInsets.all(p));
+final btn = (String txt, VoidCallback handle) => FlatButton(
+    onPressed: handle, child: pad(Text(txt, style: text), 10.0));
 
 final TextFormField Function(
         String, FormFieldValidator<String>, String, Function(String))
     textField = (String label, FormFieldValidator<String> validator,
         String initialValue, Function(String) setter) {
-  TextEditingController controller = new TextEditingController();
+  TextEditingController controller = TextEditingController();
   controller.addListener(() {
     if (validator(controller.text) == null) {
       setter(controller.text);
     }
   });
-  return new TextFormField(
-    decoration: new InputDecoration(labelText: label),
+  return TextFormField(
+    decoration: InputDecoration(labelText: label),
     controller: controller,
     validator: validator,
     initialValue: initialValue,
@@ -41,7 +41,7 @@ final TextFormField Function(
 typedef String Validator(String value);
 
 final Validator doubleValidator =
-    (v) => double.parse(v, (v) => null) == null ? 'Must be a double!' : null;
+    (v) => double.tryParse(v) == null ? 'Must be a double!' : null;
 
 final Validator intValidator = (v) =>
-    int.parse(v, onError: (v) => null) == null ? 'Must be an integer!' : null;
+    int.tryParse(v) == null ? 'Must be an integer!' : null;

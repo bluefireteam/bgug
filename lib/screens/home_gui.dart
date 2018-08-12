@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-    print("signed in " + user.displayName);
+    print('signed in ${user.displayName}');
     setState(() => username = user.displayName);
     return user;
   }
@@ -86,14 +86,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget coin() {
-    final stack = new Stack(
+    final stack = Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        new Image.asset('assets/images/coin_button.png'),
-        new Positioned(child: new Text(Data.buy.coins.toString()), bottom: 2.0),
+        Image.asset('assets/images/coin_button.png'),
+        Positioned(child: Text(Data.buy.coins.toString()), bottom: 2.0),
       ],
     );
-    return new GestureDetector(
+    return GestureDetector(
       child: stack,
       onTap: () => Navigator.of(context).pushNamed('/buy'),
     );
@@ -102,22 +102,22 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return new Center(child: new Text('Loading...'));
+      return Center(child: Text('Loading...'));
     }
 
-    final child = new Center(
-      child: new Row(
+    final child = Center(
+      child: Row(
         children: [
-          new Column(
+          Column(
             children: [
-              pad(new Text('BLOCK', style: title), 2.0),
-              pad(new Text('guns', style: title), 2.0),
-              pad(new Text('USING', style: title), 2.0),
-              pad(new Text('gems', style: title), 2.0),
+              pad(Text('BLOCK', style: title), 2.0),
+              pad(Text('guns', style: title), 2.0),
+              pad(Text('USING', style: title), 2.0),
+              pad(Text('gems', style: title), 2.0),
             ],
             mainAxisAlignment: MainAxisAlignment.center,
           ),
-          new Column(
+          Column(
             children: [
               btn('Play', () => Navigator.of(context).pushNamed('/start')),
               btn('Score', () => Navigator.of(context).pushNamed('/score')),
@@ -132,18 +132,18 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    return new Container(
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          image: new AssetImage('assets/images/bg.png'),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/bg.png'),
           fit: BoxFit.fill,
         ),
       ),
-      child: new Stack(
+      child: Stack(
         children: [
           child,
-          new Positioned(child: coin(), top: 12.0, right: 12.0),
-          new Positioned(child: userCard(), bottom: 12.0, left: 12.0),
+          Positioned(child: coin(), top: 12.0, right: 12.0),
+          Positioned(child: userCard(), bottom: 12.0, left: 12.0),
         ],
       ),
     );

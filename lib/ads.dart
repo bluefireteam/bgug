@@ -29,7 +29,7 @@ class Ad {
   static Ad loadAd() {
     MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo(
       keywords: ['game', 'blocks', 'guns'],
-      testDevices: ["7C7297F768C9EDFA141F5C3E1821C8E2"],
+      testDevices: ['7C7297F768C9EDFA141F5C3E1821C8E2'],
     );
     var ad = new Ad();
     ad.ad = new InterstitialAd(

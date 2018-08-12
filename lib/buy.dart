@@ -48,22 +48,22 @@ class Buy {
 
   Buy.fromMap(Map map) {
     owned = [];
-    map["owned"].toString().split(';').forEach((s) => owned.add(getPlayer(s)));
-    selected = getPlayer(map["selected"].toString());
-    coins = map["coins"];
+    map['owned'].toString().split(';').forEach((s) => owned.add(getPlayer(s)));
+    selected = getPlayer(map['selected'].toString());
+    coins = map['coins'];
   }
 
   Map toMap() {
     return {
-      "owned": owned.map((e) => e.toString()).join(';'),
-      "selected": selected.toString(),
-      "coins": coins,
+      'owned': owned.map((e) => e.toString()).join(';'),
+      'selected': selected.toString(),
+      'coins': coins,
     };
   }
 
   Future save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("buy", JSON.encode(toMap()));
+    prefs.setString('buy', json.encode(toMap()));
   }
 
   PlayerButtonState _state(PlayerType type) {
@@ -76,10 +76,10 @@ class Buy {
 
   static Future<Buy> fetch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String json = prefs.getString("buy");
-    if (json == null) {
+    String jsonStr = prefs.getString('buy');
+    if (jsonStr == null) {
       return new Buy();
     }
-    return new Buy.fromMap(JSON.decode(json));
+    return new Buy.fromMap(json.decode(jsonStr));
   }
 }

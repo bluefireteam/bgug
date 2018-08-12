@@ -17,14 +17,14 @@ class Options {
 
   Map toMap() {
     return {
-      "bulletSpeed": bulletSpeed,
-      "buttonCost": buttonCost,
-      "buttonIncCost": buttonIncCost,
-      "maxHoldJumpMillis": maxHoldJumpMillis,
-      "gravityImpulse": gravityImpulse,
-      "jumpImpulse": jumpImpulse,
-      "diveImpulse": diveImpulse,
-      "jumpTimeMultiplier": jumpTimeMultiplier,
+      'bulletSpeed': bulletSpeed,
+      'buttonCost': buttonCost,
+      'buttonIncCost': buttonIncCost,
+      'maxHoldJumpMillis': maxHoldJumpMillis,
+      'gravityImpulse': gravityImpulse,
+      'jumpImpulse': jumpImpulse,
+      'diveImpulse': diveImpulse,
+      'jumpTimeMultiplier': jumpTimeMultiplier,
     };
   }
 
@@ -40,27 +40,27 @@ class Options {
   }
 
   Options.fromMap(Map map) {
-    bulletSpeed = map["bulletSpeed"] ?? 500.0;
-    buttonCost = map["buttonCost"] ?? 5;
-    buttonIncCost = map["buttonIncCost"] ?? 2;
-    maxHoldJumpMillis = map["maxHoldJumpMillis"] ?? 2000;
-    gravityImpulse = map["gravityImpulse"] ?? 1875.0;
-    jumpImpulse = map["jumpImpulse"] ?? 12000.0;
-    diveImpulse = map["diveImpulse"] ?? 20000.0;
-    jumpTimeMultiplier = map["jumpTimeMultiplier"] ?? 0.0004;
+    bulletSpeed = map['bulletSpeed'] ?? 500.0;
+    buttonCost = map['buttonCost'] ?? 5;
+    buttonIncCost = map['buttonIncCost'] ?? 2;
+    maxHoldJumpMillis = map['maxHoldJumpMillis'] ?? 2000;
+    gravityImpulse = map['gravityImpulse'] ?? 1875.0;
+    jumpImpulse = map['jumpImpulse'] ?? 12000.0;
+    diveImpulse = map['diveImpulse'] ?? 20000.0;
+    jumpTimeMultiplier = map['jumpTimeMultiplier'] ?? 0.0004;
   }
 
   Future save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("options", JSON.encode(toMap()));
+    prefs.setString('options', json.encode(toMap()));
   }
 
   static Future<Options> fetch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String json = prefs.getString("options");
-    if (json == null) {
+    String jsonStr = prefs.getString('options');
+    if (jsonStr == null) {
       return new Options();
     }
-    return new Options.fromMap(JSON.decode(json));
+    return new Options.fromMap(json.decode(jsonStr));
   }
 }

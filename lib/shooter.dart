@@ -159,7 +159,7 @@ class Shooter extends SpriteComponent {
       Flame.audio.play('laser_shoot.wav');
     } else if (random.nextDouble() < 0.2) {
       action = 'shooting';
-      shooting.lifeTime = 0.0;
+      shooting.reset();
       Flame.audio.play('laser_load.wav');
     } else {
       if (y <= yi) {

@@ -5,12 +5,12 @@ import '../options.dart';
 import 'gui_commons.dart';
 
 final optionLine = (String label, String value, VoidCallback onTap) => pad(
-      new GestureDetector(
-        child: new Row(
+      GestureDetector(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            new Text(label + ': ', style: small_text),
-            new Text(value, style: small_text),
+            Text(label + ': ', style: small_text),
+            Text(value, style: small_text),
           ],
         ),
         onTap: onTap,
@@ -38,10 +38,10 @@ class _OptionsState extends State<OptionsScreen> {
   @override
   Widget build(BuildContext context) {
     if (options == null) {
-      return new Center(child: new Text('Loading...'));
+      return Center(child: Text('Loading...'));
     }
     if (currentTextField != null) {
-      return rootContainer(new Column(
+      return rootContainer(Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           currentTextField,
@@ -64,13 +64,13 @@ class _OptionsState extends State<OptionsScreen> {
             optionItemBuilder(title, value.toString(), doubleValidator,
                 (str) => setter(double.parse(str)));
     return rootContainer(
-      new Row(
+      Row(
         children: [
-          new Expanded(
-              child: new Column(
+          Expanded(
+              child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              pad(new Text('OpTiOnS', style: title), 20.0),
+              pad(Text('OpTiOnS', style: title), 20.0),
               btn('Save', () {
                 options.save().then((a) {
                   Navigator.of(context).pop();
@@ -81,11 +81,11 @@ class _OptionsState extends State<OptionsScreen> {
               }),
             ],
           )),
-          new Expanded(
-            child: new Padding(
+          Expanded(
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: new Form(
-                child: new ListView(
+              child: Form(
+                child: ListView(
                   children: [
                     doubleItemBuilder(
                       'Bullet Speed',

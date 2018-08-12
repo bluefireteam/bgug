@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:audioplayers/audioplayer.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
@@ -308,7 +309,7 @@ class MyGame extends BaseGame {
   bool won = false;
   int _points = 0;
   int lastGeneratedSector = 0;
-  AudioPlayer music;
+  Future<AudioPlayer> music;
   int _currentSlot;
   Ad endGameAd;
   GameState _state;
@@ -317,7 +318,9 @@ class MyGame extends BaseGame {
 
   set state(GameState state) {
     if (state == GameState.STOPPED) {
-      music?.stop();
+      if (music != null) {
+        music.then((p) => p.release());
+      }
     }
     _state = state;
   }
@@ -384,7 +387,7 @@ class MyGame extends BaseGame {
     }
 
     state = GameState.RUNNING;
-    Flame.audio.loop('music.wav').then((player) => music = player);
+    music = Flame.audio.loop('music.wav');
     endGameAd = random.nextDouble() < 0.25 ? Ad.loadAd() : null;
   }
 
@@ -533,10 +536,10 @@ class MyGame extends BaseGame {
               player.x = b.x - player.width;
             } else if (player.y > size.height / 2) {
               player.y = b.y - player.height;
-              player.angle = math.PI / 2;
+              player.angle = math.pi / 2;
             } else {
               player.y = b.y + b.height;
-              player.angle = 3 * math.PI / 2;
+              player.angle = 3 * math.pi / 2;
             }
             player.velocity = new Position(0.0, 0.0);
             if (!player.dead()) {

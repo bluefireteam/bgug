@@ -17,21 +17,21 @@ class PlayerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final img = new Image.asset(player.type.icon);
-    final txt = new Text(locked ? 'Buy for ${player.type.cost} coins' : player.type.name, style: text);
-    final container = new Container(
-      child: new FittedBox(child: new Column(children: [ img, txt ])),
-      constraints: new BoxConstraints.tight(new Size(64.0, 72.0)),
-      decoration: new BoxDecoration(
-        color: locked ? new Color(0xA0202020) : null,
-        border: new Border.all(
+    final img = Image.asset(player.type.icon);
+    final txt = Text(locked ? 'Buy for ${player.type.cost} coins' : player.type.name, style: text);
+    final container = Container(
+      child: FittedBox(child: Column(children: [ img, txt ])),
+      constraints: BoxConstraints.tight(Size(64.0, 72.0)),
+      decoration: BoxDecoration(
+        color: locked ? Color(0xA0202020) : null,
+        border: Border.all(
           color: selected ? Colors.orange : Colors.black,
           width: 2.0,
         ),
       ),
-      padding: new EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(8.0),
     );
-    return new Expanded(child: new GestureDetector(
+    return Expanded(child: GestureDetector(
       child: container,
       onTap: onTap,
     ));
@@ -40,7 +40,7 @@ class PlayerButton extends StatelessWidget {
 
 class BuyScreen extends StatefulWidget {
   @override
-  State<BuyScreen> createState() => new _BuyState();
+  State<BuyScreen> createState() => _BuyState();
 }
 
 class _BuyState extends State<BuyScreen> {
@@ -58,37 +58,37 @@ class _BuyState extends State<BuyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          image: new AssetImage('assets/images/bg.png'),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/bg.png'),
           fit: BoxFit.fill,
         ),
       ),
-      child: new Row(
+      child: Row(
         children: [
-          new Expanded(
-            child: new Column(
+          Expanded(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                pad(new Text('CoInS', style: title), 20.0),
+                pad(Text('CoInS', style: title), 20.0),
                 btn('Go back', () {
                   Navigator.of(context).pop();
                 }),
               ],
             ),
           ),
-          new Expanded(
-            child: new Padding(
+          Expanded(
+            child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: new Column(
+              child: Column(
                 children: [
-                  new Row(children: [
-                    pad(new Image.asset('assets/images/btns/coin.png'), 16.0),
-                    pad(new Text('${Data.buy.coins} available', style: text), 16.0),
+                  Row(children: [
+                    pad(Image.asset('assets/images/btns/coin.png'), 16.0),
+                    pad(Text('${Data.buy.coins} available', style: text), 16.0),
                   ]),
-                  new Row(children: Data.buy.players().map((p) => new PlayerButton(p, tap(p))).toList()),
-                  new Text('Buy more coins!', style: text),
+                  Row(children: Data.buy.players().map((p) => PlayerButton(p, tap(p))).toList()),
+                  Text('Buy more coins!', style: text),
                 ],
               ),
             ),

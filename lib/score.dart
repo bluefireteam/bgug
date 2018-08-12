@@ -12,24 +12,24 @@ class Score {
 
   Score.fromMap(Map map) {
     scores = [];
-    (map["scores"] as List).forEach((s) => scores.add(s.toString()));
+    (map['scores'] as List).forEach((s) => scores.add(s.toString()));
   }
 
   Map toMap() {
-    return {"scores": scores};
+    return {'scores': scores};
   }
 
   Future save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("score", JSON.encode(toMap()));
+    prefs.setString('score', json.encode(toMap()));
   }
 
   static Future<Score> fetch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String json = prefs.getString("score");
-    if (json == null) {
+    String jsonStr = prefs.getString('score');
+    if (jsonStr == null) {
       return new Score();
     }
-    return new Score.fromMap(JSON.decode(json));
+    return new Score.fromMap(json.decode(jsonStr));
   }
 }
