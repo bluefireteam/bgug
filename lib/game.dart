@@ -391,13 +391,13 @@ class MyGame extends BaseGame {
     endGameAd = random.nextDouble() < 0.25 ? Ad.loadAd() : null;
   }
 
-  generateSector(int sector) {
+  void generateSector(int sector) {
     double start = sector * SECTOR_LENGTH;
 
     List<SpriteComponent> stuffSoFar = new List();
     for (int i = random.nextInt(4); i > 0; i--) {
-      var x = start + random.nextInt(1000);
-      var obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
+      double x = start + random.nextInt(1000);
+      Obstacle obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
       if (stuffSoFar.any((box) =>
           box.toRect().overlaps(obstacle.toRect()) ||
           (box.x - obstacle.x).abs() < 20.0)) {
@@ -410,9 +410,8 @@ class MyGame extends BaseGame {
       add(obstacle);
     }
     for (int i = random.nextInt(6); i > 0; i--) {
-      var x = start + random.nextInt(1000);
-      var gem =
-          new Gem(x, (size) => BAR_SIZE + random.nextInt(8) * tenth(size));
+      double x = start + random.nextInt(1000);
+      Gem gem = new Gem(x, (size) => BAR_SIZE + random.nextInt(8) * tenth(size));
       if (stuffSoFar.any((box) => box.toRect().overlaps(gem.toRect()))) {
         if (random.nextBool()) {
           i++;
@@ -425,8 +424,7 @@ class MyGame extends BaseGame {
   }
 
   Player getPlayer() {
-    return components.firstWhere((c) => c is Player, orElse: () => null)
-        as Player;
+    return components.firstWhere((c) => c is Player, orElse: () => null) as Player;
   }
 
   Set<Shooter> getShooters() {
@@ -483,7 +481,7 @@ class MyGame extends BaseGame {
       fontSize: 32.0,
       color: material.Colors.green,
     );
-    var where = new Offset(
+    final where = new Offset(
       size.width - tp.width - 8.0,
       size.height - tp.height - 8.0,
     );
