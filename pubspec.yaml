@@ -4,7 +4,7 @@ description: Break Guns Using Blocks!
 dependencies:
   flutter:
     sdk: flutter
-  flame: 0.9.1
+  flame: 0.9.5
   shared_preferences: 0.4.1
   firebase_admob: 0.5.4
   google_sign_in: 3.0.3
