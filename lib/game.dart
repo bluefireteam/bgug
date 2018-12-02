@@ -83,7 +83,7 @@ class Background extends SpriteComponent {
     this.sprite = new Sprite.fromImage(
         bg.generate(this.width.toInt() ~/ 4, this.height.toInt() ~/ 4));
     this.speed =
-        new Position(SPEED, 0.0).rotate(random.nextDouble() * 2 * math.PI);
+        new Position(SPEED, 0.0).rotate(random.nextDouble() * 2 * math.pi);
   }
 
   @override
