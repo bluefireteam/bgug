@@ -20,7 +20,7 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
   static const WIDTH = SCALE * SRC_WIDTH;
   static const HEIGHT = SCALE * SRC_HEIGHT;
 
-  static final bgPaint = new Paint()..color = const Color(0xFF828588);
+  static final bgPaint = new Paint()..color = const Color(0xFF626262);
 
   Rect bgRect;
   double gaugeStrength, clock;
@@ -47,7 +47,7 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
   @override
   void resize(Size size) {
     this.x = (size.width - WIDTH) / 2;
-    this.y = 0.0;
+    this.y = 4.0;
     this.bgRect = new Rect.fromLTWH(0.0, 0.0, size.width, HEIGHT);
     this.meterPerPixel = .75 / size_tenth(size);
   }
