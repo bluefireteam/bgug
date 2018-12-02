@@ -32,9 +32,9 @@ class Options {
     this.bulletSpeed = 500.0;
     this.buttonCost = 5;
     this.buttonIncCost = 2;
-    this.maxHoldJumpMillis = 2000;
+    this.maxHoldJumpMillis = 500;
     this.gravityImpulse = 1875.0;
-    this.jumpImpulse = 12000.0;
+    this.jumpImpulse = 11000.0;
     this.diveImpulse = 20000.0;
     this.jumpTimeMultiplier = 0.0004;
   }
@@ -43,9 +43,9 @@ class Options {
     bulletSpeed = map['bulletSpeed'] ?? 500.0;
     buttonCost = map['buttonCost'] ?? 5;
     buttonIncCost = map['buttonIncCost'] ?? 2;
-    maxHoldJumpMillis = map['maxHoldJumpMillis'] ?? 2000;
+    maxHoldJumpMillis = map['maxHoldJumpMillis'] ?? 500;
     gravityImpulse = map['gravityImpulse'] ?? 1875.0;
-    jumpImpulse = map['jumpImpulse'] ?? 12000.0;
+    jumpImpulse = map['jumpImpulse'] ?? 11000.0;
     diveImpulse = map['diveImpulse'] ?? 20000.0;
     jumpTimeMultiplier = map['jumpTimeMultiplier'] ?? 0.0004;
   }

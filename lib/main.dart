@@ -40,6 +40,9 @@ main() async {
     ..onTapDown = (TapDownDetails details) {
       lastPost = new Position.fromOffset(details.globalPosition);
       lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
+      if (Main.game != null && Main.game.state == GameState.RUNNING) {
+        Main.game.startInput(lastPost, lastTimestamp);
+      }
     }
     ..onTapUp = (TapUpDetails details) {
       if (lastTimestamp == null || lastPost == null) {

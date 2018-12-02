@@ -172,11 +172,20 @@ class BgugGame extends BaseGame {
     }
   }
 
+  void startInput(Position p, int dt) {
+    if (p != null && player != null && !player.dead()) {
+      if (p.x > size.width / 2) {
+        queryComponents.hud().startGauge();
+      }
+    }
+  }
+
   void input(Position p, int dt) {
     if (dt > Data.options.maxHoldJumpMillis) {
       dt = Data.options.maxHoldJumpMillis;
     }
     if (p != null && player != null) {
+      queryComponents.hud().clearGauge();
       if (player.dead()) {
         quitGame();
       } else {
