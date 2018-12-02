@@ -96,4 +96,11 @@ class Player extends PositionComponent {
       diveImpulse.impulse(0.1);
     }
   }
+
+  void die() {
+    if (!dead()) {
+      state = 'dead';
+      Flame.audio.play('death.wav');
+    }
+  }
 }

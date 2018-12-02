@@ -21,6 +21,8 @@ import 'components/top.dart';
 import 'components/shooter.dart';
 import 'components/player.dart';
 
+import 'mixins/has_game_ref.dart';
+
 import 'queryable_ordered_set.dart';
 import 'constants.dart';
 import 'game_mode.dart';
@@ -33,7 +35,7 @@ enum GameState {
   RUNNING, DEAD, AD, STOPPED
 }
 
-class MyGame extends BaseGame {
+class BgugGame extends BaseGame {
   GameMode gameMode;
   Button button;
   bool won = false;
@@ -45,6 +47,8 @@ class MyGame extends BaseGame {
   GameState _state;
 
   QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
+  Player get player => queryComponents.player();
+  Iterable<Shooter> get shooters => queryComponents.shooters();
 
   @override
   OrderedSet<Component> get components => queryComponents;
@@ -71,7 +75,7 @@ class MyGame extends BaseGame {
 
   set currentSlot(int currentSlot) {
     _currentSlot = currentSlot;
-    queryComponents.shooters().forEach((shooter) {
+    shooters.forEach((shooter) {
       shooter.currentSlot = currentSlot;
       if (size != null) {
         shooter.resize(size);
@@ -79,7 +83,7 @@ class MyGame extends BaseGame {
     });
   }
 
-  MyGame(this.gameMode) {
+  BgugGame(this.gameMode) {
     _start();
   }
 
@@ -126,13 +130,21 @@ class MyGame extends BaseGame {
     endGameAd = random.nextDouble() < 0.25 ? Ad.loadAd() : null;
   }
 
+  @override
+  void add(Component c) {
+    if (c is HasGameRef) {
+      (c as HasGameRef).gameRef = this;
+    }
+    super.add(c);
+  }
+
   void generateSector(int sector) {
     double start = sector * SECTOR_LENGTH;
 
     List<SpriteComponent> stuffSoFar = new List();
     for (int i = random.nextInt(4); i > 0; i--) {
       double x = start + random.nextInt(1000);
-      Obstacle obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
+      UpObstacle obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
       if (stuffSoFar.any((box) =>
           box.toRect().overlaps(obstacle.toRect()) ||
           (box.x - obstacle.x).abs() < 20.0)) {
@@ -162,7 +174,6 @@ class MyGame extends BaseGame {
     if (dt > Data.options.maxHoldJumpMillis) {
       dt = Data.options.maxHoldJumpMillis;
     }
-    final player = queryComponents.player();
     if (p != null && player != null) {
       if (player.dead()) {
         quitGame();
@@ -218,8 +229,6 @@ class MyGame extends BaseGame {
       return;
     }
 
-    Player player = queryComponents.player();
-
     while (
         player.x + 2 * SECTOR_LENGTH >= SECTOR_LENGTH * lastGeneratedSector) {
       lastGeneratedSector++;
@@ -228,50 +237,7 @@ class MyGame extends BaseGame {
 
     super.update(dt);
 
-    queryComponents.shooters().forEach((shooter) {
-      if (shooter.shoot()) {
-        add(new Bullet(
-            Data.options.bulletSpeed, size, shooter.toPosition().add(camera)));
-      }
-    });
-
     if (player != null) {
-      Rect playerRect = player.toRect();
-      components.forEach((c) {
-        if (c is Gem) {
-          if (c.toRect().overlaps(playerRect)) {
-            c.collect();
-            points++;
-            Flame.audio.play('gem_collect.wav');
-          }
-        } else if (c is Coin) {
-          if (c.toRect().overlaps(playerRect)) {
-            c.collected = true;
-            Data.buy.coins++;
-            Flame.audio.play('gem_collect.wav');
-          }
-        } else if (c is UpObstacle || c is Bullet) {
-          PositionComponent b = c as PositionComponent;
-          if (b.toRect().overlaps(playerRect)) {
-            if (b is Bullet ||
-                player.velocity.x.abs() >= player.velocity.y.abs()) {
-              player.x = b.x - player.width;
-            } else if (player.y > size.height / 2) {
-              player.y = b.y - player.height;
-              player.angle = math.pi / 2;
-            } else {
-              player.y = b.y + b.height;
-              player.angle = 3 * math.pi / 2;
-            }
-            player.velocity = new Position(0.0, 0.0);
-            if (!player.dead()) {
-              player.state = 'dead';
-              Flame.audio.play('death.wav');
-            }
-          }
-        }
-      });
-
       cameraFollow(player);
 
       if (gameMode.hasLimit && player.x >= gameMode.mapSize) {
