@@ -2,305 +2,35 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flutter/material.dart' as material;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_admob/firebase_admob.dart';
-import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
-import 'package:flame/components/animation_component.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/position.dart';
-import 'package:flame/sprite.dart';
-import 'package:flutter/material.dart' as material;
+import 'package:ordered_set/ordered_set.dart';
 
-import 'background.dart' as bg;
+import 'components/background.dart';
+import 'components/button.dart';
+import 'components/coin.dart';
+import 'components/floor.dart';
+import 'components/gem.dart';
+import 'components/obstacle.dart';
+import 'components/top.dart';
+import 'components/shooter.dart';
+import 'components/player.dart';
+
+import 'queryable_ordered_set.dart';
 import 'constants.dart';
 import 'game_mode.dart';
-import 'shooter.dart';
-import 'util.dart';
 import 'ads.dart';
 import 'data.dart';
 
-class Button extends SpriteComponent {
-  static const MARGIN = 4.0;
-  int cost, incCost;
-  bool active = false;
-
-  Button() : super.square(64.0, 'button.png') {
-    cost = Data.options.buttonCost;
-    incCost = Data.options.buttonIncCost;
-  }
-
-  void evaluate(int points) {
-    active = points >= cost;
-  }
-
-  int click(int points) {
-    if (active) {
-      int currentCost = cost;
-      cost += incCost;
-      return currentCost;
-    }
-    return 0;
-  }
-
-  @override
-  render(Canvas canvas) {
-    if (sprite != null && sprite.loaded() && x != null && y != null) {
-      prepareCanvas(canvas);
-      sprite.render(canvas, width, height);
-      material.TextPainter tp = Flame.util.text(
-        toUpperCaseNumber(cost.toString()),
-        fontFamily: 'Blox2',
-        fontSize: 32.0,
-        color: active ? material.Colors.green : material.Colors.blueGrey,
-      );
-      tp.paint(canvas, new Offset(32.0 - tp.width / 2, 32.0));
-    }
-  }
-
-  @override
-  void resize(Size size) {
-    x = MARGIN;
-    y = MARGIN;
-  }
-
-  @override
-  bool isHud() {
-    return true;
-  }
-}
-
-class Background extends SpriteComponent {
-  static const SPEED = 50.0;
-  Position speed;
-
-  @override
-  void resize(Size size) {
-    this.width = size.width;
-    this.height = size.height;
-    this.x = this.y = 0.0;
-    this.sprite = new Sprite.fromImage(
-        bg.generate(this.width.toInt() ~/ 4, this.height.toInt() ~/ 4));
-    this.speed =
-        new Position(SPEED, 0.0).rotate(random.nextDouble() * 2 * math.pi);
-  }
-
-  @override
-  void render(Canvas c) {
-    Flame.util.drawWhere(c, new Position(x - width, y - height),
-        (c) => sprite.render(c, width, height));
-    Flame.util.drawWhere(
-        c, new Position(x, y - height), (c) => sprite.render(c, width, height));
-    Flame.util.drawWhere(
-        c, new Position(x - width, y), (c) => sprite.render(c, width, height));
-    super.render(c);
-  }
-
-  @override
-  void update(double dt) {
-    this.x += dt * speed.x;
-    this.y += dt * speed.y;
-
-    this.x = this.x % width;
-    this.y = this.y % height;
-  }
-
-  @override
-  bool isHud() {
-    return true;
-  }
-}
-
-class UpObstacle extends SpriteComponent {
-  UpObstacle(double x)
-      : super.fromSprite(48.0, 48.0, new Sprite('obstacle.png')) {
-    this.x = x;
-    this.y = BAR_SIZE;
-  }
-
-  @override
-  void resize(Size size) {
-    width = height = tenth(size);
-  }
-}
-
-class Obstacle extends UpObstacle {
-  Obstacle(double x) : super(x);
-
-  @override
-  void resize(Size size) {
-    super.resize(size);
-    y = size.height - height - BAR_SIZE;
-  }
-}
-
-class Floor extends SpriteComponent {
-  Floor() : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png'));
-
-  @override
-  bool isHud() {
-    return true;
-  }
-
-  @override
-  resize(Size size) {
-    x = 0.0;
-    y = size.height - BAR_SIZE;
-    width = size.width;
-  }
-}
-
-class Top extends SpriteComponent {
-  Top() : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png'));
-
-  @override
-  bool isHud() {
-    return true;
-  }
-
-  @override
-  resize(Size size) {
-    x = 0.0;
-    y = 0.0;
-    width = size.width;
-  }
-}
-
-class Coin extends AnimationComponent {
-  bool collected = false;
-
-  Coin(double x, double y) : super.sequenced(1.0, 1.0, 'coin.png', 6, textureWidth: 18.0, textureHeight: 20.0) {
-    this.x = x;
-    this.y = y;
-  }
-
-  @override
-  void resize(Size size) {
-    this.width = this.height = 0.8 * tenth(size);
-  }
-
-  @override
-  bool destroy() {
-    return this.collected;
-  }
-}
-
-class Gem extends SpriteComponent {
-  bool collected = false;
-  double Function(Size) yGen;
-
-  Gem(double x, this.yGen) : super.fromSprite(1.0, 1.0, new Sprite('gem.png')) {
-    this.x = x;
-  }
-
-  @override
-  void resize(Size size) {
-    this.width = this.height = 0.8 * tenth(size);
-    this.y = yGen(size);
-  }
-
-  void collect() {
-    this.collected = true;
-  }
-
-  @override
-  bool destroy() {
-    return this.collected;
-  }
-}
+math.Random random = new math.Random();
 
 enum GameState {
   RUNNING, DEAD, AD, STOPPED
-}
-
-class Player extends PositionComponent {
-  Map<String, Animation> animations;
-  Position velocity = new Position(320.0, 0.0);
-  double y0, yf;
-  String state;
-
-  Impulse jumpImpulse;
-  Impulse diveImpulse;
-
-  Player() {
-    jumpImpulse = new Impulse(-1 * Data.options.jumpImpulse);
-    diveImpulse = new Impulse(Data.options.diveImpulse);
-
-    final sprite = Data.buy.selected.sprite;
-    animations = new Map<String, Animation>();
-    animations['running'] = new Animation.sequenced(sprite, 8, textureWidth: 16.0)
-      ..stepTime = 0.0375;
-    animations['dead'] = new Animation.sequenced(sprite, 3, textureWidth: 16.0, textureX: 16.0 * 8)
-      ..stepTime = 0.075;
-    state = 'running';
-  }
-
-  @override
-  void render(Canvas canvas) {
-    prepareCanvas(canvas);
-    animations[state].getSprite().render(canvas, width, height);
-  }
-
-  @override
-  void update(double t) {
-    animations[state].update(t);
-
-    if (dead()) {
-      return;
-    }
-
-    velocity.y += jumpImpulse.tick(t);
-    velocity.y += diveImpulse.tick(t);
-    if (falling()) {
-      velocity.y += Data.options.gravityImpulse * t;
-    }
-
-    x += velocity.x * t;
-    y += velocity.y * t;
-    if (y > y0) {
-      y = y0;
-      clearVerticalSpeed();
-    } else if (y < yf) {
-      y = yf;
-      clearVerticalSpeed();
-    }
-  }
-
-  void clearVerticalSpeed() {
-    velocity.y = 0.0;
-    jumpImpulse.clear();
-    diveImpulse.clear();
-  }
-
-  bool dead() {
-    return state == 'dead';
-  }
-
-  bool falling() {
-    return y < y0;
-  }
-
-  @override
-  void resize(Size size) {
-    height = tenth(size);
-    width = 48.0 / 54.0 * height;
-    y = y0 = size.height - height - BAR_SIZE;
-    yf = BAR_SIZE;
-  }
-
-  void jump(int dt) {
-    if (!falling()) {
-      jumpImpulse.impulse(Data.options.jumpTimeMultiplier * dt);
-      Flame.audio.play('jump.wav');
-    }
-  }
-
-  void dive() {
-    if (falling()) {
-      diveImpulse.impulse(0.1);
-    }
-  }
 }
 
 class MyGame extends BaseGame {
@@ -313,6 +43,11 @@ class MyGame extends BaseGame {
   int _currentSlot;
   Ad endGameAd;
   GameState _state;
+
+  QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
+
+  @override
+  OrderedSet<Component> get components => queryComponents;
 
   GameState get state => _state;
 
@@ -336,7 +71,7 @@ class MyGame extends BaseGame {
 
   set currentSlot(int currentSlot) {
     _currentSlot = currentSlot;
-    getShooters().forEach((shooter) {
+    queryComponents.shooters().forEach((shooter) {
       shooter.currentSlot = currentSlot;
       if (size != null) {
         shooter.resize(size);
@@ -423,22 +158,11 @@ class MyGame extends BaseGame {
     }
   }
 
-  Player getPlayer() {
-    return components.firstWhere((c) => c is Player, orElse: () => null) as Player;
-  }
-
-  Set<Shooter> getShooters() {
-    return components
-        .where((c) => c is Shooter)
-        .map((c) => c as Shooter)
-        .toSet();
-  }
-
   void input(Position p, int dt) {
     if (dt > Data.options.maxHoldJumpMillis) {
       dt = Data.options.maxHoldJumpMillis;
     }
-    final player = getPlayer();
+    final player = queryComponents.player();
     if (p != null && player != null) {
       if (player.dead()) {
         quitGame();
@@ -494,7 +218,7 @@ class MyGame extends BaseGame {
       return;
     }
 
-    Player player = getPlayer();
+    Player player = queryComponents.player();
 
     while (
         player.x + 2 * SECTOR_LENGTH >= SECTOR_LENGTH * lastGeneratedSector) {
@@ -504,7 +228,7 @@ class MyGame extends BaseGame {
 
     super.update(dt);
 
-    getShooters().forEach((shooter) {
+    queryComponents.shooters().forEach((shooter) {
       if (shooter.shoot()) {
         add(new Bullet(
             Data.options.bulletSpeed, size, shooter.toPosition().add(camera)));
