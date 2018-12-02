@@ -24,9 +24,9 @@ class Bullet extends AnimationComponent with HasGameRef {
       : super(16.0, 16.0, new Animation.sequenced('bullet.png', 3,
             textureWidth: 16.0, textureHeight: 16.0)
           ..stepTime = 0.075) {
-    this.width = this.height = (1.0 - 2 * FRAC) * tenth(size);
+    this.width = this.height = (1.0 - 2 * FRAC) * size_tenth(size);
     this.x = p.x - this.width + 7.0;
-    this.y = p.y + FRAC * tenth(size);
+    this.y = p.y + FRAC * size_tenth(size);
   }
 
   @override
@@ -43,14 +43,11 @@ class Bullet extends AnimationComponent with HasGameRef {
   }
 
   @override
-  bool destroy() {
-    print(x < -width);
-    return this.x < -this.width;
-  }
+  bool destroy() => x < -width;
 
   @override
   void resize(Size size) {
-    this.width = this.height = (1.0 - 2 * FRAC) * tenth(size);
+    this.width = this.height = (1.0 - 2 * FRAC) * size_tenth(size);
   }
 }
 
@@ -58,7 +55,6 @@ class ShooterCane extends PositionComponent {
   static final Paint paint = new Paint()..color = const Color(0xFF626262);
 
   ShooterCane() {
-    this.y = BAR_SIZE;
     this.width = 2.0;
   }
 
@@ -74,7 +70,8 @@ class ShooterCane extends PositionComponent {
   @override
   void resize(Size size) {
     this.x = size.width - 8.0;
-    this.height = tenth(size) * 10;
+    this.y = size_top(size);
+    this.height = size_tenth(size) * 10;
   }
 
   @override
@@ -195,7 +192,7 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
     super.resize(size);
     x = size.width - width;
 
-    step = tenth(size);
+    step = size_tenth(size);
     height = step;
     action = '';
     if (kind == 'up') {
@@ -204,8 +201,8 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
         // TODO Flame.audio.play('?') destruction audio
         _destroy = true;
       }
-      yi = BAR_SIZE + step * minUp;
-      yf = BAR_SIZE + step * 3;
+      yi = size_top(size) + step * minUp;
+      yf = size_top(size) + step * 3;
       y = yi;
     } else {
       var maxDown = Block.maxDown(currentSlot);
@@ -213,8 +210,8 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
         // TODO Flame.audio.play('?') destruction audio
         _destroy = true;
       }
-      yi = BAR_SIZE + step * 4;
-      yf = BAR_SIZE + step * maxDown;
+      yi = size_top(size) + step * 4;
+      yf = size_top(size) + step * maxDown;
       y = yf;
     }
   }
@@ -274,9 +271,9 @@ class Block extends SpriteComponent {
 
   @override
   void resize(Size size) {
-    this.width = this.height = tenth(size);
+    this.width = this.height = size_tenth(size);
     this.x = size.width - this.width;
-    this.y = this.slot * this.height + BAR_SIZE;
+    this.y = size_top(size) + this.slot * this.height;
   }
 
   @override

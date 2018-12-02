@@ -78,10 +78,10 @@ class Player extends PositionComponent {
 
   @override
   void resize(Size size) {
-    height = tenth(size);
+    height = size_tenth(size);
     width = 48.0 / 54.0 * height;
-    y = y0 = size.height - height - BAR_SIZE;
-    yf = BAR_SIZE;
+    y = y0 = size_bottom(size) - height;
+    yf = size_top(size);
   }
 
   void jump(int dt) {

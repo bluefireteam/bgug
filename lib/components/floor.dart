@@ -6,7 +6,7 @@ import 'package:flame/sprite.dart';
 import '../constants.dart';
 
 class Floor extends SpriteComponent {
-  Floor() : super.fromSprite(1.0, BAR_SIZE, new Sprite('base.png'));
+  Floor() : super.fromSprite(1.0, BAR_SIZE, new Sprite('base_bottom.png'));
 
   @override
   bool isHud() {
@@ -16,7 +16,7 @@ class Floor extends SpriteComponent {
   @override
   void resize(Size size) {
     x = 0.0;
-    y = size.height - BAR_SIZE;
+    y = size_bottom(size);
     width = size.width;
   }
 }

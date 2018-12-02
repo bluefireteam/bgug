@@ -16,12 +16,14 @@ dev_dependencies:
 
 flutter:
   assets:
+   - assets/images/hud_bg.png
    - assets/images/btns/coin.png
    - assets/images/btns/player_1.png
    - assets/images/btns/player_2.png
    - assets/images/player_1.png
    - assets/images/player_2.png
-   - assets/images/base.png
+   - assets/images/base_bottom.png
+   - assets/images/base_top.png
    - assets/images/block.png
    - assets/images/obstacle.png
    - assets/images/shooter.png
@@ -38,6 +40,9 @@ flutter:
    - assets/audio/laser_shoot.wav
    - assets/audio/music.wav
   fonts:
+    - family: 5x5
+      fonts:
+        - asset: assets/fonts/5x5_pixel.ttf
     - family: Blox2
       fonts:
         - asset: assets/fonts/blox2.ttf

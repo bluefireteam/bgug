@@ -14,12 +14,12 @@ class UpObstacle extends SpriteComponent with HasGameRef, Resizable {
   UpObstacle(double x)
       : super.fromSprite(48.0, 48.0, new Sprite('obstacle.png')) {
     this.x = x;
-    this.y = BAR_SIZE;
   }
 
   @override
   void resize(Size size) {
-    width = height = tenth(size);
+    width = height = size_tenth(size);
+    y = size_top(size);
   }
 
   @override
@@ -47,7 +47,7 @@ class Obstacle extends UpObstacle {
 
   @override
   void resize(Size size) {
-    super.resize(size);
-    y = size.height - height - BAR_SIZE;
+    width = height = size_tenth(size);
+    y = size_bottom(size) - height;
   }
 }

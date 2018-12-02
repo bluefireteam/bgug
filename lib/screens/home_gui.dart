@@ -34,7 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ]).then((audios) =>
           print('Done loading ' + audios.length.toString() + ' audios.')),
       Flame.images.loadAll([
-        'base.png',
+        'base_bottom.png',
+        'base_top.png',
         'bg.png',
         'block.png',
         'bullet.png',

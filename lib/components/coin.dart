@@ -22,6 +22,7 @@ class Coin extends AnimationComponent with HasGameRef {
 
     if (this.toRect().overlaps(gameRef.player.toRect())) {
       this.collected = true;
+      gameRef.currentCoins++;
       Data.buy.coins++;
       Flame.audio.play('gem_collect.wav');
     }
@@ -29,7 +30,7 @@ class Coin extends AnimationComponent with HasGameRef {
 
   @override
   void resize(Size size) {
-    width = height = 0.8 * tenth(size);
+    width = height = 0.8 * size_tenth(size);
   }
 
   @override
