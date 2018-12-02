@@ -1,5 +1,7 @@
 import 'package:firebase_admob/firebase_admob.dart';
 
+const bool ENABLE_ADS = false;
+
 class Ad {
   InterstitialAd _ad;
   MobileAdListener listener;
@@ -23,10 +25,16 @@ class Ad {
   }
 
   static void startup() {
-    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-1451557002406313~7960207117');
+    if (ENABLE_ADS) {
+      FirebaseAdMob.instance.initialize(
+          appId: 'ca-app-pub-1451557002406313~7960207117');
+    }
   }
 
   static Ad loadAd() {
+    if (!ENABLE_ADS) {
+      return null;
+    }
     MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo(
       keywords: ['game', 'blocks', 'guns'],
       testDevices: ['7C7297F768C9EDFA141F5C3E1821C8E2'],

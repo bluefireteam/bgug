@@ -8,7 +8,7 @@ import 'package:flame/components/animation_component.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 
 math.Random random = new math.Random();
 
