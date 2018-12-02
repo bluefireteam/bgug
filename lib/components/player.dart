@@ -45,14 +45,16 @@ class Player extends PositionComponent {
       return;
     }
 
-    velocity.y += jumpImpulse.tick(t);
-    velocity.y += diveImpulse.tick(t);
+    x += velocity.x * t;
+
+    double accY = jumpImpulse.tick(t) + diveImpulse.tick(t);
     if (falling()) {
-      velocity.y += Data.options.gravityImpulse * t;
+      accY += Data.options.gravityImpulse;
     }
 
-    x += velocity.x * t;
-    y += velocity.y * t;
+    y += accY * t * t / 2 + velocity.y * t;
+    velocity.y += accY * t;
+
     if (y > y0) {
       y = y0;
       clearVerticalSpeed();

@@ -31,7 +31,7 @@ class Impulse {
       return 0.0;
     }
     time -= dt;
-    return force * dt;
+    return force;
   }
 
   void clear() {

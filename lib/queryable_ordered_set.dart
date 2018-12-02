@@ -3,6 +3,7 @@ import 'package:ordered_set/comparing.dart';
 import 'package:ordered_set/ordered_set.dart';
 
 import 'components/player.dart';
+import 'components/hud.dart';
 import 'components/shooter.dart';
 
 class QueryableOrderedSet<T, E> extends OrderedSet<T> {
@@ -58,12 +59,14 @@ class QueryableOrderedSet<T, E> extends OrderedSet<T> {
 enum Queries {
   Player,
   Shooter,
+  Hud,
 }
 
 class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
   QueryableOrderedSetImpl() : super(Comparing.on((c) => c.priority())) {
     this.register(Queries.Player, (e) => e is Player);
     this.register(Queries.Shooter, (e) => e is Shooter);
+    this.register(Queries.Hud, (e) => e is Hud);
   }
 
   Iterable<Shooter> shooters() {
@@ -72,6 +75,10 @@ class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
 
   Player player() {
     return _postFilter<Player>(Queries.Player).first;
+  }
+
+  Hud hud() {
+    return _postFilter<Hud>(Queries.Hud).first;
   }
 
   Iterable<T> _postFilter<T>(Queries e) {
