@@ -28,7 +28,7 @@ class Gem extends SpriteComponent with HasGameRef {
 
   @override
   void resize(Size size) {
-    width = height = 0.8 * tenth(size);
+    width = height = 0.8 * size_tenth(size);
     y = yGen(size);
   }
 

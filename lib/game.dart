@@ -11,6 +11,7 @@ import 'package:flame/game.dart';
 import 'package:flame/position.dart';
 import 'package:ordered_set/ordered_set.dart';
 
+import 'components/hud.dart';
 import 'components/background.dart';
 import 'components/button.dart';
 import 'components/coin.dart';
@@ -39,7 +40,7 @@ class BgugGame extends BaseGame {
   GameMode gameMode;
   Button button;
   bool won = false;
-  int _points = 0;
+  int _points = 0, currentCoins = 0;
   int lastGeneratedSector = 0;
   Future<AudioPlayer> music;
   int _currentSlot;
@@ -105,6 +106,7 @@ class BgugGame extends BaseGame {
   void _start() {
     add(new Background());
 
+    add(new Hud());
     add(new Top());
     add(new Floor());
     add(new Player());
@@ -118,7 +120,7 @@ class BgugGame extends BaseGame {
     }
 
     // sector 0 pre-gen
-    add(new Gem(500.0, (size) => size.height - BAR_SIZE - 0.9 * tenth(size)));
+    add(new Gem(500.0, (size) => size_bottom(size) - 1.2 * size_tenth(size)));
     add(new Coin(500.0, 200.0));
 
     if (gameMode != GameMode.PLAYGROUND) {
@@ -158,7 +160,7 @@ class BgugGame extends BaseGame {
     }
     for (int i = random.nextInt(6); i > 0; i--) {
       double x = start + random.nextInt(1000);
-      Gem gem = new Gem(x, (size) => BAR_SIZE + random.nextInt(8) * tenth(size));
+      Gem gem = new Gem(x, (size) => size_bottom(size) - (1 + random.nextInt(8)) * size_tenth(size));
       if (stuffSoFar.any((box) => box.toRect().overlaps(gem.toRect()))) {
         if (random.nextBool()) {
           i++;
@@ -203,24 +205,9 @@ class BgugGame extends BaseGame {
   void render(Canvas c) {
     if (state == GameState.RUNNING || state == GameState.DEAD) {
       super.render(c);
-      renderPoints(c);
     } else {
       c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height), new Paint()..color = material.Colors.black);
     }
-  }
-
-  void renderPoints(Canvas c) {
-    material.TextPainter tp = Flame.util.text(
-      points.toString(),
-      fontFamily: 'Blox2',
-      fontSize: 32.0,
-      color: material.Colors.green,
-    );
-    final where = new Offset(
-      size.width - tp.width - 8.0,
-      size.height - tp.height - 8.0,
-    );
-    tp.paint(c, where);
   }
 
   @override

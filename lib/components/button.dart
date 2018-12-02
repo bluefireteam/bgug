@@ -53,4 +53,7 @@ class Button extends SpriteComponent {
 
   @override
   bool isHud() => true;
+
+  @override
+  int priority() => 2;
 }
