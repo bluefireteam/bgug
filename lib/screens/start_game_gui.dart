@@ -12,7 +12,7 @@ class StartGameScreen extends StatefulWidget {
   State<StatefulWidget> createState() => new _StartGameScreenState();
 }
 
-class MyGameBinder extends MyGame {
+class MyGameBinder extends BgugGame {
   _StartGameScreenState screen;
 
   MyGameBinder(this.screen, GameMode mode) : super(mode);

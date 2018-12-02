@@ -4,15 +4,19 @@ import 'dart:ui';
 import 'package:flame/flame.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/resizable.dart';
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
+import 'player.dart';
+import '../mixins/has_game_ref.dart';
 import '../constants.dart';
+import '../data.dart';
 
 math.Random random = new math.Random();
 
-class Bullet extends AnimationComponent {
+class Bullet extends AnimationComponent with HasGameRef {
   static const double FRAC = 8.0 / 46.0;
   double speed;
 
@@ -29,10 +33,18 @@ class Bullet extends AnimationComponent {
   void update(double dt) {
     super.update(dt);
     this.x -= speed * dt;
+
+    Player player = gameRef.player;
+    if (this.toRect().overlaps(player.toRect())) {
+      player.x = x - player.width;
+      player.velocity = new Position(0.0, 0.0);
+      player.die();
+    }
   }
 
   @override
   bool destroy() {
+    print(x < -width);
     return this.x < -this.width;
   }
 
@@ -71,7 +83,7 @@ class ShooterCane extends PositionComponent {
   }
 }
 
-class Shooter extends SpriteComponent {
+class Shooter extends SpriteComponent with HasGameRef, Resizable {
   static const double SPEED = 120.0;
 
   String kind;
@@ -119,6 +131,11 @@ class Shooter extends SpriteComponent {
       y = yi;
     } else if (y > yf) {
       y = yf;
+    }
+
+    if (this.shoot()) {
+      gameRef.add(new Bullet(
+          Data.options.bulletSpeed, size, toPosition().add(gameRef.camera)));
     }
   }
 
@@ -175,6 +192,7 @@ class Shooter extends SpriteComponent {
 
   @override
   void resize(Size size) {
+    super.resize(size);
     x = size.width - width;
 
     step = tenth(size);

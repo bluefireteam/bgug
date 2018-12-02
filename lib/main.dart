@@ -14,7 +14,7 @@ import 'screens/start_game_gui.dart';
 import 'screens/buy_gui.dart';
 
 class Main {
-  static MyGame game;
+  static BgugGame game;
 }
 
 main() async {
