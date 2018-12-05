@@ -8,18 +8,19 @@ import 'package:flutter/material.dart' as material;
 import 'package:flame/flame.dart';
 
 import '../data.dart';
-import '../util.dart';
 
 class Button extends PositionComponent with Resizable {
   static const MARGIN = 4.0;
   static const SIZE = 48.0;
-  int cost, incCost;
-  bool active = false;
+  int cost, points, incCost;
+
+  bool get active => points >= cost;
 
   Animation activeAnimation;
   Sprite inactiveSprite;
 
   Button() {
+    points = 0;
     width = height = SIZE;
     cost = Data.options.buttonCost;
     incCost = Data.options.buttonIncCost;
@@ -30,10 +31,6 @@ class Button extends PositionComponent with Resizable {
 
   void update(double dt) {
     activeAnimation.update(dt);
-  }
-
-  void evaluate(int points) {
-    active = points >= cost;
   }
 
   int click(int points) {
@@ -57,12 +54,12 @@ class Button extends PositionComponent with Resizable {
 
   void renderText(Canvas canvas) {
     material.TextPainter tp = Flame.util.text(
-      toUpperCaseNumber(cost.toString()),
+      '$points / $cost',
       fontFamily: '5x5',
-      fontSize: 32.0,
+      fontSize: 18.0,
       color: active ? material.Colors.green : material.Colors.blueGrey,
     );
-    tp.paint(canvas, new Offset(32.0 - tp.width / 2, 32.0));
+    tp.paint(canvas, new Offset((width - tp.width) / 2, -18.0));
   }
 
   @override

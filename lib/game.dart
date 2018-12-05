@@ -69,7 +69,7 @@ class BgugGame extends BaseGame {
 
   set points(int points) {
     _points = points;
-    button?.evaluate(points);
+    button?.points = points;
   }
 
   int get currentSlot => _currentSlot;
