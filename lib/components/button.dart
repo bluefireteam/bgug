@@ -19,6 +19,8 @@ class Button extends PositionComponent with Resizable {
   Animation activeAnimation;
   Sprite inactiveSprite;
 
+  static Sprite gem = new Sprite('gem.png');
+
   Button() {
     points = 0;
     width = height = SIZE;
@@ -48,6 +50,7 @@ class Button extends PositionComponent with Resizable {
     if (sprite != null && sprite.loaded() && x != null && y != null) {
       prepareCanvas(canvas);
       sprite.render(canvas, width, height);
+      gem.renderRect(canvas, new Rect.fromLTWH(-14.0, -16.0, 16.0, 16.0));
       renderText(canvas);
     }
   }
@@ -57,7 +60,7 @@ class Button extends PositionComponent with Resizable {
       '$points / $cost',
       fontFamily: '5x5',
       fontSize: 18.0,
-      color: active ? material.Colors.green : material.Colors.blueGrey,
+      color: active ? material.Colors.green : const Color(0xFF404040),
     );
     tp.paint(canvas, new Offset((width - tp.width) / 2, -18.0));
   }
