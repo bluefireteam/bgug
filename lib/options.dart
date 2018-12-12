@@ -34,7 +34,7 @@ class Options {
     this.buttonIncCost = 2;
     this.maxHoldJumpMillis = 500;
     this.gravityImpulse = 1875.0;
-    this.jumpImpulse = 11000.0;
+    this.jumpImpulse = 7000.0;
     this.diveImpulse = 20000.0;
     this.jumpTimeMultiplier = 0.0004;
   }
@@ -45,7 +45,7 @@ class Options {
     buttonIncCost = map['buttonIncCost'] ?? 2;
     maxHoldJumpMillis = map['maxHoldJumpMillis'] ?? 500;
     gravityImpulse = map['gravityImpulse'] ?? 1875.0;
-    jumpImpulse = map['jumpImpulse'] ?? 11000.0;
+    jumpImpulse = map['jumpImpulse'] ?? 7000.0;
     diveImpulse = map['diveImpulse'] ?? 20000.0;
     jumpTimeMultiplier = map['jumpTimeMultiplier'] ?? 0.0004;
   }

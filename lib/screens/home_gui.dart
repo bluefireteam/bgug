@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'jump.wav',
         'laser_load.wav',
         'laser_shoot.wav',
-        'music.wav'
+        'music.wav',
       ]).then((audios) =>
           print('Done loading ' + audios.length.toString() + ' audios.')),
       Flame.images.loadAll([
@@ -45,7 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
         'obstacle.png',
         'player_1.png',
         'player_2.png',
-        'shooter.png'
+        'shooter.png',
+        'endgame_bg.png',
       ]).then((images) =>
           print('Done loading ' + images.length.toString() + ' images.')),
       Data.loadAll(),

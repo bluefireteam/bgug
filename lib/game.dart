@@ -10,8 +10,8 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/position.dart';
 import 'package:ordered_set/ordered_set.dart';
-
 import 'components/hud.dart';
+
 import 'components/background.dart';
 import 'components/button.dart';
 import 'components/coin.dart';
@@ -21,6 +21,7 @@ import 'components/obstacle.dart';
 import 'components/top.dart';
 import 'components/shooter.dart';
 import 'components/player.dart';
+import 'components/end_card.dart';
 
 import 'mixins/has_game_ref.dart';
 
@@ -33,7 +34,7 @@ import 'data.dart';
 math.Random random = new math.Random();
 
 enum GameState {
-  RUNNING, DEAD, AD, STOPPED
+  RUNNING, DEAD, END_CARD, STOPPED
 }
 
 class BgugGame extends BaseGame {
@@ -49,6 +50,8 @@ class BgugGame extends BaseGame {
 
   QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
   Player get player => queryComponents.player();
+  Hud get hud => queryComponents.hud();
+  EndCard get endCard => queryComponents.endCard();
   Iterable<Shooter> get shooters => queryComponents.shooters();
 
   @override
@@ -88,9 +91,14 @@ class BgugGame extends BaseGame {
     _start();
   }
 
+  void showEndCard() {
+    state = GameState.END_CARD;
+    add(new EndCard(hud.maxDistance, points, currentCoins));
+  }
+
   void quitGame() {
     if (endGameAd != null && endGameAd.loaded) {
-      state = GameState.AD;
+//      state = GameState.AD;
       endGameAd.listener = (evt) {
         print('Event : ${evt.toString()}');
         if (evt == MobileAdEvent.closed) {
@@ -184,10 +192,22 @@ class BgugGame extends BaseGame {
     if (dt > Data.options.maxHoldJumpMillis) {
       dt = Data.options.maxHoldJumpMillis;
     }
+    if (state == GameState.END_CARD) {
+      int result = endCard.click(p);
+
+      if (result == 0) {
+        // replay
+      } else if (result == 1) {
+        // x2 coin button
+      } else if (result == 2) {
+        state = GameState.STOPPED;
+      }
+      return;
+    }
     if (p != null && player != null) {
       queryComponents.hud().clearGauge();
       if (player.dead()) {
-        quitGame();
+        showEndCard();
       } else {
         if (button != null && button.toRect().contains(p.toOffset())) {
           int dPoint = button.click(points);
@@ -196,7 +216,7 @@ class BgugGame extends BaseGame {
             currentSlot = Block.nextSlot(currentSlot);
             if (currentSlot == Block.WIN && !gameMode.gunRespawn) {
               won = true;
-              quitGame();
+              showEndCard();
             } else {
               add(new Block(currentSlot));
             }
@@ -212,7 +232,7 @@ class BgugGame extends BaseGame {
 
   @override
   void render(Canvas c) {
-    if (state == GameState.RUNNING || state == GameState.DEAD) {
+    if (state == GameState.RUNNING || state == GameState.DEAD || state == GameState.END_CARD) {
       super.render(c);
     } else {
       c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height), new Paint()..color = material.Colors.black);
@@ -221,7 +241,7 @@ class BgugGame extends BaseGame {
 
   @override
   void update(double dt) {
-    if (state != GameState.RUNNING) {
+    if (state != GameState.RUNNING && state != GameState.END_CARD) {
       return;
     }
 
@@ -238,10 +258,10 @@ class BgugGame extends BaseGame {
 
       if (gameMode.hasLimit && player.x >= gameMode.mapSize) {
         won = true;
-        quitGame();
+        showEndCard();
       }
     } else {
-      quitGame();
+      showEndCard();
     }
   }
 
@@ -256,5 +276,9 @@ class BgugGame extends BaseGame {
 
   String score() {
     return gameMode.score(points, won);
+  }
+
+  bool handlingClick() {
+    return state == GameState.RUNNING || state == GameState.END_CARD;
   }
 }

@@ -40,7 +40,7 @@ main() async {
     ..onTapDown = (TapDownDetails details) {
       lastPost = new Position.fromOffset(details.globalPosition);
       lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
-      if (Main.game != null && Main.game.state == GameState.RUNNING) {
+      if (Main.game != null && Main.game.handlingClick()) {
         Main.game.startInput(lastPost, lastTimestamp);
       }
     }
@@ -49,7 +49,7 @@ main() async {
         return;
       }
       int dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
-      if (Main.game != null && Main.game.state == GameState.RUNNING) {
+      if (Main.game != null && Main.game.handlingClick()) {
         Main.game.input(lastPost, dt);
         lastTimestamp = lastPost = null;
       }

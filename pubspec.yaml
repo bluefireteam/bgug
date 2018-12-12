@@ -33,6 +33,7 @@ flutter:
    - assets/images/coin_button.png
    - assets/images/bg.png
    - assets/images/button.png
+   - assets/images/endgame_bg.png
    - assets/audio/death.wav
    - assets/audio/gem_collect.wav
    - assets/audio/jump.wav

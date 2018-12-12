@@ -1,13 +1,12 @@
 import 'dart:ui';
 import 'dart:math' as math;
 
-import 'package:flame/flame.dart';
-import 'package:flutter/material.dart' as material;
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
 import 'package:flame/sprite.dart';
-
 import '../data.dart';
+
+import '../util.dart';
 import '../constants.dart';
 import '../mixins/has_game_ref.dart';
 
@@ -94,30 +93,17 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
       maxDistance = gameRef.player.x;
     }
     String dist = (maxDistance * this.meterPerPixel).toStringAsFixed(1);
-    renderText(canvas, '$dist m', where, fn: _center(SIZE));
+    Text.render(canvas, '$dist m', where, fn: Text.center(SIZE));
   }
 
   void renderGems(Canvas canvas) {
     const where = Offset(SCALE * 161.0, SCALE * 10.0);
-    renderText(canvas, gameRef.points.toString(), where);
+    Text.render(canvas, gameRef.points.toString(), where);
   }
 
   void renderCoins(Canvas canvas) {
     const where = Offset(SCALE * 200.0, SCALE * 10.0);
-    renderText(canvas, gameRef.currentCoins.toString(), where);
-  }
-
-  static Offset _identity(Offset o, material.TextPainter tp) => o;
-  static Offset Function(Offset, material.TextPainter) _center(double size) => (where, tp) => Offset(where.dx + (size - tp.width) / 2, where.dy);
-
-  void renderText(Canvas canvas, String text, Offset where, { Offset Function(Offset, material.TextPainter) fn = _identity }) {
-    material.TextPainter tp = Flame.util.text(
-      text,
-      fontFamily: '5x5',
-      fontSize: 28.0,
-      color: const Color(0xFF404040),
-    );
-    tp.paint(canvas, fn(where, tp));
+    Text.render(canvas, gameRef.currentCoins.toString(), where);
   }
 
   void renderGauge(Canvas canvas) {

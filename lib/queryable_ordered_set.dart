@@ -1,8 +1,9 @@
 import 'package:flame/components/component.dart';
 import 'package:ordered_set/comparing.dart';
 import 'package:ordered_set/ordered_set.dart';
-
 import 'components/player.dart';
+
+import 'components/end_card.dart';
 import 'components/hud.dart';
 import 'components/shooter.dart';
 
@@ -60,6 +61,7 @@ enum Queries {
   Player,
   Shooter,
   Hud,
+  EndCard,
 }
 
 class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
@@ -67,6 +69,7 @@ class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
     this.register(Queries.Player, (e) => e is Player);
     this.register(Queries.Shooter, (e) => e is Shooter);
     this.register(Queries.Hud, (e) => e is Hud);
+    this.register(Queries.EndCard, (e) => e is EndCard);
   }
 
   Iterable<Shooter> shooters() {
@@ -79,6 +82,10 @@ class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
 
   Hud hud() {
     return _postFilter<Hud>(Queries.Hud).first;
+  }
+
+  EndCard endCard() {
+    return _postFilter<EndCard>(Queries.EndCard).first;
   }
 
   Iterable<T> _postFilter<T>(Queries e) {
