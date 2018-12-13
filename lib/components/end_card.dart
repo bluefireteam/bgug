@@ -5,31 +5,31 @@ import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
 import '../util.dart';
+import '../mixins/has_game_ref.dart';
 
-class EndCard extends SpriteComponent {
+class EndCard extends SpriteComponent with HasGameRef {
   static const FRAC =  112 / 144;
   static final Sprite gem = new Sprite('gem.png');
   static final Sprite coin = new Sprite('coin.png', width: 16.0);
 
-  double totalDistance;
-  int points, coins;
-
   double _scaleFactor;
+  double _tickTimer;
+  static const double CLOCK_SPEED = 0.25;
 
-  EndCard(this.totalDistance, this.points, this.coins) : super.rectangle(1, 1, 'endgame_bg.png');
+  EndCard() : super.rectangle(1, 1, 'endgame_bg.png');
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
 
     Text.render(canvas, 'Total Distance:', const Offset(0, 32.0), fontSize: 18.0, fn: Text.center(width));
-    Text.render(canvas, totalDistance.toStringAsFixed(2), const Offset(0, 48.0), fontSize: 18.0, fn: Text.center(width));
+    Text.render(canvas, gameRef.hud.maxDistance.toStringAsFixed(2) + ' m', const Offset(0, 48.0), fontSize: 18.0, fn: Text.center(width));
 
     gem.renderCentered(canvas, Position(width / 2 - 16.0, 96.0), Position(32.0, 32.0));
-    Text.render(canvas, '$points', Offset(width / 2 + 16.0, 96.0 - 8.0));
+    Text.render(canvas, '${gameRef.points}', Offset(width / 2 + 16.0, 96.0 - 8.0));
 
     coin.renderCentered(canvas, Position(width / 2 - 16.0, 142.0), Position(32.0, 32.0));
-    Text.render(canvas, '$coins', Offset(width / 2 + 16.0, 142.0 - 8.0));
+    Text.render(canvas, '${gameRef.currentCoins}', Offset(width / 2 + 16.0, 142.0 - 8.0));
   }
 
   int click(Position tap) {
@@ -47,6 +47,24 @@ class EndCard extends SpriteComponent {
     }
 
     return -1;
+  }
+
+  @override
+  void update(double dt) {
+    if (_tickTimer != null) {
+      _tickTimer -= dt;
+      while (_tickTimer != null && _tickTimer <= 0) {
+        gameRef.points--;
+        gameRef.currentCoins++;
+        if (gameRef.points == 0) {
+          _tickTimer = null;
+        } else {
+          _tickTimer += CLOCK_SPEED;
+        }
+      }
+    } else if (gameRef.points > 0) {
+      _tickTimer = CLOCK_SPEED;
+    }
   }
 
   @override

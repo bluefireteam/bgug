@@ -93,7 +93,7 @@ class BgugGame extends BaseGame {
 
   void showEndCard() {
     state = GameState.END_CARD;
-    add(new EndCard(hud.maxDistance, points, currentCoins));
+    add(new EndCard());
   }
 
   void quitGame() {
