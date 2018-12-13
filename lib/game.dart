@@ -33,9 +33,7 @@ import 'data.dart';
 
 math.Random random = new math.Random();
 
-enum GameState {
-  RUNNING, DEAD, END_CARD, STOPPED
-}
+enum GameState { RUNNING, DEAD, END_CARD, STOPPED, AD }
 
 class BgugGame extends BaseGame {
   GameMode gameMode;
@@ -49,9 +47,13 @@ class BgugGame extends BaseGame {
   GameState _state;
 
   QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
+
   Player get player => queryComponents.player();
+
   Hud get hud => queryComponents.hud();
+
   EndCard get endCard => queryComponents.endCard();
+
   Iterable<Shooter> get shooters => queryComponents.shooters();
 
   @override
@@ -96,9 +98,9 @@ class BgugGame extends BaseGame {
     add(new EndCard());
   }
 
-  void quitGame() {
+  void showAd() {
     if (endGameAd != null && endGameAd.loaded) {
-//      state = GameState.AD;
+      state = GameState.AD;
       endGameAd.listener = (evt) {
         print('Event : ${evt.toString()}');
         if (evt == MobileAdEvent.closed) {
@@ -107,8 +109,21 @@ class BgugGame extends BaseGame {
       };
       endGameAd.show();
     } else {
+      print('No ad to show!');
       state = GameState.STOPPED;
     }
+  }
+
+  void restart() {
+    components.clear();
+    won = false;
+    _points = 0;
+    currentCoins = 0;
+    lastGeneratedSector = 0;
+
+    currentSlot = 0;
+
+    _start();
   }
 
   void _start() {
@@ -121,8 +136,8 @@ class BgugGame extends BaseGame {
 
     if (gameMode.hasGuns) {
       add(new ShooterCane());
-      add(new Shooter('up'));
-      add(new Shooter('down'));
+      add(new Shooter('up', currentSlot));
+      add(new Shooter('down', currentSlot));
       add(new Block(currentSlot = Block.nextSlot(-1)));
       add(new Block(currentSlot = Block.nextSlot(currentSlot)));
     }
@@ -154,7 +169,8 @@ class BgugGame extends BaseGame {
     List<SpriteComponent> stuffSoFar = new List();
     for (int i = random.nextInt(4); i > 0; i--) {
       double x = start + random.nextInt(1000);
-      UpObstacle obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
+      UpObstacle obstacle =
+          random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
       if (stuffSoFar.any((box) =>
           box.toRect().overlaps(obstacle.toRect()) ||
           (box.x - obstacle.x).abs() < 20.0)) {
@@ -168,7 +184,10 @@ class BgugGame extends BaseGame {
     }
     for (int i = random.nextInt(6); i > 0; i--) {
       double x = start + random.nextInt(1000);
-      Gem gem = new Gem(x, (size) => size_bottom(size) - (1 + random.nextInt(8)) * size_tenth(size));
+      Gem gem = new Gem(
+          x,
+          (size) =>
+              size_bottom(size) - (1 + random.nextInt(8)) * size_tenth(size));
       if (stuffSoFar.any((box) => box.toRect().overlaps(gem.toRect()))) {
         if (random.nextBool()) {
           i++;
@@ -193,15 +212,7 @@ class BgugGame extends BaseGame {
       dt = Data.options.maxHoldJumpMillis;
     }
     if (state == GameState.END_CARD) {
-      int result = endCard.click(p);
-
-      if (result == 0) {
-        // replay
-      } else if (result == 1) {
-        // x2 coin button
-      } else if (result == 2) {
-        state = GameState.STOPPED;
-      }
+      endCard.click(p);
       return;
     }
     if (p != null && player != null) {
@@ -232,10 +243,13 @@ class BgugGame extends BaseGame {
 
   @override
   void render(Canvas c) {
-    if (state == GameState.RUNNING || state == GameState.DEAD || state == GameState.END_CARD) {
+    if (state == GameState.RUNNING ||
+        state == GameState.DEAD ||
+        state == GameState.END_CARD) {
       super.render(c);
     } else {
-      c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height), new Paint()..color = material.Colors.black);
+      c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height),
+          new Paint()..color = material.Colors.black);
     }
   }
 

@@ -5,10 +5,11 @@ import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
 import '../util.dart';
+import '../game.dart';
 import '../mixins/has_game_ref.dart';
 
 class EndCard extends SpriteComponent with HasGameRef {
-  static const FRAC =  112 / 144;
+  static const FRAC = 112 / 144;
   static final Sprite gem = new Sprite('gem.png');
   static final Sprite coin = new Sprite('coin.png', width: 16.0);
 
@@ -32,21 +33,23 @@ class EndCard extends SpriteComponent with HasGameRef {
     Text.render(canvas, '${gameRef.currentCoins}', Offset(width / 2 + 16.0, 142.0 - 8.0));
   }
 
-  int click(Position tap) {
+  void click(Position tap) {
+    if (_tickTimer != null) {
+      _tickTimer -= 0.2;
+      return;
+    }
     Rect replay = Rect.fromLTWH(24.0, 80.0, 87.0, 16.0);
     Rect doubleCoins = Rect.fromLTWH(24.0, 100.0, 87.0, 16.0);
     Rect back = Rect.fromLTWH(24.0, 120.0, 87.0, 16.0);
 
     Offset relativeTap = tap.minus(new Position(x, y)).times(_scaleFactor).toOffset();
     if (replay.contains(relativeTap)) {
-      return 0;
+      gameRef.restart();
     } else if (doubleCoins.contains(relativeTap)) {
-      return 1;
+      gameRef.showAd(); // TODO impl double coins later
     } else if (back.contains(relativeTap)) {
-      return 2;
+      gameRef.state = GameState.STOPPED;
     }
-
-    return -1;
   }
 
   @override

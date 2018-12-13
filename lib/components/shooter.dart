@@ -95,7 +95,7 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
   Animation shooting = new Animation.sequenced('shooter.png', 2,
       textureWidth: 32.0, textureX: 32.0);
 
-  Shooter(this.kind)
+  Shooter(this.kind, this.currentSlot)
       : super.fromSprite(32.0, 46.0, new Sprite('shooter.png', width: 32.0));
 
   @override
