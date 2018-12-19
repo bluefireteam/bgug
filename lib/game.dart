@@ -153,8 +153,11 @@ class BgugGame extends BaseGame {
     }
 
     state = GameState.RUNNING;
+    if (music != null) {
+      music.then((p) => p.release());
+    }
     music = Flame.audio.loop('music.wav');
-    endGameAd = random.nextDouble() < 0.25 ? Ad.loadAd() : null;
+    endGameAd = Ad.loadAd();
   }
 
   @override
