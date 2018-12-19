@@ -24,6 +24,7 @@ class EndCard extends SpriteComponent with HasGameRef {
   int get coins => (doubleCoins ? 2 : 1) * gameRef.currentCoins;
   double get _scaleFactor => height / 144.0;
 
+  bool get _showAdButton => gameRef.hasAd() && !doubleCoins;
   Position get _buttonSize => new Position(_scaleFactor * 64.0, _scaleFactor * 16.0);
 
   Position get _replayPosition => new Position((width - _buttonSize.x) / 2, _scaleFactor * 80);
@@ -49,7 +50,7 @@ class EndCard extends SpriteComponent with HasGameRef {
     buttonReplay.renderPosition(canvas, _replayPosition, _buttonSize);
     buttonGoBack.renderPosition(canvas, _goBackPosition, _buttonSize);
 
-    if (gameRef.hasAd()) {
+    if (_showAdButton) {
       buttonX2Coins.renderPosition(canvas, _x2Position, _buttonSize);
     }
   }
@@ -67,7 +68,7 @@ class EndCard extends SpriteComponent with HasGameRef {
     if (replay.contains(relativeTap)) {
       gameRef.award(coins);
       gameRef.restart();
-    } else if (gameRef.hasAd() && doubleCoins.contains(relativeTap)) {
+    } else if (_showAdButton && doubleCoins.contains(relativeTap)) {
       gameRef.showAd();
     } else if (back.contains(relativeTap)) {
       gameRef.award(coins);
