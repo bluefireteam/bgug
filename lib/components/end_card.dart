@@ -13,9 +13,22 @@ class EndCard extends SpriteComponent with HasGameRef {
   static final Sprite gem = new Sprite('gem.png');
   static final Sprite coin = new Sprite('coin.png', width: 16.0);
 
-  double _scaleFactor;
+  static final Sprite buttonReplay = new Sprite('endgame_buttons.png', height: 16.0);
+  static final Sprite buttonX2Coins = new Sprite('endgame_buttons.png', height: 16.0, y: 16.0);
+  static final Sprite buttonGoBack = new Sprite('endgame_buttons.png', height: 16.0, y: 32.0);
+
+  bool doubleCoins = false; // TODO allow Player to buy this!
   double _tickTimer;
   static const double CLOCK_SPEED = 0.25;
+
+  int get coins => (doubleCoins ? 2 : 1) * gameRef.currentCoins;
+  double get _scaleFactor => height / 144.0;
+
+  Position get _buttonSize => new Position(_scaleFactor * 64.0, _scaleFactor * 16.0);
+
+  Position get _replayPosition => new Position((width - _buttonSize.x) / 2, _scaleFactor * 80);
+  Position get _x2Position => new Position((width - _buttonSize.x) / 2, _scaleFactor * 100);
+  Position get _goBackPosition => new Position((width - _buttonSize.x) / 2, _scaleFactor * 120);
 
   EndCard() : super.rectangle(1, 1, 'endgame_bg.png');
 
@@ -24,13 +37,21 @@ class EndCard extends SpriteComponent with HasGameRef {
     super.render(canvas);
 
     Text.render(canvas, 'Total Distance:', const Offset(0, 32.0), fontSize: 18.0, fn: Text.center(width));
-    Text.render(canvas, gameRef.hud.maxDistance.toStringAsFixed(2) + ' m', const Offset(0, 48.0), fontSize: 18.0, fn: Text.center(width));
+    Text.render(canvas, gameRef.hud.maxDistanceInMeters.toStringAsFixed(2) + ' m', const Offset(0, 48.0), fontSize: 18.0, fn: Text.center(width));
 
     gem.renderCentered(canvas, Position(width / 2 - 16.0, 96.0), Position(32.0, 32.0));
     Text.render(canvas, '${gameRef.points}', Offset(width / 2 + 16.0, 96.0 - 8.0));
 
     coin.renderCentered(canvas, Position(width / 2 - 16.0, 142.0), Position(32.0, 32.0));
-    Text.render(canvas, '${gameRef.currentCoins}', Offset(width / 2 + 16.0, 142.0 - 8.0));
+    Color color = doubleCoins ? const Color(0xFF10D594) : const Color(0xFF404040);
+    Text.render(canvas, '$coins', Offset(width / 2 + 16.0, 142.0 - 8.0), color: color);
+
+    buttonReplay.renderPosition(canvas, _replayPosition, _buttonSize);
+    buttonGoBack.renderPosition(canvas, _goBackPosition, _buttonSize);
+
+    if (gameRef.hasAd()) {
+      buttonX2Coins.renderPosition(canvas, _x2Position, _buttonSize);
+    }
   }
 
   void click(Position tap) {
@@ -38,16 +59,18 @@ class EndCard extends SpriteComponent with HasGameRef {
       _tickTimer -= 0.2;
       return;
     }
-    Rect replay = Rect.fromLTWH(24.0, 80.0, 87.0, 16.0);
-    Rect doubleCoins = Rect.fromLTWH(24.0, 100.0, 87.0, 16.0);
-    Rect back = Rect.fromLTWH(24.0, 120.0, 87.0, 16.0);
+    Rect replay = Position.rectFrom(_replayPosition, _buttonSize);
+    Rect doubleCoins = Position.rectFrom(_x2Position, _buttonSize);
+    Rect back = Position.rectFrom(_goBackPosition, _buttonSize);
 
-    Offset relativeTap = tap.minus(new Position(x, y)).times(_scaleFactor).toOffset();
+    Offset relativeTap = tap.minus(new Position(x, y)).toOffset();
     if (replay.contains(relativeTap)) {
+      gameRef.award(coins);
       gameRef.restart();
-    } else if (doubleCoins.contains(relativeTap)) {
-      gameRef.showAd(); // TODO impl double coins later
+    } else if (gameRef.hasAd() && doubleCoins.contains(relativeTap)) {
+      gameRef.showAd();
     } else if (back.contains(relativeTap)) {
+      gameRef.award(coins);
       gameRef.state = GameState.STOPPED;
     }
   }
@@ -74,7 +97,6 @@ class EndCard extends SpriteComponent with HasGameRef {
   void resize(Size size) {
     height = size.height * 0.8;
     width = FRAC * height;
-    _scaleFactor = 144.0 / height;
 
     x = (size.width - width) / 2;
     y = (size.height - height) / 2;

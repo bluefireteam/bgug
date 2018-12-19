@@ -23,7 +23,6 @@ class Coin extends AnimationComponent with HasGameRef {
     if (this.toRect().overlaps(gameRef.player.toRect())) {
       this.collected = true;
       gameRef.currentCoins++;
-      Data.buy.coins++;
       Flame.audio.play('gem_collect.wav');
     }
   }

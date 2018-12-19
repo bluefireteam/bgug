@@ -53,12 +53,13 @@ class Text {
   static void render(Canvas canvas, String text, Offset where, {
     double fontSize = 28.0,
     Offset Function(Offset, material.TextPainter) fn = left,
+    Color color = const Color(0xFF404040),
   }) {
     material.TextPainter tp = Flame.util.text(
       text,
       fontFamily: '5x5',
       fontSize: fontSize,
-      color: const Color(0xFF404040),
+      color: color,
     );
     tp.paint(canvas, fn(where, tp));
   }

@@ -26,6 +26,8 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
   double meterPerPixel = 1.0;
   double maxDistance = 0.0;
 
+  double get maxDistanceInMeters => maxDistance * this.meterPerPixel;
+
   Hud()
       : super.fromSprite(WIDTH, HEIGHT,
             new Sprite('hud_bg.png', width: SRC_WIDTH, height: SRC_HEIGHT));
@@ -92,7 +94,7 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
     if (gameRef.player.x > maxDistance) {
       maxDistance = gameRef.player.x;
     }
-    String dist = (maxDistance * this.meterPerPixel).toStringAsFixed(1);
+    String dist = maxDistanceInMeters.toStringAsFixed(1);
     Text.render(canvas, '$dist m', where, fn: Text.center(SIZE));
   }
 

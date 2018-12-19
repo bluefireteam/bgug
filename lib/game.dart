@@ -98,19 +98,21 @@ class BgugGame extends BaseGame {
     add(new EndCard());
   }
 
+  bool hasAd() {
+    return endGameAd != null && endGameAd.loaded;
+  }
+
   void showAd() {
-    if (endGameAd != null && endGameAd.loaded) {
+    if (hasAd()) {
       state = GameState.AD;
       endGameAd.listener = (evt) {
         print('Event : ${evt.toString()}');
         if (evt == MobileAdEvent.closed) {
-          state = GameState.STOPPED;
+          endCard.doubleCoins = true;
+          state = GameState.END_CARD;
         }
       };
       endGameAd.show();
-    } else {
-      print('No ad to show!');
-      state = GameState.STOPPED;
     }
   }
 
@@ -294,5 +296,9 @@ class BgugGame extends BaseGame {
 
   bool handlingClick() {
     return state == GameState.RUNNING || state == GameState.END_CARD;
+  }
+
+  void award(int coins) {
+    Data.buy.coins += coins;
   }
 }
