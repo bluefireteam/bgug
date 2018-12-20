@@ -9,7 +9,10 @@ import '../game.dart';
 import '../mixins/has_game_ref.dart';
 
 class EndCard extends SpriteComponent with HasGameRef {
+  static const GEM_TO_COIN_RATIO = 4;
   static const FRAC = 112 / 144;
+  static const CLOCK_SPEED = 0.25;
+
   static final Sprite gem = new Sprite('gem.png');
   static final Sprite coin = new Sprite('coin.png', width: 16.0);
 
@@ -19,7 +22,6 @@ class EndCard extends SpriteComponent with HasGameRef {
 
   bool doubleCoins = false; // TODO allow Player to buy this!
   double _tickTimer;
-  static const double CLOCK_SPEED = 0.25;
 
   int get coins => (doubleCoins ? 2 : 1) * gameRef.currentCoins;
   double get _scaleFactor => height / 144.0;
@@ -44,7 +46,8 @@ class EndCard extends SpriteComponent with HasGameRef {
     Text.render(canvas, '${gameRef.points}', Offset(width / 2 + 16.0, 96.0 - 8.0));
 
     coin.renderCentered(canvas, Position(width / 2 - 16.0, 142.0), Position(32.0, 32.0));
-    Color color = doubleCoins ? const Color(0xFF10D594) : const Color(0xFF404040);
+    bool lastTicks = _tickTimer != null && _tickTimer < CLOCK_SPEED / 3;
+    Color color = doubleCoins || lastTicks ? const Color(0xFF10D594) : const Color(0xFF404040);
     Text.render(canvas, '$coins', Offset(width / 2 + 16.0, 142.0 - 8.0), color: color);
 
     buttonReplay.renderPosition(canvas, _replayPosition, _buttonSize);
@@ -82,7 +85,7 @@ class EndCard extends SpriteComponent with HasGameRef {
       _tickTimer -= dt;
       while (_tickTimer != null && _tickTimer <= 0) {
         gameRef.points--;
-        gameRef.currentCoins++;
+        gameRef.currentCoins += GEM_TO_COIN_RATIO;
         if (gameRef.points == 0) {
           _tickTimer = null;
         } else {
