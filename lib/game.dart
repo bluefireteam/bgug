@@ -47,13 +47,9 @@ class BgugGame extends BaseGame {
   GameState _state;
 
   QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
-
   Player get player => queryComponents.player();
-
   Hud get hud => queryComponents.hud();
-
   EndCard get endCard => queryComponents.endCard();
-
   Iterable<Shooter> get shooters => queryComponents.shooters();
 
   @override
