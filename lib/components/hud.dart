@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
+import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import '../data.dart';
 
@@ -28,9 +29,9 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
 
   double get maxDistanceInMeters => maxDistance * this.meterPerPixel;
 
-  Hud()
-      : super.fromSprite(WIDTH, HEIGHT,
-            new Sprite('hud_bg.png', width: SRC_WIDTH, height: SRC_HEIGHT));
+  Hud() : super.fromSprite(WIDTH, HEIGHT, new Sprite('hud_bg.png', width: SRC_WIDTH, height: SRC_HEIGHT));
+
+  Position get gemPosition => new Position(x + SCALE * 141, y + SCALE * 7);
 
   @override
   void update(double t) {

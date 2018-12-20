@@ -162,10 +162,24 @@ class BgugGame extends BaseGame {
 
   @override
   void add(Component c) {
+    preAdd(c);
+    super.add(c);
+  }
+
+  @override
+  void addLater(Component c) {
+    preAdd(c);
+    super.addLater(c);
+  }
+
+  // TODO add this to Flame!
+  void preAdd(Component c) {
     if (c is HasGameRef) {
       (c as HasGameRef).gameRef = this;
     }
-    super.add(c);
+    if (size != null) {
+      c.resize(size);
+    }
   }
 
   void generateSector(int sector) {
@@ -174,11 +188,8 @@ class BgugGame extends BaseGame {
     List<SpriteComponent> stuffSoFar = new List();
     for (int i = random.nextInt(4); i > 0; i--) {
       double x = start + random.nextInt(1000);
-      UpObstacle obstacle =
-          random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
-      if (stuffSoFar.any((box) =>
-          box.toRect().overlaps(obstacle.toRect()) ||
-          (box.x - obstacle.x).abs() < 20.0)) {
+      UpObstacle obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
+      if (stuffSoFar.any((box) => box.toRect().overlaps(obstacle.toRect()) || (box.x - obstacle.x).abs() < 20.0)) {
         if (random.nextBool()) {
           i++;
         }
@@ -189,10 +200,7 @@ class BgugGame extends BaseGame {
     }
     for (int i = random.nextInt(6); i > 0; i--) {
       double x = start + random.nextInt(1000);
-      Gem gem = new Gem(
-          x,
-          (size) =>
-              size_bottom(size) - (1 + random.nextInt(8)) * size_tenth(size));
+      Gem gem = new Gem(x, (size) => size_bottom(size) - (1 + random.nextInt(8)) * size_tenth(size));
       if (stuffSoFar.any((box) => box.toRect().overlaps(gem.toRect()))) {
         if (random.nextBool()) {
           i++;
@@ -248,13 +256,10 @@ class BgugGame extends BaseGame {
 
   @override
   void render(Canvas c) {
-    if (state == GameState.RUNNING ||
-        state == GameState.DEAD ||
-        state == GameState.END_CARD) {
+    if (state == GameState.RUNNING || state == GameState.DEAD || state == GameState.END_CARD) {
       super.render(c);
     } else {
-      c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height),
-          new Paint()..color = material.Colors.black);
+      c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height), new Paint()..color = material.Colors.black);
     }
   }
 
@@ -264,8 +269,7 @@ class BgugGame extends BaseGame {
       return;
     }
 
-    while (
-        player.x + 2 * SECTOR_LENGTH >= SECTOR_LENGTH * lastGeneratedSector) {
+    while (player.x + 2 * SECTOR_LENGTH >= SECTOR_LENGTH * lastGeneratedSector) {
       lastGeneratedSector++;
       generateSector(lastGeneratedSector);
     }
