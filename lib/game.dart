@@ -293,6 +293,7 @@ class BgugGame extends BaseGame {
 
       if (gameMode.hasLimit && player.x >= gameMode.mapSize) {
         won = true;
+        player.velocity.x = 0;
         showEndCard();
       }
     } else {
