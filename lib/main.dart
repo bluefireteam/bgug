@@ -18,10 +18,7 @@ class Main {
 }
 
 main() async {
-  Ad.startup();
   Flame.audio.disableLog();
-  Flame.util.fullScreen();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
 
   runApp(new MaterialApp(
     home: new Scaffold(body: new HomeScreen()),

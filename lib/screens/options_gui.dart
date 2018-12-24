@@ -28,11 +28,12 @@ class _OptionsState extends State<OptionsScreen> {
   TextFormField currentTextField;
 
   _OptionsState() {
-    start();
+    _start();
   }
 
-  start() async {
-    options = await Options.fetch();
+  _start() async {
+    Options opt = await Options.fetch();
+    setState(() => options = opt);
   }
 
   @override
@@ -49,20 +50,13 @@ class _OptionsState extends State<OptionsScreen> {
         ],
       ));
     }
-    final optionItemBuilder = (String title, String value, Validator validator,
-            void Function(String) setter) =>
-        optionLine(title, value, () {
-          this.setState(() =>
-              currentTextField = textField(title, validator, value, setter));
+    final optionItemBuilder = (String title, String value, Validator validator, void Function(String) setter) => optionLine(title, value, () {
+          this.setState(() => currentTextField = textField(title, validator, value, setter));
         });
     final intItemBuilder =
-        (String title, int value, void Function(int) setter) =>
-            optionItemBuilder(title, value.toString(), intValidator,
-                (str) => setter(int.parse(str)));
-    final doubleItemBuilder =
-        (String title, double value, void Function(double) setter) =>
-            optionItemBuilder(title, value.toString(), doubleValidator,
-                (str) => setter(double.parse(str)));
+        (String title, int value, void Function(int) setter) => optionItemBuilder(title, value.toString(), intValidator, (str) => setter(int.parse(str)));
+    final doubleItemBuilder = (String title, double value, void Function(double) setter) =>
+        optionItemBuilder(title, value.toString(), doubleValidator, (str) => setter(double.parse(str)));
     return rootContainer(
       Row(
         children: [

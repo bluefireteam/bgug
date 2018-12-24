@@ -8,6 +8,7 @@ import 'package:flame/flame.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../ads.dart';
 import '../data.dart';
 import 'gui_commons.dart';
 
@@ -24,6 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _HomeScreenState() {
     var ps = <Future>[
+      Ad.startup(),
+      SystemChrome.setEnabledSystemUIOverlays([]),
+      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]),
       Flame.audio.loadAll([
         'death.wav',
         'gem_collect.wav',
@@ -31,24 +35,30 @@ class _HomeScreenState extends State<HomeScreen> {
         'laser_load.wav',
         'laser_shoot.wav',
         'music.wav',
-      ]).then((audios) =>
-          print('Done loading ' + audios.length.toString() + ' audios.')),
+      ]).then((audios) => print('Done loading ' + audios.length.toString() + ' audios.')),
       Flame.images.loadAll([
-        'base_bottom.png',
-        'base_top.png',
-        'bg.png',
-        'block.png',
-        'bullet.png',
-        'button.png',
-        'coin.png',
-        'gem.png',
-        'obstacle.png',
+        'hud_bg.png',
+        'btns/coin.png',
+        'btns/player_1.png',
+        'btns/player_2.png',
         'player_1.png',
         'player_2.png',
+        'base_bottom.png',
+        'base_top.png',
+        'block.png',
+        'obstacle.png',
         'shooter.png',
+        'bullet.png',
+        'gem.png',
+        'coin.png',
+        'coin_button.png',
+        'bg.png',
+        'button.png',
         'endgame_bg.png',
-      ]).then((images) =>
-          print('Done loading ' + images.length.toString() + ' images.')),
+        'endgame_buttons.png',
+        'tutorial.png',
+        'splash_screen.png',
+      ]).then((images) => print('Done loading ' + images.length.toString() + ' images.')),
       Data.loadAll(),
     ];
     Future.wait(ps).then((rs) => this.setState(() => loading = false));
@@ -104,7 +114,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return Center(child: Text('Loading...'));
+      return Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF404040),
+        ),
+        child: Image.asset(
+          "assets/images/splash_screen.png",
+          fit: BoxFit.contain,
+          height: double.infinity,
+          width: double.infinity,
+          alignment: Alignment.center,
+        ),
+      );
     }
 
     final child = Center(
@@ -123,8 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               btn('Play', () => Navigator.of(context).pushNamed('/start')),
               btn('Score', () => Navigator.of(context).pushNamed('/score')),
-              btn('Options',
-                  () => Navigator.of(context).pushNamed('/options')),
+              btn('Options', () => Navigator.of(context).pushNamed('/options')),
               btn('Exit', () => SystemNavigator.pop()),
             ],
             mainAxisAlignment: MainAxisAlignment.center,

@@ -24,7 +24,7 @@ final TextFormField Function(
         String, FormFieldValidator<String>, String, Function(String))
     textField = (String label, FormFieldValidator<String> validator,
         String initialValue, Function(String) setter) {
-  TextEditingController controller = TextEditingController();
+  TextEditingController controller = TextEditingController(text: initialValue);
   controller.addListener(() {
     if (validator(controller.text) == null) {
       setter(controller.text);
@@ -34,7 +34,6 @@ final TextFormField Function(
     decoration: InputDecoration(labelText: label),
     controller: controller,
     validator: validator,
-    initialValue: initialValue,
   );
 };
 

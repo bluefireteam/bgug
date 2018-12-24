@@ -24,11 +24,12 @@ class Ad {
     }
   }
 
-  static void startup() {
+  static Future<bool> startup() async {
     if (ENABLE_ADS) {
-      FirebaseAdMob.instance.initialize(
+      return FirebaseAdMob.instance.initialize(
           appId: 'ca-app-pub-1451557002406313~7960207117');
     }
+    return false;
   }
 
   static Ad loadAd() {

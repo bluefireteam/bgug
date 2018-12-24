@@ -13,11 +13,12 @@ class _ScoreState extends State<ScoreScreen> {
   Score score;
 
   _ScoreState() {
-    start();
+    _start();
   }
 
-  start() async {
-    score = await Score.fetch();
+  _start() async {
+    Score scr = await Score.fetch();
+    setState(() => score = scr);
   }
 
   @override
