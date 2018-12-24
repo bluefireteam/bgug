@@ -4,7 +4,6 @@ import 'package:flame/components/animation_component.dart';
 import 'package:flame/flame.dart';
 
 import '../constants.dart';
-import '../data.dart';
 import '../mixins/has_game_ref.dart';
 
 class Coin extends AnimationComponent with HasGameRef {

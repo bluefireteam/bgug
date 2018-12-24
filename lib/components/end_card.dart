@@ -9,7 +9,7 @@ import '../game.dart';
 import '../mixins/has_game_ref.dart';
 
 class EndCard extends SpriteComponent with HasGameRef {
-  static const GEM_TO_COIN_RATIO = 4;
+  static const COIN_TO_GEM_RATIO = 4;
   static const FRAC = 112 / 144;
   static const CLOCK_SPEED = 0.25;
 
@@ -17,21 +17,25 @@ class EndCard extends SpriteComponent with HasGameRef {
   static final Sprite coin = new Sprite('coin.png', width: 16.0);
 
   static final Sprite buttonReplay = new Sprite('endgame_buttons.png', height: 16.0);
-  static final Sprite buttonX2Coins = new Sprite('endgame_buttons.png', height: 16.0, y: 16.0);
   static final Sprite buttonGoBack = new Sprite('endgame_buttons.png', height: 16.0, y: 32.0);
+  static final Sprite buttonX2Coins = new Sprite('endgame_buttons.png', height: 16.0, y: 16.0);
 
   bool doubleCoins = false; // TODO allow Player to buy this!
   double _tickTimer;
 
   int get coins => (doubleCoins ? 2 : 1) * gameRef.currentCoins;
+
   double get _scaleFactor => height / 144.0;
 
   bool get _showAdButton => gameRef.hasAd() && !doubleCoins;
+
   Position get _buttonSize => new Position(_scaleFactor * 64.0, _scaleFactor * 16.0);
 
   Position get _replayPosition => new Position((width - _buttonSize.x) / 2, _scaleFactor * 80);
-  Position get _x2Position => new Position((width - _buttonSize.x) / 2, _scaleFactor * 100);
-  Position get _goBackPosition => new Position((width - _buttonSize.x) / 2, _scaleFactor * 120);
+
+  Position get _goBackPosition => new Position((width - _buttonSize.x) / 2, _scaleFactor * 100);
+
+  Position get _x2Position => new Position((width - _buttonSize.x) / 2, _scaleFactor * 120);
 
   EndCard() : super.rectangle(1, 1, 'endgame_bg.png');
 
@@ -84,8 +88,13 @@ class EndCard extends SpriteComponent with HasGameRef {
     if (_tickTimer != null) {
       _tickTimer -= dt;
       while (_tickTimer != null && _tickTimer <= 0) {
-        gameRef.points--;
-        gameRef.currentCoins += GEM_TO_COIN_RATIO;
+        if (gameRef.points >= COIN_TO_GEM_RATIO) {
+          gameRef.points -= COIN_TO_GEM_RATIO;
+          gameRef.currentCoins++;
+        } else {
+          gameRef.points = 0;
+        }
+
         if (gameRef.points == 0) {
           _tickTimer = null;
         } else {
