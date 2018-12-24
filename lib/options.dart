@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Options {
+  bool showTutorial;
   double bulletSpeed;
 
   int buttonCost;
@@ -17,6 +18,7 @@ class Options {
 
   Map toMap() {
     return {
+      'showTutorial': showTutorial,
       'bulletSpeed': bulletSpeed,
       'buttonCost': buttonCost,
       'buttonIncCost': buttonIncCost,
@@ -29,6 +31,7 @@ class Options {
   }
 
   Options() {
+    this.showTutorial = true;
     this.bulletSpeed = 500.0;
     this.buttonCost = 5;
     this.buttonIncCost = 2;
@@ -40,6 +43,7 @@ class Options {
   }
 
   Options.fromMap(Map map) {
+    showTutorial = map['showTutorial'] ?? true;
     bulletSpeed = map['bulletSpeed'] ?? 500.0;
     buttonCost = map['buttonCost'] ?? 5;
     buttonIncCost = map['buttonIncCost'] ?? 2;
@@ -62,5 +66,14 @@ class Options {
       return new Options();
     }
     return new Options.fromMap(json.decode(jsonStr));
+  }
+
+  Future<bool> getAndToggleShowTutorial() async {
+    if (showTutorial) {
+      showTutorial = false;
+      await save();
+      return true;
+    }
+    return false;
   }
 }

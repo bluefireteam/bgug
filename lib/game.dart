@@ -10,8 +10,9 @@ import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/position.dart';
 import 'package:ordered_set/ordered_set.dart';
-import 'components/hud.dart';
 
+import 'components/hud.dart';
+import 'components/tutorial.dart';
 import 'components/background.dart';
 import 'components/button.dart';
 import 'components/coin.dart';
@@ -33,7 +34,7 @@ import 'data.dart';
 
 math.Random random = new math.Random();
 
-enum GameState { RUNNING, DEAD, END_CARD, STOPPED, AD }
+enum GameState { TUTORIAL, RUNNING, DEAD, END_CARD, STOPPED, AD }
 
 class BgugGame extends BaseGame {
   GameMode gameMode;
@@ -47,9 +48,15 @@ class BgugGame extends BaseGame {
   GameState _state;
 
   QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
+
   Player get player => queryComponents.player();
+
   Hud get hud => queryComponents.hud();
+
   EndCard get endCard => queryComponents.endCard();
+
+  Tutorial get tutorial => queryComponents.tutorial();
+
   Iterable<Shooter> get shooters => queryComponents.shooters();
 
   @override
@@ -85,8 +92,8 @@ class BgugGame extends BaseGame {
     });
   }
 
-  BgugGame(this.gameMode) {
-    _start();
+  BgugGame(this.gameMode, bool showTutorial) {
+    _start(showTutorial ? GameState.TUTORIAL : GameState.RUNNING);
   }
 
   void showEndCard() {
@@ -121,10 +128,10 @@ class BgugGame extends BaseGame {
 
     currentSlot = 0;
 
-    _start();
+    _start(GameState.RUNNING);
   }
 
-  void _start() {
+  void _start(GameState state) {
     add(new Background());
 
     add(new Hud());
@@ -148,7 +155,11 @@ class BgugGame extends BaseGame {
       add(button = new Button());
     }
 
-    state = GameState.RUNNING;
+    this.state = state;
+    if (this.state == GameState.TUTORIAL) {
+      add(new Tutorial());
+    }
+
     if (music != null) {
       music.then((p) => p.release());
     }
@@ -224,6 +235,11 @@ class BgugGame extends BaseGame {
       endCard.click(p);
       return;
     }
+    if (state == GameState.TUTORIAL) {
+      state = GameState.RUNNING;
+      tutorial.remove();
+      return;
+    }
     if (p != null && player != null) {
       queryComponents.hud().clearGauge();
       if (player.dead()) {
@@ -252,7 +268,7 @@ class BgugGame extends BaseGame {
 
   @override
   void render(Canvas c) {
-    if (state == GameState.RUNNING || state == GameState.DEAD || state == GameState.END_CARD) {
+    if (state == GameState.TUTORIAL || state == GameState.RUNNING || state == GameState.DEAD || state == GameState.END_CARD) {
       super.render(c);
     } else {
       c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height), new Paint()..color = material.Colors.black);
@@ -298,7 +314,7 @@ class BgugGame extends BaseGame {
   }
 
   bool handlingClick() {
-    return state == GameState.RUNNING || state == GameState.END_CARD;
+    return state == GameState.TUTORIAL || state == GameState.RUNNING || state == GameState.END_CARD;
   }
 
   void award(int coins) {

@@ -15,7 +15,7 @@ class StartGameScreen extends StatefulWidget {
 class MyGameBinder extends BgugGame {
   _StartGameScreenState screen;
 
-  MyGameBinder(this.screen, GameMode mode) : super(mode);
+  MyGameBinder(this.screen, GameMode mode, bool showTutorial) : super(mode, showTutorial);
 
   @override
   set state(GameState state) {
@@ -88,7 +88,8 @@ class _StartGameScreenState extends State<StartGameScreen> {
   }
 
   startGame(GameMode mode) async {
-    Main.game = new MyGameBinder(this, mode);
+    bool showTutorial = await Data.options.getAndToggleShowTutorial();
+    Main.game = new MyGameBinder(this, mode, showTutorial);
     setState(() {});
   }
 }

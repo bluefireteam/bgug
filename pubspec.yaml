@@ -35,6 +35,7 @@ flutter:
    - assets/images/button.png
    - assets/images/endgame_bg.png
    - assets/images/endgame_buttons.png
+   - assets/images/tutorial.png
    - assets/audio/death.wav
    - assets/audio/gem_collect.wav
    - assets/audio/jump.wav
