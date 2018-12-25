@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../ads.dart';
 import '../data.dart';
 import 'gui_commons.dart';
+import 'coin_widget.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -41,6 +42,11 @@ class _HomeScreenState extends State<HomeScreen> {
         'btns/coin.png',
         'btns/player_1.png',
         'btns/player_2.png',
+        'store/skins_panel.png',
+        'store/store_button.png',
+        'store/store-ui.png',
+        'store/times_2_panel.png',
+        'store/x2coins-certificate.png',
         'player_1.png',
         'player_2.png',
         'base_bottom.png',
@@ -97,20 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return new Text(username);
   }
 
-  Widget coin() {
-    final stack = Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        Image.asset('assets/images/coin_button.png'),
-        Positioned(child: Text(Data.buy.coins.toString()), bottom: 2.0),
-      ],
-    );
-    return GestureDetector(
-      child: stack,
-      onTap: () => Navigator.of(context).pushNamed('/buy'),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     if (loading) {
@@ -164,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Stack(
         children: [
           child,
-          Positioned(child: coin(), top: 12.0, right: 12.0),
+          Positioned(child: CoinWidget(Data.buy.coins), top: 12.0, right: 12.0),
           Positioned(child: userCard(), bottom: 12.0, left: 12.0),
         ],
       ),

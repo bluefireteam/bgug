@@ -17,8 +17,8 @@ final rootContainer = (Widget child) => Container(
 
 final pad = (Widget w, double p) =>
     Container(child: w, padding: EdgeInsets.all(p));
-final btn = (String txt, VoidCallback handle) => FlatButton(
-    onPressed: handle, child: pad(Text(txt, style: text), 10.0));
+final btn = (String txt, VoidCallback handle, { TextStyle style = text }) => FlatButton(
+    onPressed: handle, child: pad(Text(txt, style: style), 10.0));
 
 final TextFormField Function(
         String, FormFieldValidator<String>, String, Function(String))

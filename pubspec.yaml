@@ -4,7 +4,8 @@ description: Break Guns Using Blocks!
 dependencies:
   flutter:
     sdk: flutter
-  flame: 0.9.5
+  flame:
+    path: ../flame
   shared_preferences: 0.4.1
   firebase_admob: 0.5.4
   google_sign_in: 3.0.3
@@ -16,6 +17,7 @@ dev_dependencies:
 
 flutter:
   assets:
+   - assets/images/skins/gold.png # TODO other skins
    - assets/images/hud_bg.png
    - assets/images/btns/coin.png
    - assets/images/btns/player_1.png
@@ -37,6 +39,11 @@ flutter:
    - assets/images/endgame_buttons.png
    - assets/images/tutorial.png
    - assets/images/splash_screen.png
+   - assets/images/store/skins_panel.png
+   - assets/images/store/store_button.png
+   - assets/images/store/store-ui.png
+   - assets/images/store/times_2_panel.png
+   - assets/images/store/x2coins-certificate.png
    - assets/audio/death.wav
    - assets/audio/gem_collect.wav
    - assets/audio/jump.wav

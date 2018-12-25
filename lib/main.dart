@@ -8,10 +8,10 @@ import 'package:flutter/widgets.dart';
 import 'game.dart';
 import 'ads.dart';
 import 'screens/home_gui.dart';
-import 'screens/options_gui.dart';
-import 'screens/score_gui.dart';
-import 'screens/start_game_gui.dart';
-import 'screens/buy_gui.dart';
+import 'screens/options_screen.dart';
+import 'screens/score_screen.dart';
+import 'screens/start_game_screen.dart';
+import 'screens/store_screen.dart';
 
 class Main {
   static BgugGame game;
@@ -26,7 +26,7 @@ main() async {
       '/start': (BuildContext ctx) => new Scaffold(body: new StartGameScreen()),
       '/options': (BuildContext ctx) => new Scaffold(body: new OptionsScreen()),
       '/score': (BuildContext ctx) => new Scaffold(body: new ScoreScreen()),
-      '/buy': (BuildContext ctx) => new Scaffold(body: new BuyScreen()),
+      '/buy': (BuildContext ctx) => new Scaffold(body: new StoreScreen()),
     },
   ));
 

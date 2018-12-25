@@ -4,13 +4,15 @@ import 'package:flutter/widgets.dart';
 import '../buy.dart';
 import '../data.dart';
 import 'gui_commons.dart';
+import 'coin_widget.dart';
+import 'skin_widget.dart';
 
 class PlayerButton extends StatelessWidget {
-
   final Player player;
   final void Function() onTap;
 
   bool get locked => player.state == PlayerButtonState.LOCKED;
+
   bool get selected => player.state == PlayerButtonState.SELECTED;
 
   PlayerButton(this.player, this.onTap);
@@ -20,7 +22,7 @@ class PlayerButton extends StatelessWidget {
     final img = Image.asset(player.type.icon);
     final txt = Text(locked ? 'Buy for ${player.type.cost} coins' : player.type.name, style: text);
     final container = Container(
-      child: FittedBox(child: Column(children: [ img, txt ])),
+      child: FittedBox(child: Column(children: [img, txt])),
       constraints: BoxConstraints.tight(Size(64.0, 72.0)),
       decoration: BoxDecoration(
         color: locked ? Color(0xA0202020) : null,
@@ -31,20 +33,22 @@ class PlayerButton extends StatelessWidget {
       ),
       padding: EdgeInsets.all(8.0),
     );
-    return Expanded(child: GestureDetector(
+    return Expanded(
+        child: GestureDetector(
       child: container,
       onTap: onTap,
     ));
   }
 }
 
-class BuyScreen extends StatefulWidget {
+class StoreScreen extends StatefulWidget {
   @override
-  State<BuyScreen> createState() => _BuyState();
+  State<StoreScreen> createState() => _StoreState();
 }
 
-class _BuyState extends State<BuyScreen> {
+class _StoreState extends State<StoreScreen> {
 
+  // TODO rethink this
   void Function() tap(Player player) {
     return () {
       if (player.state == PlayerButtonState.AVALIABLE) {
@@ -56,6 +60,10 @@ class _BuyState extends State<BuyScreen> {
     };
   }
 
+  void back() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,35 +73,25 @@ class _BuyState extends State<BuyScreen> {
           fit: BoxFit.fill,
         ),
       ),
-      child: Row(
+      child: Column(
         children: [
+          Stack(children: [
+            Center(child: pad(Text('StOrE', style: TextStyle(fontSize: 64.0, fontFamily: 'Blox2')), 20.0)),
+            Positioned(child: CoinWidget(Data.buy.coins, doClick: false), top: 20.0, left: 20.0),
+            Positioned(child: btn('go back', () => this.back()), top: 20.0, right: 20.0),
+          ]),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                pad(Text('CoInS', style: title), 20.0),
-                btn('Go back', () {
-                  Navigator.of(context).pop();
-                }),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Row(children: [
-                    pad(Image.asset('assets/images/btns/coin.png'), 16.0),
-                    pad(Text('${Data.buy.coins} available', style: text), 16.0),
-                  ]),
-                  Row(children: Data.buy.players().map((p) => PlayerButton(p, tap(p))).toList()),
-                  Text('Buy more coins!', style: text),
-                ],
-              ),
-            ),
-          ),
+              child: Row(
+            children: [
+              Expanded(child: pad(SkinWidget('gold.png'), 64.0)),
+              // pad(Image.asset('assets/images/store/times_2_panel.png', fit: BoxFit.contain, filterQuality: FilterQuality.none), 32.0),
+              pad(Image.asset('assets/images/store/skins_panel.png', fit: BoxFit.contain, filterQuality: FilterQuality.none), 32.0),
+            ],
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+          )),
         ],
+        crossAxisAlignment: CrossAxisAlignment.stretch,
       ),
     );
   }
