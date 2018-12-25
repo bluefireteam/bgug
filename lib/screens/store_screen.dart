@@ -47,7 +47,6 @@ class StoreScreen extends StatefulWidget {
 }
 
 class _StoreState extends State<StoreScreen> {
-
   // TODO rethink this
   void Function() tap(Player player) {
     return () {
@@ -83,9 +82,21 @@ class _StoreState extends State<StoreScreen> {
           Expanded(
               child: Row(
             children: [
-              Expanded(child: pad(SkinWidget('gold.png'), 64.0)),
-              // pad(Image.asset('assets/images/store/times_2_panel.png', fit: BoxFit.contain, filterQuality: FilterQuality.none), 32.0),
-              pad(Image.asset('assets/images/store/skins_panel.png', fit: BoxFit.contain, filterQuality: FilterQuality.none), 32.0),
+              Expanded(
+                child: pad(
+                    Stack(
+                      children: [
+                        Image.asset('assets/images/store/times_2_panel.png', fit: BoxFit.contain, filterQuality: FilterQuality.none),
+                        Align(
+                            alignment: Alignment.center,
+                            child: SizedBox(child: SkinWidget('gold.png'), width: 64.0, height: 64.0),
+                        ),
+                      ],
+                      fit: StackFit.expand,
+                    ),
+                    32.0),
+              ),
+              Expanded(child: pad(Image.asset('assets/images/store/skins_panel.png', fit: BoxFit.contain, filterQuality: FilterQuality.none), 32.0)),
             ],
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.stretch,
