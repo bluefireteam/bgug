@@ -84,16 +84,25 @@ class _StoreState extends State<StoreScreen> {
             children: [
               Expanded(
                 child: pad(
-                    Stack(
-                      children: [
-                        Image.asset('assets/images/store/times_2_panel.png', fit: BoxFit.contain, filterQuality: FilterQuality.none),
-                        Align(
-                            alignment: Alignment.center,
+                    LayoutBuilder(builder: (ctx, constraints) {
+                      return Stack(
+                        children: [
+                          Image.asset('assets/images/store/times_2_panel.png', fit: BoxFit.contain, filterQuality: FilterQuality.none),
+                          Positioned(
                             child: SizedBox(child: SkinWidget('gold.png'), width: 64.0, height: 64.0),
-                        ),
-                      ],
-                      fit: StackFit.expand,
-                    ),
+                            top: constraints.maxHeight / 112 * 70.0 - 64.0 / 2,
+                            left: (constraints.maxWidth - 64.0) / 2,
+                          ),
+                          Positioned(
+                            child: Center(child: Text('\$ 1.00', style: TextStyle(fontSize: 20.0, fontFamily: 'Squared Display'))),
+                            left: 0,
+                            width: constraints.maxWidth,
+                            bottom: 0.0,
+                          )
+                        ],
+                        fit: StackFit.expand,
+                      );
+                    }),
                     32.0),
               ),
               Expanded(child: pad(Image.asset('assets/images/store/skins_panel.png', fit: BoxFit.contain, filterQuality: FilterQuality.none), 32.0)),

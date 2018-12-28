@@ -48,6 +48,12 @@ class _SkinWidgetState extends State<SkinWidget> {
     WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
   }
 
+  @override
+  void didUpdateWidget(SkinWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
+  }
+
   void _afterLayout(_) {
     RenderBox box = context.findRenderObject();
     Offset pos = box.localToGlobal(Offset.zero);
