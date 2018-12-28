@@ -2,16 +2,15 @@ import 'package:flame/flame.dart';
 import 'package:flame/position.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'game.dart';
-import 'ads.dart';
 import 'screens/home_gui.dart';
 import 'screens/options_screen.dart';
 import 'screens/score_screen.dart';
 import 'screens/start_game_screen.dart';
 import 'screens/store_screen.dart';
+import 'screens/skins_screen.dart';
 
 class Main {
   static BgugGame game;
@@ -26,7 +25,8 @@ main() async {
       '/start': (BuildContext ctx) => new Scaffold(body: new StartGameScreen()),
       '/options': (BuildContext ctx) => new Scaffold(body: new OptionsScreen()),
       '/score': (BuildContext ctx) => new Scaffold(body: new ScoreScreen()),
-      '/buy': (BuildContext ctx) => new Scaffold(body: new StoreScreen()),
+      '/store': (BuildContext ctx) => new Scaffold(body: new StoreScreen()),
+      '/skins': (BuildContext ctx) => new Scaffold(body: new SkinScreen()),
     },
   ));
 

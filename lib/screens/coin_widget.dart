@@ -20,7 +20,7 @@ class CoinWidget extends StatelessWidget {
     }
     return GestureDetector(
       child: stack,
-      onTap: () => Navigator.of(context).pushNamed('/buy'),
+      onTap: () => Navigator.of(context).pushNamed('/store'),
     );
   }
 }

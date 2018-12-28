@@ -17,7 +17,22 @@ dev_dependencies:
 
 flutter:
   assets:
-   - assets/images/skins/gold.png # TODO other skins
+   - assets/images/skins/archer.png
+   - assets/images/skins/astronaut.png
+   - assets/images/skins/bunny.png
+   - assets/images/skins/cat.png
+   - assets/images/skins/chef.png
+   - assets/images/skins/clown.png
+   - assets/images/skins/cop.png
+   - assets/images/skins/cowboy.png
+   - assets/images/skins/firefighter.png
+   - assets/images/skins/gentleman.png
+   - assets/images/skins/gold.png
+   - assets/images/skins/monk.png
+   - assets/images/skins/pirate.png
+   - assets/images/skins/santa.png
+   - assets/images/skins/viking.png
+   - assets/images/skins/wizard.png
    - assets/images/hud_bg.png
    - assets/images/btns/coin.png
    - assets/images/btns/player_1.png
