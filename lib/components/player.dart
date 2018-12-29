@@ -22,12 +22,10 @@ class Player extends PositionComponent {
     jumpImpulse = new Impulse(-1 * Data.options.jumpImpulse);
     diveImpulse = new Impulse(Data.options.diveImpulse);
 
-    final sprite = Data.buy.selected.sprite;
+    String skinSpritePath = 'skins/' + Data.buy.selectedSkin;
     animations = new Map<String, Animation>();
-    animations['running'] = new Animation.sequenced(sprite, 8, textureWidth: 16.0)
-      ..stepTime = 0.0375;
-    animations['dead'] = new Animation.sequenced(sprite, 3, textureWidth: 16.0, textureX: 16.0 * 8)
-      ..stepTime = 0.075;
+    animations['running'] = new Animation.sequenced(skinSpritePath, 8, textureWidth: 16.0)..stepTime = 0.0375;
+    animations['dead'] = new Animation.sequenced(skinSpritePath, 3, textureWidth: 16.0, textureX: 16.0 * 8)..stepTime = 0.075;
     state = 'running';
   }
 

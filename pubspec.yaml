@@ -6,17 +6,21 @@ dependencies:
     sdk: flutter
   flame:
     path: ../flame
+  json_annotation: 2.0.0
   shared_preferences: 0.4.1
   firebase_admob: 0.5.4
   google_sign_in: 3.0.3
   firebase_auth: 0.5.10
 
 dev_dependencies:
+  build_runner: ^1.0.0
+  json_serializable: ^2.0.0
   flutter_test:
     sdk: flutter
 
 flutter:
   assets:
+   - assets/images/skins/asimov.png
    - assets/images/skins/archer.png
    - assets/images/skins/astronaut.png
    - assets/images/skins/bunny.png
@@ -34,11 +38,6 @@ flutter:
    - assets/images/skins/viking.png
    - assets/images/skins/wizard.png
    - assets/images/hud_bg.png
-   - assets/images/btns/coin.png
-   - assets/images/btns/player_1.png
-   - assets/images/btns/player_2.png
-   - assets/images/player_1.png
-   - assets/images/player_2.png
    - assets/images/base_bottom.png
    - assets/images/base_top.png
    - assets/images/block.png
@@ -65,6 +64,7 @@ flutter:
    - assets/audio/laser_load.wav
    - assets/audio/laser_shoot.wav
    - assets/audio/music.wav
+   - assets/store-skins.json
   fonts:
     - family: 5x5
       fonts:

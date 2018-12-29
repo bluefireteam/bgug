@@ -1,77 +1,32 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum PlayerButtonState {
-  LOCKED, AVALIABLE, SELECTED
-}
+part 'buy.g.dart';
 
-class PlayerType {
-  static const PlayerType Asimov = const PlayerType(1, 'Asimov', 0);
-  static const PlayerType Ritchie = const PlayerType(2, 'Ritchie', 20);
+enum PlayerButtonState { LOCKED, AVAILABLE, SELECTED }
 
-  static const List<PlayerType> values = const [Asimov, Ritchie];
-
-  final int id;
-  final String name;
-  final int cost;
-
-  String get icon => 'assets/images/btns/player_$id.png';
-  String get sprite => 'player_$id.png';
-
-  const PlayerType(this.id, this.name, this.cost);
-
-  @override
-  String toString() => 'Player.${this.name}';
-}
-
-class Player {
-  PlayerType type;
-  PlayerButtonState state;
-
-  Player(this.type, this.state);
-}
-
-final PlayerType Function(String) getPlayer = (str) => PlayerType.values.firstWhere((e) => e.toString() == str);
-
+@JsonSerializable()
 class Buy {
-  List<PlayerType> owned;
-  PlayerType selected;
+  List<String> skinsOwned;
+  String selectedSkin;
   int coins;
 
   Buy() {
-    owned = [ PlayerType.Asimov ];
-    selected = PlayerType.Asimov;
+    skinsOwned = ['asimov.png'];
+    selectedSkin = 'asimov.png';
     coins = 0;
   }
 
-  Buy.fromMap(Map map) {
-    owned = [];
-    map['owned'].toString().split(';').forEach((s) => owned.add(getPlayer(s)));
-    selected = getPlayer(map['selected'].toString());
-    coins = map['coins'];
-  }
+  factory Buy.fromJson(Map<String, dynamic> json) => _$BuyFromJson(json);
 
-  Map toMap() {
-    return {
-      'owned': owned.map((e) => e.toString()).join(';'),
-      'selected': selected.toString(),
-      'coins': coins,
-    };
-  }
+  Map<String, dynamic> toJson() => _$BuyToJson(this);
 
   Future save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('buy', json.encode(toMap()));
-  }
-
-  PlayerButtonState _state(PlayerType type) {
-    return type == selected ? PlayerButtonState.SELECTED : (owned.contains(type) ? PlayerButtonState.AVALIABLE : PlayerButtonState.LOCKED);
-  }
-
-  List<Player> players() {
-    return PlayerType.values.map((type) => new Player(type, _state(type))).toList();
+    prefs.setString('buy', json.encode(toJson()));
   }
 
   static Future<Buy> fetch() async {
@@ -80,6 +35,6 @@ class Buy {
     if (jsonStr == null) {
       return new Buy();
     }
-    return new Buy.fromMap(json.decode(jsonStr));
+    return new Buy.fromJson(json.decode(jsonStr));
   }
 }

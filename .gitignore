@@ -11,3 +11,4 @@ pubspec.lock
 *.iml
 google-services.json
 android/keys
+*.g.dart

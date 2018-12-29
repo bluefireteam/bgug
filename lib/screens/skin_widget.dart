@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:flame/components/animation_component.dart';
 import 'package:flame/animation.dart' as animation;
+import 'package:flame/components/animation_component.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/widgets.dart';
 
