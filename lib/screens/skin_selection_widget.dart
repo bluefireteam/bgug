@@ -22,7 +22,7 @@ class _SkinCardComponent extends Component with Resizable {
 
   _SkinCardComponent(this.gameRef);
 
-  // TODO buy??
+  // TODO buy options??
   bool get _on => Data.buy.selectedSkin != skin.file;
   String get _text => _on ? 'Equip' : 'In Use';
 
