@@ -91,7 +91,10 @@
       "name": "The Chosen",
       "file": "the-chosen.png",
       "cost": 800
+    }, {
+      "name": "Egg Bot",
+      "file": "egg-bot.png",
+      "cost": 1000 
     }
-
   ]
 }
