@@ -87,6 +87,11 @@
       "name": "Retro Explorer",
       "file": "explorer.png",
       "cost": 3000
+    }, {
+      "name": "The Chosen",
+      "file": "the-chosen.png",
+      "cost": 800
     }
+
   ]
 }
