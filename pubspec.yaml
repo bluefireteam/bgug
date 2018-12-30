@@ -38,6 +38,9 @@ flutter:
    - assets/images/skins/viking.png
    - assets/images/skins/wizard.png
    - assets/images/skins/vampire.png
+   - assets/images/skins/explorer.png
+   - assets/images/skins/egg-bot.png
+   - assets/images/skins/the-chosen.png
    - assets/images/hud_bg.png
    - assets/images/base_bottom.png
    - assets/images/base_top.png
