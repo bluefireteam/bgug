@@ -79,6 +79,10 @@
       "name": "Wizard",
       "file": "wizard.png",
       "cost": 1000
+    }, {
+      "name": "Vampire",
+      "file": "vampire.png",
+      "cost": 1000
     }
   ]
 }
