@@ -22,7 +22,7 @@ class _SkinCardComponent extends Component with Resizable {
 
   _SkinCardComponent(this.gameRef);
 
-  // TODO buy??
+  // TODO buy options??
   bool get _on => Data.buy.selectedSkin != skin.file;
   String get _text => _on ? 'Equip' : 'In Use';
 
@@ -50,9 +50,11 @@ class _ArrowButton extends SpriteComponent {
 
   _ArrowButton(this.gameRef, this.left) : super.fromSprite(1.0, 1.0, new Sprite('store/store-ui.png', x: left ? 0 : 15, y: 72, width: 15, height: 64));
 
+  bool get _show => left ? gameRef.selected > 0 : gameRef.selected < gameRef.skins.length - 1;
+
   @override
   void render(Canvas canvas) {
-    if (gameRef.skin.isMoving) {
+    if (!_show || gameRef.skin.isMoving) {
       return;
     }
     super.render(canvas);
@@ -73,9 +75,12 @@ class _ArrowButton extends SpriteComponent {
 class _SkinComponent extends AnimationComponent with Resizable {
   static const SPEED = 300.0;
 
+  bool left;
   bool leave = false;
 
-  _SkinComponent(String skin) : super(1.0, 1.0, makeAnimation(skin));
+  _SkinComponent(this.left, String skin) : super(1.0, 1.0, makeAnimation(skin)) {
+    x = null;
+  }
 
   double get xGoal => (size.width - width) / 2;
 
@@ -83,24 +88,36 @@ class _SkinComponent extends AnimationComponent with Resizable {
   void update(double t) {
     super.update(t);
 
-    if (x < xGoal) {
-      x += SPEED * t;
-      if (x > xGoal) {
-        x = xGoal;
+    if (leave) {
+      if (left) {
+        x -= SPEED * t;
+      } else {
+        x += SPEED * t;
       }
-    } else if (leave) {
-      x += SPEED * t;
+    } else if (isMoving) {
+      if (left) {
+        x += SPEED * t;
+        if (x > xGoal) {
+          x = xGoal;
+        }
+      } else {
+        x -= SPEED * t;
+        if (x < xGoal) {
+          x = xGoal;
+        }
+      }
     }
   }
 
-  bool get isMoving => leave || x < xGoal;
+  bool get isMoving => leave || x != xGoal;
 
-  void doLeave() {
-    leave = true;
+  void doLeave(bool left) {
+    this.left = left;
+    this.leave = true;
   }
 
   @override
-  bool destroy() => x > size.width;
+  bool destroy() => x < -width || x > size.width;
 
   @override
   void resize(Size size) {
@@ -111,8 +128,8 @@ class _SkinComponent extends AnimationComponent with Resizable {
     width = frac * 16.0;
     height = frac * 18.0;
 
-    if (x == 0.0) {
-      x = -width;
+    if (x == null) {
+      x = left ? -width: size.width;
     }
     y = size_bottom(size) - height;
   }
@@ -135,12 +152,12 @@ class _SkinSelectionGame extends BaseGame {
     add(_ArrowButton(this, true));
     add(_ArrowButton(this, false));
     add(card = _SkinCardComponent(this));
-    _updateSkin();
+    _updateSkin(true);
   }
 
-  void _updateSkin() {
-    this.skin?.doLeave();
-    add(this.skin = _SkinComponent(skins[selected].file));
+  void _updateSkin(bool left) {
+    this.skin?.doLeave(left);
+    add(this.skin = _SkinComponent(!left, skins[selected].file));
     card.skin = skins[selected];
   }
 
@@ -160,12 +177,12 @@ class _SkinSelectionGame extends BaseGame {
     if (x < size.width / 3) {
       if (selected > 0) {
         selected--;
-        _updateSkin();
+        _updateSkin(true);
       }
     } else if (x > 2 * size.width / 3) {
       if (selected < skins.length - 1) {
         selected++;
-        _updateSkin();
+        _updateSkin(false);
       }
     } else {
       Data.buy.selectedSkin = skins[selected].file;
