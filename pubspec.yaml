@@ -47,7 +47,7 @@ flutter:
    - assets/images/bullet.png
    - assets/images/gem.png
    - assets/images/coin.png
-   - assets/images/coin_button.png
+   - assets/images/lock.png
    - assets/images/bg.png
    - assets/images/button.png
    - assets/images/endgame_bg.png

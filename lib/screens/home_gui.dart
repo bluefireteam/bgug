@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'bullet.png',
         'gem.png',
         'coin.png',
-        'coin_button.png',
+        'lock.png',
         'bg.png',
         'button.png',
         'endgame_bg.png',

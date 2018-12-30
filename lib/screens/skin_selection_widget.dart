@@ -10,6 +10,7 @@ import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/widgets.dart';
 
+import '../components/lock.dart';
 import '../components/floor.dart';
 import '../constants.dart';
 import '../data.dart';
@@ -123,14 +124,26 @@ class _ArrowButton extends SpriteComponent {
 class _SkinComponent extends AnimationComponent with Resizable {
   static const SPEED = 425.0;
 
+  bool locked;
   bool left;
   bool leave = false;
 
-  _SkinComponent(this.left, String skin) : super(1.0, 1.0, makeAnimation(skin)) {
+  _SkinComponent(this.locked, this.left, String skin) : super(1.0, 1.0, makeAnimation(skin)) {
     x = null;
   }
 
   double get xGoal => (size.width - width) / 2;
+
+  @override
+  void render(Canvas canvas) {
+    if (loaded()) {
+      prepareCanvas(canvas);
+      Sprite sprite = this.animation.getSprite();
+      int alpha = locked ? 50 : 255;
+      sprite.paint = Paint()..color = Color(0xFFFFFFFF).withAlpha(alpha);
+      sprite.render(canvas, width, height);
+    }
+  }
 
   @override
   void update(double t) {
@@ -191,24 +204,30 @@ class _SkinSelectionGame extends BaseGame {
   bool loading = false;
   int selected = 0;
 
-  List<Skin> get skins => Data.skinList.skins;
-
   _SkinComponent skin;
   _SkinCardComponent card;
+  Lock lock;
+
+  List<Skin> get skins => Data.skinList.skins;
+  bool get currentOwn => Data.buy.skinsOwned.contains(skins[selected].file);
+  bool get lockVisible => skin != null && !skin.isMoving && !currentOwn;
 
   _SkinSelectionGame() {
     add(Floor());
     add(_ArrowButton(this, true));
     add(_ArrowButton(this, false));
     add(card = _SkinCardComponent(this));
+    add(this.lock = Lock(() => lockVisible));
     _updateSkin(false);
   }
 
-  bool get currentOwn => Data.buy.skinsOwned.contains(skins[selected].file);
 
   void _updateSkin(bool left) {
     this.skin?.doLeave(left);
-    add(this.skin = _SkinComponent(!left, skins[selected].file));
+    add(this.skin = _SkinComponent(!currentOwn, !left, skins[selected].file));
+    if (!currentOwn) {
+      lock.reset();
+    }
     card.skin = skins[selected];
   }
 
@@ -245,10 +264,12 @@ class _SkinSelectionGame extends BaseGame {
         Position end = Position((size.width - 200) / 2 + 200 / 2, 64.0 + 72 / 2);
         _CoinTrace trace = _CoinTrace(start, end);
         addLater(trace);
+        this.lock.closed = false;
         trace.after.then((_) {
           Data.buy.coins -= skins[selected].cost;
           Data.buy.skinsOwned.add(skins[selected].file);
           Data.buy.selectedSkin = skins[selected].file;
+          this.skin.locked = false;
           loading = true;
           Data.buy.save().then((_) => loading = false);
         });
