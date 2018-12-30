@@ -73,7 +73,7 @@ class _ArrowButton extends SpriteComponent {
 }
 
 class _SkinComponent extends AnimationComponent with Resizable {
-  static const SPEED = 300.0;
+  static const SPEED = 350.0;
 
   bool left;
   bool leave = false;
@@ -152,7 +152,7 @@ class _SkinSelectionGame extends BaseGame {
     add(_ArrowButton(this, true));
     add(_ArrowButton(this, false));
     add(card = _SkinCardComponent(this));
-    _updateSkin(true);
+    _updateSkin(false);
   }
 
   void _updateSkin(bool left) {
