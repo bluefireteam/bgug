@@ -168,18 +168,6 @@ class BgugGame extends BaseGame {
   }
 
   @override
-  void add(Component c) {
-    preAdd(c);
-    super.add(c);
-  }
-
-  @override
-  void addLater(Component c) {
-    preAdd(c);
-    super.addLater(c);
-  }
-
-  // TODO add this to Flame!
   void preAdd(Component c) {
     if (c is HasGameRef) {
       (c as HasGameRef).gameRef = this;

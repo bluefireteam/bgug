@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../data.dart';
 import 'gui_commons.dart';
 import 'coin_widget.dart';
 import 'skin_widget.dart';
@@ -30,7 +29,7 @@ class _StoreState extends State<StoreScreen> {
         children: [
           Stack(children: [
             Center(child: pad(Text('StOrE', style: TextStyle(fontSize: 64.0, fontFamily: 'Blox2')), 20.0)),
-            Positioned(child: CoinWidget(Data.buy.coins, doClick: false), top: 20.0, left: 20.0),
+            Positioned(child: CoinWidget(), top: 20.0, left: 20.0),
             Positioned(child: btn('go back', () => this.back()), top: 20.0, right: 20.0),
           ]),
           Expanded(

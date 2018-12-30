@@ -12,6 +12,7 @@ import '../ads.dart';
 import '../data.dart';
 import 'gui_commons.dart';
 import 'coin_widget.dart';
+import 'store_button_widget.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -124,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
               pad(Text('BLOCK', style: title), 2.0),
               pad(Text('guns', style: title), 2.0),
               pad(Text('USING', style: title), 2.0),
-              pad(Text('gems', style: title), 2.0),
+              pad(GestureDetector(child: Text('gems', style: title), onTap: () { Data.buy.coins += 50; Data.buy.save(); }), 2.0), // TODO remove this hack
             ],
             mainAxisAlignment: MainAxisAlignment.center,
           ),
@@ -152,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Stack(
         children: [
           child,
-          Positioned(child: CoinWidget(Data.buy.coins), top: 12.0, right: 12.0),
+          Positioned(child: Column(children: [ pad(StoreButtonWidget(), 4.0), pad(CoinWidget(), 4.0) ]), top: 12.0, right: 12.0),
           Positioned(child: userCard(), bottom: 12.0, left: 12.0),
         ],
       ),

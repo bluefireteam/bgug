@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flame/animation.dart' as animation;
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
@@ -8,10 +10,56 @@ import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/widgets.dart';
 
-import '../data.dart';
-import '../skin_list.dart';
 import '../components/floor.dart';
 import '../constants.dart';
+import '../data.dart';
+import '../skin_list.dart';
+
+math.Random rand = math.Random();
+
+class _CoinTrace extends Component {
+  static final Sprite _coin = new Sprite('coin.png', width: 16.0, height: 16.0);
+  static final Position _size = new Position(32.0, 32.0);
+
+  static const MAX_TIME = 2.0;
+  static const STDEV  = 40.0;
+
+  double clock = 0.0;
+  Position start, end, _current;
+  List<Position> coins = [];
+
+  _CoinTrace(this.start, this.end) : _current = start.clone();
+
+  Future get after => Future.delayed(Duration(milliseconds: (1000 * (MAX_TIME - clock)).round()));
+
+  @override
+  void render(Canvas c) {
+    coins.forEach((p) {
+      _coin.renderCentered(c, p.clone().add(_current), _size);
+    });
+  }
+
+  @override
+  void update(double t) {
+    clock += t;
+    if (clock > MAX_TIME) {
+      clock = MAX_TIME;
+    }
+    double dx = end.x - start.x;
+    double dy = end.y - start.y;
+    _current.x = start.x + dx * clock / MAX_TIME;
+    _current.y = start.y + dy * clock / MAX_TIME;
+
+    if (clock <= MAX_TIME / 4) {
+      if (rand.nextDouble() < 0.25) {
+        coins.add(new Position(STDEV * rand.nextDouble() - STDEV/2, STDEV * rand.nextDouble() - STDEV / 2));
+      }
+    }
+  }
+
+  @override
+  bool destroy() => clock == MAX_TIME;
+}
 
 class _SkinCardComponent extends Component with Resizable {
   static Sprite btnOn = new Sprite('store/store-ui.png', y: 37, width: 100, height: 36);
@@ -22,9 +70,9 @@ class _SkinCardComponent extends Component with Resizable {
 
   _SkinCardComponent(this.gameRef);
 
-  // TODO buy options??
-  bool get _on => Data.buy.selectedSkin != skin.file;
-  String get _text => _on ? 'Equip' : 'In Use';
+  bool get _btnOn => gameRef.currentOwn ? Data.buy.selectedSkin != skin.file : Data.buy.coins >= skin.cost;
+
+  String get _btnText => !gameRef.currentOwn ? 'Buy for ${skin.cost}' : (_btnOn ? 'Equip' : 'In Use');
 
   @override
   void render(Canvas c) {
@@ -32,11 +80,11 @@ class _SkinCardComponent extends Component with Resizable {
       return;
     }
 
-    TextPainter p = Flame.util.text(skin.name, fontFamily: 'Squared Display', fontSize: 32.0);
+    TextPainter p = Flame.util.text(skin.name, fontFamily: '5x5', fontSize: 24.0);
     p.paint(c, Offset((size.width - p.width) / 2, 32.0));
 
-    (_on ? btnOn : btnOff).renderPosition(c, Position((size.width - 200) / 2, 64.0), Position(200.0, 72.0));
-    TextPainter btn = Flame.util.text(_text, fontFamily: 'Squared Display', fontSize: 32.0);
+    (_btnOn ? btnOn : btnOff).renderPosition(c, Position((size.width - 200) / 2, 64.0), Position(200.0, 72.0));
+    TextPainter btn = Flame.util.text(_btnText, fontFamily: '5x5', fontSize: 18.0);
     btn.paint(c, Offset((size.width - btn.width) / 2, 64.0 + (72.0 - btn.height) / 2));
   }
 
@@ -129,7 +177,7 @@ class _SkinComponent extends AnimationComponent with Resizable {
     height = frac * 18.0;
 
     if (x == null) {
-      x = left ? -width: size.width;
+      x = left ? -width : size.width;
     }
     y = size_bottom(size) - height;
   }
@@ -142,6 +190,7 @@ class _SkinComponent extends AnimationComponent with Resizable {
 class _SkinSelectionGame extends BaseGame {
   bool loading = false;
   int selected = 0;
+
   List<Skin> get skins => Data.skinList.skins;
 
   _SkinComponent skin;
@@ -154,6 +203,8 @@ class _SkinSelectionGame extends BaseGame {
     add(card = _SkinCardComponent(this));
     _updateSkin(false);
   }
+
+  bool get currentOwn => Data.buy.skinsOwned.contains(skins[selected].file);
 
   void _updateSkin(bool left) {
     this.skin?.doLeave(left);
@@ -185,9 +236,23 @@ class _SkinSelectionGame extends BaseGame {
         _updateSkin(false);
       }
     } else {
-      Data.buy.selectedSkin = skins[selected].file;
-      loading = true;
-      Data.buy.save().then((_) => loading = false);
+      if (currentOwn) {
+        Data.buy.selectedSkin = skins[selected].file;
+        loading = true;
+        Data.buy.save().then((_) => loading = false);
+      } else if (Data.buy.coins >= skins[selected].cost) {
+        Position start = Position(camera.x + 20 + 32.0 / 2, camera.y + 20 + 32.0 / 2);
+        Position end = Position((size.width - 200) / 2 + 200 / 2, 64.0 + 72 / 2);
+        _CoinTrace trace = _CoinTrace(start, end);
+        addLater(trace);
+        trace.after.then((_) {
+          Data.buy.coins -= skins[selected].cost;
+          Data.buy.skinsOwned.add(skins[selected].file);
+          Data.buy.selectedSkin = skins[selected].file;
+          loading = true;
+          Data.buy.save().then((_) => loading = false);
+        });
+      }
     }
   }
 
