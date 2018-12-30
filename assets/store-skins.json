@@ -83,6 +83,10 @@
       "name": "Vampire",
       "file": "vampire.png",
       "cost": 1000
+    }, {
+      "name": "Retro Explorer",
+      "file": "explorer.png",
+      "cost": 3000
     }
   ]
 }
