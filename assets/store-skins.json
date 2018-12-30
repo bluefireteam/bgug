@@ -3,7 +3,7 @@
     {
       "name": "Asimov",
       "file": "asimov.png",
-      "cost" : 0
+      "cost": 0
     },
     {
       "name": "Archer",
@@ -79,22 +79,31 @@
       "name": "Wizard",
       "file": "wizard.png",
       "cost": 1000
-    }, {
+    },
+    {
       "name": "Vampire",
       "file": "vampire.png",
       "cost": 1000
-    }, {
+    },
+    {
       "name": "Retro Explorer",
       "file": "explorer.png",
       "cost": 3000
-    }, {
+    },
+    {
       "name": "The Chosen",
       "file": "the-chosen.png",
       "cost": 800
-    }, {
+    },
+    {
       "name": "Egg Bot",
       "file": "egg-bot.png",
-      "cost": 1000 
+      "cost": 1000
+    },
+    {
+      "name": "Solid Gold",
+      "file": "gold.png",
+      "cost": 0
     }
   ]
 }

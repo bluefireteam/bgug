@@ -71,9 +71,9 @@ class _SkinCardComponent extends Component with Resizable {
 
   _SkinCardComponent(this.gameRef);
 
-  bool get _btnOn => gameRef.currentOwn ? Data.buy.selectedSkin != skin.file : Data.buy.coins >= skin.cost;
+  bool get _btnOn => gameRef.currentOwn ? Data.buy.selectedSkin != skin.file : (skin.cost != 0 && Data.buy.coins >= skin.cost);
 
-  String get _btnText => !gameRef.currentOwn ? 'Buy for ${skin.cost}' : (_btnOn ? 'Equip' : 'In Use');
+  String get _btnText => !gameRef.currentOwn ? (skin.cost > 0 ? 'Buy for ${skin.cost}' : 'Exclusive') : (_btnOn ? 'Equip' : 'In Use');
 
   @override
   void render(Canvas c) {
@@ -259,7 +259,7 @@ class _SkinSelectionGame extends BaseGame {
         Data.buy.selectedSkin = skins[selected].file;
         loading = true;
         Data.buy.save().then((_) => loading = false);
-      } else if (Data.buy.coins >= skins[selected].cost) {
+      } else if (skins[selected].cost > 0 && Data.buy.coins >= skins[selected].cost) {
         Position start = Position(camera.x + 20 + 32.0 / 2, camera.y + 20 + 32.0 / 2);
         Position end = Position((size.width - 200) / 2 + 200 / 2, 64.0 + 72 / 2);
         _CoinTrace trace = _CoinTrace(start, end);
