@@ -73,7 +73,7 @@ class _ArrowButton extends SpriteComponent {
 }
 
 class _SkinComponent extends AnimationComponent with Resizable {
-  static const SPEED = 350.0;
+  static const SPEED = 425.0;
 
   bool left;
   bool leave = false;
