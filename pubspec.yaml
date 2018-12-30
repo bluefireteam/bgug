@@ -37,6 +37,7 @@ flutter:
    - assets/images/skins/santa.png
    - assets/images/skins/viking.png
    - assets/images/skins/wizard.png
+   - assets/images/skins/vampire.png
    - assets/images/hud_bg.png
    - assets/images/base_bottom.png
    - assets/images/base_top.png
