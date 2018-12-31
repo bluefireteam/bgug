@@ -96,6 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
     this.setState(() => {});
   }
 
+  // TODO proper user badge
   Widget userCard() {
     return new Text(username);
   }
@@ -122,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Column(
             children: [
-              pad(Text('BLOCK', style: title), 2.0),
+              pad(Text('BREAK', style: title), 2.0),
               pad(Text('guns', style: title), 2.0),
               pad(Text('USING', style: title), 2.0),
               pad(GestureDetector(child: Text('gems', style: title), onTap: () { Data.buy.coins += 50; Data.buy.save(); }), 2.0), // TODO remove this hack
