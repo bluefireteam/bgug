@@ -9,6 +9,13 @@ import 'components/gem.dart';
 math.Random random = new math.Random();
 
 class WorldGen {
+
+  // TODO sector 0 pre-gen (?)
+  static List<Component> generateSectorZero() {
+    List<SpriteComponent> list = new List();
+    list.add(new Gem(500.0, (size) => size_bottom(size) - 1.2 * size_tenth(size)));
+    return list;
+  }
   static List<Component> generateSector(int sector) {
     double start = sector * SECTOR_LENGTH;
 

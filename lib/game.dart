@@ -151,8 +151,7 @@ class BgugGame extends BaseGame {
       add(button = new Button());
     }
 
-    // sector 0 pre-gen (?)
-    add(new Gem(500.0, (size) => size_bottom(size) - 1.2 * size_tenth(size)));
+    WorldGen.generateSectorZero().forEach(add);
 
     this.state = state;
     if (this.state == GameState.TUTORIAL) {
