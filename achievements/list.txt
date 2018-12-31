@@ -1,0 +1,7 @@
+Name: Half Marathoner
+Icon: half-marathon.png
+Description: Run a total distance of a half marathon (21 kilometers)
+
+Name: Marathoner
+Icon: marathon.png
+Description: Run a total distance of a full marathon (42 kilometers)
