@@ -16,7 +16,7 @@ class Floor extends SpriteComponent {
   @override
   void resize(Size size) {
     x = 0.0;
-    y = size_bottom(size);
+    y = sizeBottom(size);
     width = size.width;
   }
 }

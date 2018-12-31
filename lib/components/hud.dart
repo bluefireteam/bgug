@@ -51,7 +51,7 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
     this.x = (size.width - WIDTH) / 2;
     this.y = 4.0;
     this.bgRect = new Rect.fromLTWH(0.0, 0.0, size.width, HEIGHT);
-    this.meterPerPixel = .75 / size_tenth(size);
+    this.meterPerPixel = .75 / sizeTenth(size);
   }
 
   @override

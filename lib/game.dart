@@ -16,9 +16,7 @@ import 'components/hud.dart';
 import 'components/tutorial.dart';
 import 'components/background.dart';
 import 'components/button.dart';
-import 'components/coin.dart';
 import 'components/floor.dart';
-import 'components/gem.dart';
 import 'components/top.dart';
 import 'components/shooter.dart';
 import 'components/player.dart';
@@ -44,7 +42,7 @@ class BgugGame extends BaseGame {
   Button button;
   bool won = false;
   int _points = 0, currentCoins = 0;
-  int lastGeneratedSector = 0;
+  int lastGeneratedSector = -1;
   Future<AudioPlayer> music;
   int _currentSlot;
   Ad endGameAd;
@@ -127,7 +125,7 @@ class BgugGame extends BaseGame {
     won = false;
     _points = 0;
     currentCoins = 0;
-    lastGeneratedSector = 0;
+    lastGeneratedSector = -1;
 
     currentSlot = 0;
 
@@ -150,8 +148,6 @@ class BgugGame extends BaseGame {
       add(new Block(currentSlot = Block.nextSlot(currentSlot)));
       add(button = new Button());
     }
-
-    WorldGen.generateSectorZero().forEach(add);
 
     this.state = state;
     if (this.state == GameState.TUTORIAL) {
@@ -239,7 +235,7 @@ class BgugGame extends BaseGame {
 
     while (player.x + 2 * SECTOR_LENGTH >= SECTOR_LENGTH * lastGeneratedSector) {
       lastGeneratedSector++;
-      WorldGen.generateSector(lastGeneratedSector).forEach(addLater);
+      WorldGen.generateSector(size, lastGeneratedSector).forEach(addLater);
     }
 
     super.update(dt);

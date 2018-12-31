@@ -50,7 +50,7 @@ class Lock extends Component {
     double skinWidth = frac * 16.0;
 
     p.x = (size.width - skinWidth - mySize.x) / 2;
-    p.y = size_bottom(size) - mySize.y;
+    p.y = sizeBottom(size) - mySize.y;
   }
 
   @override

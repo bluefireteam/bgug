@@ -1,49 +1,65 @@
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flame/components/component.dart';
 
 import 'constants.dart';
 import 'components/obstacle.dart';
 import 'components/gem.dart';
+import 'components/coin.dart';
 
 math.Random random = new math.Random();
 
 class WorldGen {
-
-  // TODO sector 0 pre-gen (?)
-  static List<Component> generateSectorZero() {
-    List<SpriteComponent> list = new List();
-    list.add(new Gem(500.0, (size) => size_bottom(size) - 1.2 * size_tenth(size)));
+  static List<Component> _generateSectorZero(Size size) {
+    List<PositionComponent> list = new List();
+    double x = SECTOR_LENGTH / 2;
+    double y = sizeBottom(size) - 1.2 * sizeTenth(size);
+    list.add(new Gem(x, y));
     return list;
   }
-  static List<Component> generateSector(int sector) {
-    double start = sector * SECTOR_LENGTH;
 
-    List<SpriteComponent> stuffSoFar = new List();
+  static List<Component> generateSector(Size size, int sector) {
+    if (sector == 0) {
+      return _generateSectorZero(size);
+    }
+
+    double start = sector * SECTOR_LENGTH + SECTOR_MARGIN;
+    int length = (SECTOR_LENGTH - 2 * SECTOR_MARGIN).round();
+
+    List<PositionComponent> list = new List();
     for (int i = random.nextInt(4); i > 0; i--) {
-      double x = start + random.nextInt(1000);
+      double x = start + random.nextInt(length);
       UpObstacle obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
-      if (stuffSoFar.any((box) => box.toRect().overlaps(obstacle.toRect()) || (box.x - obstacle.x).abs() < 20.0)) {
+      obstacle.resize(size);
+      if (list.any((box) => box.toRect().overlaps(obstacle.toRect()) || (box.x - obstacle.x).abs() < 8.0)) {
         if (random.nextBool()) {
           i++;
         }
         continue;
       }
-      stuffSoFar.add(obstacle);
+      list.add(obstacle);
     }
 
     for (int i = random.nextInt(6); i > 0; i--) {
-      double x = start + random.nextInt(1000);
-      Gem gem = new Gem(x, (size) => size_bottom(size) - (1 + random.nextInt(8)) * size_tenth(size));
-      if (stuffSoFar.any((box) => box.toRect().overlaps(gem.toRect()))) {
+      double x = start + random.nextInt(length);
+      double y = sizeBottom(size) - (1 + random.nextInt(8)) * sizeTenth(size);
+      Gem gem = new Gem(x, y);
+      if (list.any((box) => box.toRect().overlaps(gem.toRect().inflate(8.0)))) {
         if (random.nextBool()) {
           i++;
         }
         continue;
       }
-      stuffSoFar.add(gem);
+      list.add(gem);
     }
 
-    return stuffSoFar;
+    if (random.nextDouble() < 0.2) {
+      double x = start + random.nextInt(length);
+      double y = sizeBottom(size) - (1 + random.nextInt(8)) * sizeTenth(size);
+      list.add(new Coin(x, y));
+    }
+
+    return list;
   }
 }

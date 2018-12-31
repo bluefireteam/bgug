@@ -1,6 +1,6 @@
 import 'package:firebase_admob/firebase_admob.dart';
 
-const bool ENABLE_ADS = false;
+import 'constants.dart';
 
 class Ad {
   InterstitialAd _ad;

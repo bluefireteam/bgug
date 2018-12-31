@@ -192,7 +192,7 @@ class _SkinComponent extends AnimationComponent with Resizable {
     if (x == null) {
       x = left ? -width : size.width;
     }
-    y = size_bottom(size) - height;
+    y = sizeBottom(size) - height;
   }
 
   static animation.Animation makeAnimation(String skin) {

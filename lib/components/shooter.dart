@@ -24,9 +24,9 @@ class Bullet extends AnimationComponent with HasGameRef {
       : super(16.0, 16.0, new Animation.sequenced('bullet.png', 3,
             textureWidth: 16.0, textureHeight: 16.0)
           ..stepTime = 0.075) {
-    this.width = this.height = (1.0 - 2 * FRAC) * size_tenth(size);
+    this.width = this.height = (1.0 - 2 * FRAC) * sizeTenth(size);
     this.x = p.x - this.width + 7.0;
-    this.y = p.y + FRAC * size_tenth(size);
+    this.y = p.y + FRAC * sizeTenth(size);
   }
 
   @override
@@ -47,7 +47,7 @@ class Bullet extends AnimationComponent with HasGameRef {
 
   @override
   void resize(Size size) {
-    this.width = this.height = (1.0 - 2 * FRAC) * size_tenth(size);
+    this.width = this.height = (1.0 - 2 * FRAC) * sizeTenth(size);
   }
 }
 
@@ -70,8 +70,8 @@ class ShooterCane extends PositionComponent {
   @override
   void resize(Size size) {
     this.x = size.width - 8.0;
-    this.y = size_top(size);
-    this.height = size_tenth(size) * 10;
+    this.y = sizeTop(size);
+    this.height = sizeTenth(size) * 10;
   }
 
   @override
@@ -191,7 +191,7 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
     super.resize(size);
     x = size.width - width;
 
-    step = size_tenth(size);
+    step = sizeTenth(size);
     height = step;
     action = '';
     if (kind == 'up') {
@@ -200,8 +200,8 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
         // TODO Flame.audio.play('?') destruction audio
         _destroy = true;
       }
-      yi = size_top(size) + step * minUp;
-      yf = size_top(size) + step * 3;
+      yi = sizeTop(size) + step * minUp;
+      yf = sizeTop(size) + step * 3;
       y = yi;
     } else {
       var maxDown = Block.maxDown(currentSlot);
@@ -209,8 +209,8 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
         // TODO Flame.audio.play('?') destruction audio
         _destroy = true;
       }
-      yi = size_top(size) + step * 4;
-      yf = size_top(size) + step * maxDown;
+      yi = sizeTop(size) + step * 4;
+      yf = sizeTop(size) + step * maxDown;
       y = yf;
     }
   }
@@ -270,9 +270,9 @@ class Block extends SpriteComponent {
 
   @override
   void resize(Size size) {
-    this.width = this.height = size_tenth(size);
+    this.width = this.height = sizeTenth(size);
     this.x = size.width - this.width;
-    this.y = size_top(size) + this.slot * this.height;
+    this.y = sizeTop(size) + this.slot * this.height;
   }
 
   @override

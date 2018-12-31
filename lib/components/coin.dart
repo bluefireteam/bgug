@@ -28,7 +28,7 @@ class Coin extends AnimationComponent with HasGameRef {
 
   @override
   void resize(Size size) {
-    width = height = 0.8 * size_tenth(size);
+    width = height = 0.8 * sizeTenth(size);
   }
 
   @override

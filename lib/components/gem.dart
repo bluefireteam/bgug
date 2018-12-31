@@ -71,7 +71,7 @@ class GemMoving extends SpriteComponent with HasGameRef {
 
   @override
   void resize(Size size) {
-    width = height = 0.8 * size_tenth(size);
+    width = height = 0.8 * sizeTenth(size);
   }
 
   @override
@@ -86,10 +86,10 @@ class GemMoving extends SpriteComponent with HasGameRef {
 
 class Gem extends SpriteComponent with HasGameRef {
   bool complete = false;
-  double Function(Size) yGen;
 
-  Gem(double x, this.yGen) : super.fromSprite(1.0, 1.0, new Sprite('gem.png')) {
+  Gem(double x, double y) : super.fromSprite(1.0, 1.0, new Sprite('gem.png')) {
     this.x = x;
+    this.y = y;
   }
 
   @override
@@ -107,8 +107,7 @@ class Gem extends SpriteComponent with HasGameRef {
 
   @override
   void resize(Size size) {
-    width = height = 0.8 * size_tenth(size);
-    y = yGen(size);
+    width = height = 0.8 * sizeTenth(size);
   }
 
   @override

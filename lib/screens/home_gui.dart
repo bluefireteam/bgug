@@ -9,6 +9,7 @@ import 'package:flame/flame.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../constants.dart';
 import '../ads.dart';
 import '../data.dart';
 import 'gui_commons.dart';
@@ -67,8 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
       Data.loadAll(),
     ];
     Future.wait(ps).then((rs) => this.setState(() => loading = false));
-    // _handleSignIn();
-    username = 'test user';
+    if (ENABLE_LOGIN) {
+      _handleSignIn();
+    } else {
+      username = 'test user';
+    }
   }
 
   Future<FirebaseUser> _handleSignIn() async {

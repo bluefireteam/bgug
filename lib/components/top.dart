@@ -14,7 +14,7 @@ class Top extends SpriteComponent {
   @override
   void resize(Size size) {
     x = 0.0;
-    y = size_top(size) - BAR_SIZE;
+    y = sizeTop(size) - BAR_SIZE;
     width = size.width;
   }
 }
