@@ -22,7 +22,7 @@ class _CoinTrace extends Component {
   static final Sprite _coin = new Sprite('coin.png', width: 16.0, height: 16.0);
   static final Position _size = new Position(32.0, 32.0);
 
-  static const MAX_TIME = 2.0;
+  static const MAX_TIME = 1.0;
   static const STDEV  = 40.0;
 
   double clock = 0.0;
@@ -103,7 +103,7 @@ class _ArrowButton extends SpriteComponent {
 
   @override
   void render(Canvas canvas) {
-    if (!_show || gameRef.skin.isMoving) {
+    if (!_show || gameRef.hideGui) {
       return;
     }
     super.render(canvas);
@@ -202,6 +202,7 @@ class _SkinComponent extends AnimationComponent with Resizable {
 
 class _SkinSelectionGame extends BaseGame {
   bool loading = false;
+  bool buying = false;
   int selected = 0;
 
   _SkinComponent skin;
@@ -211,6 +212,7 @@ class _SkinSelectionGame extends BaseGame {
   List<Skin> get skins => Data.skinList.skins;
   bool get currentOwn => Data.buy.skinsOwned.contains(skins[selected].file);
   bool get lockVisible => skin != null && !skin.isMoving && !currentOwn;
+  bool get hideGui => loading || skin.isMoving || buying;
 
   _SkinSelectionGame() {
     add(Floor());
@@ -241,7 +243,7 @@ class _SkinSelectionGame extends BaseGame {
 
   void tap(TapDownDetails evt) {
     double x = evt.globalPosition.dx;
-    if (loading || this.skin.isMoving) {
+    if (hideGui) {
       return;
     }
     if (x < size.width / 3) {
@@ -260,6 +262,7 @@ class _SkinSelectionGame extends BaseGame {
         loading = true;
         Data.buy.save().then((_) => loading = false);
       } else if (skins[selected].cost > 0 && Data.buy.coins >= skins[selected].cost) {
+        buying = true;
         Position start = Position(camera.x + 20 + 32.0 / 2, camera.y + 20 + 32.0 / 2);
         Position end = Position((size.width - 200) / 2 + 200 / 2, 64.0 + 72 / 2);
         _CoinTrace trace = _CoinTrace(start, end);
@@ -270,6 +273,7 @@ class _SkinSelectionGame extends BaseGame {
           Data.buy.skinsOwned.add(skins[selected].file);
           Data.buy.selectedSkin = skins[selected].file;
           this.skin.locked = false;
+          buying = false;
           loading = true;
           Data.buy.save().then((_) => loading = false);
         });

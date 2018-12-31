@@ -28,7 +28,8 @@ class WorldGen {
     int length = (SECTOR_LENGTH - 2 * SECTOR_MARGIN).round();
 
     List<PositionComponent> list = new List();
-    for (int i = random.nextInt(4); i > 0; i--) {
+    int blockMaxAmont = (4 + sector / 4).round();
+    for (int i = random.nextInt(blockMaxAmont); i > 0; i--) {
       double x = start + random.nextInt(length);
       UpObstacle obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
       obstacle.resize(size);
@@ -54,7 +55,8 @@ class WorldGen {
       list.add(gem);
     }
 
-    if (random.nextDouble() < 0.2) {
+    double coinChance = 0.2 + math.min(0.005 * sector, 0.5);
+    if (random.nextDouble() < coinChance) {
       double x = start + random.nextInt(length);
       double y = sizeBottom(size) - (1 + random.nextInt(8)) * sizeTenth(size);
       list.add(new Coin(x, y));
