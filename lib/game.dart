@@ -299,7 +299,7 @@ class BgugGame extends BaseGame {
   }
 
   String score() {
-    return 'Scored ${hud.maxDistance} meters earning $currentCoins coins.';
+    return 'Scored ${hud.maxDistance.toStringAsFixed(2)} meters earning $currentCoins coins.';
   }
 
   bool handlingClick() {

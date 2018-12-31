@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+part 'score.g.dart';
+
+@JsonSerializable()
 class Score {
   List<String> scores;
 
@@ -10,26 +14,20 @@ class Score {
     scores = [];
   }
 
-  Score.fromMap(Map map) {
-    scores = [];
-    (map['scores'] as List).forEach((s) => scores.add(s.toString()));
-  }
-
-  Map toMap() {
-    return {'scores': scores};
-  }
+  factory Score.fromJson(Map<String, dynamic> json) => _$ScoreFromJson(json);
+  Map<String, dynamic> toJson() => _$ScoreToJson(this);
 
   Future save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('score', json.encode(toMap()));
+    prefs.setString('score.v2', json.encode(toJson()));
   }
 
   static Future<Score> fetch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonStr = prefs.getString('score');
+    String jsonStr = prefs.getString('score.v2');
     if (jsonStr == null) {
       return new Score();
     }
-    return new Score.fromMap(json.decode(jsonStr));
+    return new Score.fromJson(json.decode(jsonStr));
   }
 }
