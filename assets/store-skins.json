@@ -101,6 +101,11 @@
       "cost": 1000
     },
     {
+      "name": "Grim Reaper",
+      "file": "reaper.png",
+      "cost": 1000
+    },
+    {
       "name": "Solid Gold",
       "file": "gold.png",
       "cost": 0
