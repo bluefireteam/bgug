@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool showingTutorial = false;
   bool loading = true;
   String username = '-';
 
@@ -118,6 +120,39 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
+    Widget main = renderContent(context);
+
+    if (showingTutorial) {
+      return GestureDetector(
+        child: LayoutBuilder(builder: (_, BoxConstraints size) {
+          double potWidth = 3 * size.maxWidth / 4;
+          double potHeight = 4 * size.maxHeight / 5;
+          double frac = math.min(potWidth / 192, potHeight / 162);
+          double width = 192 * frac;
+          double height = 162 * frac;
+          return Stack(
+            children: [
+              main,
+              Positioned(
+                child: Image.asset('assets/images/tutorial.png', fit: BoxFit.cover),
+                left: (size.maxWidth - width) / 2,
+                top: (size.maxHeight - height) / 2,
+                width: width,
+                height: height,
+              ),
+            ],
+          );
+        }),
+
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => showingTutorial = false),
+      );
+    }
+
+    return main;
+  }
+
+  Widget renderContent(BuildContext context) {
     final child = Center(
       child: Row(
         children: [
@@ -134,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               btn('Play', () => Navigator.of(context).pushNamed('/start')),
               btn('Score', () => Navigator.of(context).pushNamed('/score')),
-              btn('Options', () => Navigator.of(context).pushNamed('/options')),
+              btn('How to Play', () => setState(() => showingTutorial = true)),
               btn('Exit', () => SystemNavigator.pop()),
             ],
             mainAxisAlignment: MainAxisAlignment.center,

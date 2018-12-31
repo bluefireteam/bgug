@@ -24,8 +24,8 @@ class Button extends PositionComponent with Resizable {
   Button() {
     points = 0;
     width = height = SIZE;
-    cost = Data.options.buttonCost;
-    incCost = Data.options.buttonIncCost;
+    cost = Data.currentOptions.buttonCost;
+    incCost = Data.currentOptions.buttonIncCost;
 
     activeAnimation = new Animation.sequenced('button.png', 4, textureX: 40.0, textureWidth: 40.0);
     inactiveSprite = new Sprite('button.png', width: 40.0);

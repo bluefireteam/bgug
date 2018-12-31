@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../options.dart';
 import '../data.dart';
 import '../game.dart';
-import '../game_mode.dart';
 import '../main.dart';
 import 'gui_commons.dart';
 
@@ -15,7 +15,7 @@ class StartGameScreen extends StatefulWidget {
 class MyGameBinder extends BgugGame {
   _StartGameScreenState screen;
 
-  MyGameBinder(this.screen, GameMode mode, bool showTutorial) : super(mode, showTutorial);
+  MyGameBinder(this.screen, bool shouldSore, bool showTutorial) : super(shouldSore, showTutorial);
 
   @override
   set state(GameState state) {
@@ -24,7 +24,9 @@ class MyGameBinder extends BgugGame {
       (() async {
         if (state == GameState.STOPPED) {
           Data.buy.save();
-          await this.screen.addToScore(score());
+          if (shouldScore) {
+            await this.screen.addToScore(score());
+          }
         }
         this.screen.redraw();
       })();
@@ -61,35 +63,45 @@ class _StartGameScreenState extends State<StartGameScreen> {
         ),
       ),
       child: Center(
-        child: Row(
-          children: [
-            Column(
+        child: LayoutBuilder(builder: (_, size) {
+          return Stack(children: [
+            Row(
               children: [
-                pad(Text('pLaY', style: title), 20.0),
-                btn('Go back', () {
-                  Navigator.of(context).pop();
-                }),
+                Column(
+                  children: [
+                    pad(Text('pLaY', style: title), 20.0),
+                    btn('Go back', () {
+                      Navigator.of(context).pop();
+                    }),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                Column(
+                  children: [
+                    btn('Endless', () => startGame(true, new Options())),
+                    btn('Playground', () => startGame(false, Data.options)),
+                    btn('Config Playground', () => Navigator.of(context).pushNamed('/options')),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
               ],
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             ),
-            Column(
-              children: [
-                btn('Single', () => startGame(GameMode.SINGLE)),
-                btn('Endless', () => startGame(GameMode.ENDLESS)),
-                btn('Playground', () => startGame(GameMode.PLAYGROUND)),
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-          ],
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        ),
+            Positioned(
+              child: Center(child: Text('Playground can be configured as you wish, but will NOT award coins nor scoreboard entries.')),
+              bottom: 4.0,
+              width: size.maxWidth,
+            )
+          ]);
+        }),
       ),
     );
   }
 
-  startGame(GameMode mode) async {
+  startGame(bool shouldSore, Options options) async {
     bool showTutorial = await Data.options.getAndToggleShowTutorial();
-    Main.game = new MyGameBinder(this, mode, showTutorial);
+    Data.currentOptions = options;
+    Main.game = new MyGameBinder(this, shouldSore, showTutorial);
     setState(() {});
   }
 }

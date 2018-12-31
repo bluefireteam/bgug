@@ -1,19 +1,20 @@
 import 'dart:async';
 
-import 'package:flame/sprite.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'skin_list.dart';
+import 'buy.dart';
 import 'options.dart';
 import 'score.dart';
-import 'buy.dart';
+import 'skin_list.dart';
 
 class Data {
   static SkinList skinList;
   static Options options;
   static Score score;
   static Buy buy;
+
   static GoogleSignInAccount user;
+  static Options currentOptions;
 
   static Future loadAll() async {
     return Future.wait([

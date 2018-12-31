@@ -131,8 +131,7 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
     }
 
     if (this.shoot()) {
-      gameRef.add(new Bullet(
-          Data.options.bulletSpeed, size, toPosition().add(gameRef.camera)));
+      gameRef.add(new Bullet(Data.currentOptions.bulletSpeed, size, toPosition().add(gameRef.camera)));
     }
   }
 

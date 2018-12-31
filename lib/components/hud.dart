@@ -39,7 +39,7 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
     if (clock != null) {
       clock += t;
       double diff = clock;
-      double max = Data.options.maxHoldJumpMillis.toDouble() / 1000.0;
+      double max = Data.currentOptions.maxHoldJumpMillis.toDouble() / 1000.0;
       gaugeStrength = math.min(diff, max) / max;
     } else {
       gaugeStrength = null;

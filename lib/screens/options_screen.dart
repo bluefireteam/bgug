@@ -53,10 +53,12 @@ class _OptionsState extends State<OptionsScreen> {
     final optionItemBuilder = (String title, String value, Validator validator, void Function(String) setter) => optionLine(title, value, () {
           this.setState(() => currentTextField = textField(title, validator, value, setter));
         });
-    final intItemBuilder =
-        (String title, int value, void Function(int) setter) => optionItemBuilder(title, value.toString(), intValidator, (str) => setter(int.parse(str)));
-    final doubleItemBuilder = (String title, double value, void Function(double) setter) =>
-        optionItemBuilder(title, value.toString(), doubleValidator, (str) => setter(double.parse(str)));
+    final intItemBuilder = (String title, int value, void Function(int) setter) {
+      return optionItemBuilder(title, value.toString(), intValidator, (str) => setter(int.parse(str)));
+    };
+    final doubleItemBuilder = (String title, double value, void Function(double) setter) {
+      return optionItemBuilder(title, value.toString(), doubleValidator, (str) => setter(double.parse(str)));
+    };
     return rootContainer(
       Row(
         children: [
@@ -121,6 +123,7 @@ class _OptionsState extends State<OptionsScreen> {
                       options.jumpTimeMultiplier,
                       (v) => options.jumpTimeMultiplier = v,
                     ),
+                    // TODO new options
                   ],
                 ),
               ),

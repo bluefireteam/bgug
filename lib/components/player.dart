@@ -19,8 +19,8 @@ class Player extends PositionComponent {
   Impulse diveImpulse;
 
   Player() {
-    jumpImpulse = new Impulse(-1 * Data.options.jumpImpulse);
-    diveImpulse = new Impulse(Data.options.diveImpulse);
+    jumpImpulse = new Impulse(-1 * Data.currentOptions.jumpImpulse);
+    diveImpulse = new Impulse(Data.currentOptions.diveImpulse);
 
     String skinSpritePath = 'skins/' + Data.buy.selectedSkin;
     animations = new Map<String, Animation>();
@@ -47,7 +47,7 @@ class Player extends PositionComponent {
 
     double accY = jumpImpulse.tick(t) + diveImpulse.tick(t);
     if (falling()) {
-      accY += Data.options.gravityImpulse;
+      accY += Data.currentOptions.gravityImpulse;
     }
 
     y += accY * t * t / 2 + velocity.y * t;
@@ -86,7 +86,7 @@ class Player extends PositionComponent {
 
   void jump(int dt) {
     if (!falling()) {
-      jumpImpulse.impulse(Data.options.jumpTimeMultiplier * dt);
+      jumpImpulse.impulse(Data.currentOptions.jumpTimeMultiplier * dt);
       Flame.audio.play('jump.wav');
     }
   }

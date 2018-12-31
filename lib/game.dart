@@ -28,7 +28,7 @@ import 'mixins/has_game_ref.dart';
 
 import 'queryable_ordered_set.dart';
 import 'constants.dart';
-import 'game_mode.dart';
+import 'options.dart';
 import 'ads.dart';
 import 'data.dart';
 
@@ -37,7 +37,10 @@ math.Random random = new math.Random();
 enum GameState { TUTORIAL, RUNNING, DEAD, END_CARD, STOPPED, AD }
 
 class BgugGame extends BaseGame {
-  GameMode gameMode;
+
+  static Options get options => Data.currentOptions;
+
+  bool shouldScore;
   Button button;
   bool won = false;
   int _points = 0, currentCoins = 0;
@@ -92,7 +95,7 @@ class BgugGame extends BaseGame {
     });
   }
 
-  BgugGame(this.gameMode, bool showTutorial) {
+  BgugGame(this.shouldScore, bool showTutorial) {
     _start(showTutorial ? GameState.TUTORIAL : GameState.RUNNING);
   }
 
@@ -139,21 +142,18 @@ class BgugGame extends BaseGame {
     add(new Floor());
     add(new Player());
 
-    if (gameMode.hasGuns) {
+    if (options.hasGuns) {
       add(new ShooterCane());
       add(new Shooter('up', currentSlot));
       add(new Shooter('down', currentSlot));
       add(new Block(currentSlot = Block.nextSlot(-1)));
       add(new Block(currentSlot = Block.nextSlot(currentSlot)));
+      add(button = new Button());
     }
 
     // sector 0 pre-gen
     add(new Gem(500.0, (size) => size_bottom(size) - 1.2 * size_tenth(size)));
     add(new Coin(500.0, 200.0));
-
-    if (gameMode != GameMode.PLAYGROUND) {
-      add(button = new Button());
-    }
 
     this.state = state;
     if (this.state == GameState.TUTORIAL) {
@@ -216,8 +216,8 @@ class BgugGame extends BaseGame {
   }
 
   void input(Position p, int dt) {
-    if (dt > Data.options.maxHoldJumpMillis) {
-      dt = Data.options.maxHoldJumpMillis;
+    if (dt > Data.currentOptions.maxHoldJumpMillis) {
+      dt = Data.currentOptions.maxHoldJumpMillis;
     }
     if (state == GameState.END_CARD) {
       endCard.click(p);
@@ -238,7 +238,7 @@ class BgugGame extends BaseGame {
           if (dPoint != 0) {
             points -= dPoint;
             currentSlot = Block.nextSlot(currentSlot);
-            if (currentSlot == Block.WIN && !gameMode.gunRespawn) {
+            if (currentSlot == Block.WIN && !options.gunRespawn) {
               won = true;
               showEndCard();
             } else {
@@ -279,7 +279,7 @@ class BgugGame extends BaseGame {
     if (player != null) {
       cameraFollow(player);
 
-      if (gameMode.hasLimit && player.x >= gameMode.mapSize) {
+      if (options.hasLimit && player.x >= options.mapSize) {
         won = true;
         player.velocity.x = 0;
         showEndCard();
@@ -293,13 +293,13 @@ class BgugGame extends BaseGame {
     camera.x = c.x - size.width / 2 + c.width / 2 + size.width / 4;
     if (camera.x < 0.0) {
       camera.x = 0.0;
-    } else if (gameMode.hasLimit && camera.x > gameMode.mapSize - size.width) {
-      camera.x = gameMode.mapSize - size.width;
+    } else if (options.hasLimit && camera.x > options.mapSize - size.width) {
+      camera.x = options.mapSize - size.width;
     }
   }
 
   String score() {
-    return gameMode.score(points, won);
+    return 'Scored ${hud.maxDistance} meters earning $currentCoins coins.';
   }
 
   bool handlingClick() {
@@ -307,6 +307,8 @@ class BgugGame extends BaseGame {
   }
 
   void award(int coins) {
-    Data.buy.coins += coins;
+    if (shouldScore) {
+      Data.buy.coins += coins;
+    }
   }
 }

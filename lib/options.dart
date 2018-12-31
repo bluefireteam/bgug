@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+part 'options.g.dart';
+
+@JsonSerializable()
 class Options {
   bool showTutorial;
   double bulletSpeed;
@@ -16,19 +20,11 @@ class Options {
   double diveImpulse;
   double jumpTimeMultiplier;
 
-  Map toMap() {
-    return {
-      'showTutorial': showTutorial,
-      'bulletSpeed': bulletSpeed,
-      'buttonCost': buttonCost,
-      'buttonIncCost': buttonIncCost,
-      'maxHoldJumpMillis': maxHoldJumpMillis,
-      'gravityImpulse': gravityImpulse,
-      'jumpImpulse': jumpImpulse,
-      'diveImpulse': diveImpulse,
-      'jumpTimeMultiplier': jumpTimeMultiplier,
-    };
-  }
+  int mapSize;
+  bool hasGuns;
+  bool gunRespawn;
+
+  bool get hasLimit => mapSize != -1;
 
   Options() {
     this.showTutorial = true;
@@ -40,32 +36,26 @@ class Options {
     this.jumpImpulse = 7000.0;
     this.diveImpulse = 20000.0;
     this.jumpTimeMultiplier = 0.0004;
+    this.mapSize = -1; // infinite
+    this.hasGuns = true;
+    this.gunRespawn = false;
   }
 
-  Options.fromMap(Map map) {
-    showTutorial = map['showTutorial'] ?? true;
-    bulletSpeed = map['bulletSpeed'] ?? 500.0;
-    buttonCost = map['buttonCost'] ?? 5;
-    buttonIncCost = map['buttonIncCost'] ?? 2;
-    maxHoldJumpMillis = map['maxHoldJumpMillis'] ?? 500;
-    gravityImpulse = map['gravityImpulse'] ?? 1875.0;
-    jumpImpulse = map['jumpImpulse'] ?? 7000.0;
-    diveImpulse = map['diveImpulse'] ?? 20000.0;
-    jumpTimeMultiplier = map['jumpTimeMultiplier'] ?? 0.0004;
-  }
+  factory Options.fromJson(Map<String, dynamic> json) => _$OptionsFromJson(json);
+  Map<String, dynamic> toJson() => _$OptionsToJson(this);
 
   Future save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('options', json.encode(toMap()));
+    prefs.setString('options.v2', json.encode(toJson()));
   }
 
   static Future<Options> fetch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonStr = prefs.getString('options');
+    String jsonStr = prefs.getString('options.v2');
     if (jsonStr == null) {
       return new Options();
     }
-    return new Options.fromMap(json.decode(jsonStr));
+    return new Options.fromJson(json.decode(jsonStr));
   }
 
   Future<bool> getAndToggleShowTutorial() async {
