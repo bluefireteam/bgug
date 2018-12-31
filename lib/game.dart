@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:bgug/world_gen.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_admob/firebase_admob.dart';
@@ -18,7 +19,6 @@ import 'components/button.dart';
 import 'components/coin.dart';
 import 'components/floor.dart';
 import 'components/gem.dart';
-import 'components/obstacle.dart';
 import 'components/top.dart';
 import 'components/shooter.dart';
 import 'components/player.dart';
@@ -151,9 +151,8 @@ class BgugGame extends BaseGame {
       add(button = new Button());
     }
 
-    // sector 0 pre-gen
+    // sector 0 pre-gen (?)
     add(new Gem(500.0, (size) => size_bottom(size) - 1.2 * size_tenth(size)));
-    add(new Coin(500.0, 200.0));
 
     this.state = state;
     if (this.state == GameState.TUTORIAL) {
@@ -174,36 +173,6 @@ class BgugGame extends BaseGame {
     }
     if (size != null) {
       c.resize(size);
-    }
-  }
-
-  void generateSector(int sector) {
-    double start = sector * SECTOR_LENGTH;
-
-    List<SpriteComponent> stuffSoFar = new List();
-    for (int i = random.nextInt(4); i > 0; i--) {
-      double x = start + random.nextInt(1000);
-      UpObstacle obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
-      if (stuffSoFar.any((box) => box.toRect().overlaps(obstacle.toRect()) || (box.x - obstacle.x).abs() < 20.0)) {
-        if (random.nextBool()) {
-          i++;
-        }
-        continue;
-      }
-      stuffSoFar.add(obstacle);
-      add(obstacle);
-    }
-    for (int i = random.nextInt(6); i > 0; i--) {
-      double x = start + random.nextInt(1000);
-      Gem gem = new Gem(x, (size) => size_bottom(size) - (1 + random.nextInt(8)) * size_tenth(size));
-      if (stuffSoFar.any((box) => box.toRect().overlaps(gem.toRect()))) {
-        if (random.nextBool()) {
-          i++;
-        }
-        continue;
-      }
-      stuffSoFar.add(gem);
-      add(gem);
     }
   }
 
@@ -271,7 +240,7 @@ class BgugGame extends BaseGame {
 
     while (player.x + 2 * SECTOR_LENGTH >= SECTOR_LENGTH * lastGeneratedSector) {
       lastGeneratedSector++;
-      generateSector(lastGeneratedSector);
+      WorldGen.generateSector(lastGeneratedSector).forEach(addLater);
     }
 
     super.update(dt);
