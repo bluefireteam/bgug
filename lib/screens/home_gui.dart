@@ -1,38 +1,37 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flame/flame.dart';
-
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
-import '../constants.dart';
 import '../ads.dart';
+import '../constants.dart';
 import '../data.dart';
-import 'gui_commons.dart';
 import 'coin_widget.dart';
+import 'gui_commons.dart';
 import 'store_button_widget.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class HomeScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new _HomeScreenState();
+  State<StatefulWidget> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   bool showingTutorial = false;
   bool loading = true;
-  String username = '-';
+  String username;
 
   _HomeScreenState() {
     var ps = <Future>[
       Ad.startup(),
-      SystemChrome.setEnabledSystemUIOverlays([]),
-      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]),
+      Flame.util.fullScreen(),
+      Flame.util.setOrientation(DeviceOrientation.landscapeLeft),
       Flame.audio.loadAll([
         'death.wav',
         'gem_collect.wav',
@@ -59,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'endgame_buttons.png',
         'tutorial.png',
         'splash_screen.png',
+        'google-play-button.png',
         'store/skins_panel.png',
         'store/store_button.png',
         'store/store-ui.png',
@@ -70,13 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
     Future.wait(ps).then((rs) => this.setState(() => loading = false));
     if (ENABLE_LOGIN) {
       _handleSignIn();
-    } else {
-      username = 'test user';
     }
   }
 
   Future<FirebaseUser> _handleSignIn() async {
-    GoogleSignIn _googleSignIn = new GoogleSignIn(
+    GoogleSignIn _googleSignIn = GoogleSignIn(
       scopes: [
         'email',
         'https://www.googleapis.com/auth/contacts.readonly',
@@ -93,18 +91,24 @@ class _HomeScreenState extends State<HomeScreen> {
     return user;
   }
 
-  addToScore(String newScore) async {
+  void addToScore(String newScore) async {
     Data.score.scores.add(newScore);
     Data.score.save();
   }
 
-  redraw() {
+  void redraw() {
     this.setState(() => {});
   }
 
-  // TODO proper user badge
   Widget userCard() {
-    return new Text(username);
+    if (username == null) {
+      const S = 2.0;
+      return GestureDetector(
+          child: Image.asset('assets/images/google-play-button.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 89 * S, height: 17 * S),
+          onTap: () => _handleSignIn(),
+      );
+    }
+    return Text(username);
   }
 
   @override
@@ -112,10 +116,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (loading) {
       return Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF404040),
+          color: Color(0xFF404040),
         ),
         child: Image.asset(
           "assets/images/splash_screen.png",
+          filterQuality: FilterQuality.none,
           fit: BoxFit.contain,
           height: double.infinity,
           width: double.infinity,
@@ -138,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               main,
               Positioned(
-                child: Image.asset('assets/images/tutorial.png', fit: BoxFit.cover),
+                child: Image.asset('assets/images/tutorial.png', fit: BoxFit.cover, filterQuality: FilterQuality.none),
                 left: (size.maxWidth - width) / 2,
                 top: (size.maxHeight - height) / 2,
                 width: width,
@@ -147,7 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           );
         }),
-
         behavior: HitTestBehavior.opaque,
         onTap: () => setState(() => showingTutorial = false),
       );
@@ -165,7 +169,14 @@ class _HomeScreenState extends State<HomeScreen> {
               pad(Text('BREAK', style: title), 2.0),
               pad(Text('guns', style: title), 2.0),
               pad(Text('USING', style: title), 2.0),
-              pad(GestureDetector(child: Text('gems', style: title), onTap: () { Data.buy.coins += 50; Data.buy.save(); }), 2.0), // TODO remove this hack
+              pad(
+                  GestureDetector(
+                      child: Text('gems', style: title),
+                      onTap: () {
+                        Data.buy.coins += 50;
+                        Data.buy.save();
+                      }),
+                  2.0), // TODO remove this hack
             ],
             mainAxisAlignment: MainAxisAlignment.center,
           ),
@@ -193,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Stack(
         children: [
           child,
-          Positioned(child: Column(children: [ pad(StoreButtonWidget(), 4.0), pad(CoinWidget(), 4.0) ]), top: 12.0, right: 12.0),
+          Positioned(child: Column(children: [pad(StoreButtonWidget(), 4.0), pad(CoinWidget(), 4.0)]), top: 12.0, right: 12.0),
           Positioned(child: userCard(), bottom: 12.0, left: 12.0),
         ],
       ),

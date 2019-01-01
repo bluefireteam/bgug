@@ -59,6 +59,7 @@ flutter:
    - assets/images/endgame_buttons.png
    - assets/images/tutorial.png
    - assets/images/splash_screen.png
+   - assets/images/google-play-button.png
    - assets/images/store/skins_panel.png
    - assets/images/store/store_button.png
    - assets/images/store/store-ui.png

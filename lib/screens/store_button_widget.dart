@@ -5,7 +5,7 @@ class StoreButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Image.asset('assets/images/store/store_button.png', width: S * 72, height: S * 28, fit: BoxFit.contain),
+      child: Image.asset('assets/images/store/store_button.png', width: S * 72, height: S * 28, fit: BoxFit.contain, filterQuality: FilterQuality.none),
       onTap: () => Navigator.of(context).pushNamed('/store'),
     );
   }

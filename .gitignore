@@ -12,3 +12,4 @@ pubspec.lock
 google-services.json
 android/keys
 *.g.dart
+.dart_tool/
