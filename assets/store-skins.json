@@ -111,6 +111,41 @@
       "cost": 800
     },
     {
+      "name": "Ghost",
+      "file": "ghost.png",
+      "cost": 900
+    },
+    {
+      "name": "Crusader",
+      "file": "crusader-knight.png",
+      "cost": 800
+    },
+    {
+      "name": "Alien",
+      "file": "alien.png",
+      "cost": 1000
+    },
+    {
+      "name": "Cow",
+      "file": "cow.png",
+      "cost": 1000
+    },
+    {
+      "name": "Zeus",
+      "file": "zeus.png",
+      "cost": 500
+    },
+    {
+      "name": "T-Rex",
+      "file": "t-rex.png",
+      "cost": 1000
+    },
+    {
+      "name": "Jumper",
+      "file": "jumping.png",
+      "cost": 0
+    },
+    {
       "name": "Solid Gold",
       "file": "gold.png",
       "cost": 0
