@@ -1,17 +1,20 @@
+import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:flame/position.dart';
 import 'package:flutter/widgets.dart';
 
+import '../util.dart';
 import '../data.dart';
 import '../components/coin.dart';
 
 class _TextComponent extends Component with Resizable {
   @override
   void render(Canvas c) {
-    TextPainter p = Flame.util.text(Data.buy.coins.toString(), fontFamily: '5x5');
-    p.paint(c, new Offset(size.width - p.width - 4.0, (size.height - p.height) / 2));
+    String text = Data.buy.coins.toString();
+    Position p = Position(size.width, size.height / 2);
+    defaultText.render(c, text, p, anchor: Anchor.centerRight);
   }
 
   @override

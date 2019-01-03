@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'dart:math' as math;
 
+import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
 import 'package:flame/position.dart';
@@ -91,22 +92,23 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
     const XF = SCALE * 123.0;
     const SIZE = XF - XI;
     const Y = SCALE * 10.0;
-    const where = Offset(XI, Y);
+
+    final Position where = Position(XI + SIZE / 2, Y);
     if (gameRef.player.x > maxDistance) {
       maxDistance = gameRef.player.x;
     }
     String dist = maxDistanceInMeters.toStringAsFixed(1);
-    Text.render(canvas, '$dist m', where, fn: Text.center(SIZE));
+    defaultText.render(canvas, '$dist m', where, anchor: Anchor.topCenter);
   }
 
   void renderGems(Canvas canvas) {
-    const where = Offset(SCALE * 161.0, SCALE * 10.0);
-    Text.render(canvas, gameRef.points.toString(), where);
+    final Position where = Position(SCALE * 161.0, SCALE * 10.0);
+    defaultText.render(canvas, gameRef.points.toString(), where);
   }
 
   void renderCoins(Canvas canvas) {
-    const where = Offset(SCALE * 200.0, SCALE * 10.0);
-    Text.render(canvas, gameRef.currentCoins.toString(), where);
+    final Position where = Position(SCALE * 200.0, SCALE * 10.0);
+    defaultText.render(canvas, gameRef.currentCoins.toString(), where);
   }
 
   void renderGauge(Canvas canvas) {

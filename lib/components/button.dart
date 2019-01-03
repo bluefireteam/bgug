@@ -1,13 +1,15 @@
 import 'dart:ui';
 
+import 'package:flame/anchor.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
+import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart' as material;
-import 'package:flame/flame.dart';
 
 import '../data.dart';
+import '../util.dart';
 
 class Button extends PositionComponent with Resizable {
   static const MARGIN = 4.0;
@@ -56,13 +58,9 @@ class Button extends PositionComponent with Resizable {
   }
 
   void renderText(Canvas canvas) {
-    material.TextPainter tp = Flame.util.text(
-      '$points / $cost',
-      fontFamily: '5x5',
-      fontSize: 18.0,
-      color: active ? material.Colors.green : const Color(0xFF404040),
-    );
-    tp.paint(canvas, new Offset((width - tp.width) / 2, -18.0));
+    Position p = new Position(width / 2, -18.0);
+    Color color = active ? material.Colors.green : const Color(0xFF404040);
+    smallText.withColor(color).render(canvas, '$points / $cost', p, anchor: Anchor.topCenter);
   }
 
   @override

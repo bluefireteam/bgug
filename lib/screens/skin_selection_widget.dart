@@ -1,29 +1,32 @@
 import 'dart:math' as math;
 
+import 'package:flame/anchor.dart';
 import 'package:flame/animation.dart' as animation;
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame/text_config.dart';
 import 'package:flutter/widgets.dart';
 
 import '../components/lock.dart';
 import '../components/floor.dart';
 import '../constants.dart';
 import '../data.dart';
+import '../util.dart';
 import '../skin_list.dart';
 
 math.Random rand = math.Random();
+TextConfig config = defaultText.withFontSize(24.0);
 
 class _CoinTrace extends Component {
   static final Sprite _coin = new Sprite('coin.png', width: 16.0, height: 16.0);
   static final Position _size = new Position(32.0, 32.0);
 
   static const MAX_TIME = 1.0;
-  static const STDEV  = 40.0;
+  static const STDEV = 40.0;
 
   double clock = 0.0;
   Position start, end, _current;
@@ -53,7 +56,7 @@ class _CoinTrace extends Component {
 
     if (clock <= MAX_TIME / 4) {
       if (rand.nextDouble() < 0.25) {
-        coins.add(new Position(STDEV * rand.nextDouble() - STDEV/2, STDEV * rand.nextDouble() - STDEV / 2));
+        coins.add(new Position(STDEV * rand.nextDouble() - STDEV / 2, STDEV * rand.nextDouble() - STDEV / 2));
       }
     }
   }
@@ -81,12 +84,10 @@ class _SkinCardComponent extends Component with Resizable {
       return;
     }
 
-    TextPainter p = Flame.util.text(skin.name, fontFamily: '5x5', fontSize: 24.0);
-    p.paint(c, Offset((size.width - p.width) / 2, 32.0));
+    config.render(c, skin.name, Position(size.width / 2, 32.0), anchor: Anchor.topCenter);
 
     (_btnOn ? btnOn : btnOff).renderPosition(c, Position((size.width - 200) / 2, 64.0), Position(200.0, 72.0));
-    TextPainter btn = Flame.util.text(_btnText, fontFamily: '5x5', fontSize: 18.0);
-    btn.paint(c, Offset((size.width - btn.width) / 2, 64.0 + (72.0 - btn.height) / 2));
+    config.render(c, _btnText, Position(size.width / 2, 64.0 + 72.0 / 2), anchor: Anchor.center);
   }
 
   @override
@@ -210,8 +211,11 @@ class _SkinSelectionGame extends BaseGame {
   Lock lock;
 
   List<Skin> get skins => Data.skinList.skins;
+
   bool get currentOwn => Data.buy.skinsOwned.contains(skins[selected].file);
+
   bool get lockVisible => skin != null && !skin.isMoving && !currentOwn;
+
   bool get hideGui => loading || skin.isMoving || buying;
 
   _SkinSelectionGame() {
@@ -222,7 +226,6 @@ class _SkinSelectionGame extends BaseGame {
     add(this.lock = Lock(() => lockVisible));
     _updateSkin(false);
   }
-
 
   void _updateSkin(bool left) {
     this.skin?.doLeave(left);

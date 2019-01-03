@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flame/anchor.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/flame.dart';
@@ -31,7 +32,14 @@ class Player extends PositionComponent {
 
   @override
   void render(Canvas canvas) {
-    prepareCanvas(canvas);
+    // prepareCanvas(canvas); TODO use this with the new anchor = center
+
+    canvas.translate(x, y);
+
+    canvas.translate(width / 2, height / 2);
+    canvas.rotate(angle);
+    canvas.translate(-width / 2, -height / 2);
+
     animations[state].getSprite().render(canvas, width, height);
   }
 

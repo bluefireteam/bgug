@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
@@ -43,16 +44,16 @@ class EndCard extends SpriteComponent with HasGameRef {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    Text.render(canvas, 'Total Distance:', const Offset(0, 32.0), fontSize: 18.0, fn: Text.center(width));
-    Text.render(canvas, gameRef.hud.maxDistanceInMeters.toStringAsFixed(2) + ' m', const Offset(0, 48.0), fontSize: 18.0, fn: Text.center(width));
+    smallText.render(canvas, 'Total Distance:', Position(width / 2, 32.0), anchor: Anchor.topCenter);
+    smallText.render(canvas, gameRef.hud.maxDistanceInMeters.toStringAsFixed(2) + ' m', Position(width / 2, 48.0), anchor: Anchor.topCenter);
 
     gem.renderCentered(canvas, Position(width / 2 - 16.0, 96.0), Position(32.0, 32.0));
-    Text.render(canvas, '${gameRef.points}', Offset(width / 2 + 16.0, 96.0 - 8.0));
+    defaultText.render(canvas, '${gameRef.points}', Position(width / 2 + 16.0, 96.0 - 8.0));
 
     coin.renderCentered(canvas, Position(width / 2 - 16.0, 142.0), Position(32.0, 32.0));
     bool lastTicks = _tickTimer != null && _tickTimer < CLOCK_SPEED / 3;
     Color color = doubleCoins || lastTicks ? const Color(0xFF10D594) : const Color(0xFF404040);
-    Text.render(canvas, '$coins', Offset(width / 2 + 16.0, 142.0 - 8.0), color: color);
+    defaultText.withColor(color).render(canvas, '$coins', Position(width / 2 + 16.0, 142.0 - 8.0));
 
     buttonReplay.renderPosition(canvas, _replayPosition, _buttonSize);
     buttonGoBack.renderPosition(canvas, _goBackPosition, _buttonSize);
@@ -67,6 +68,7 @@ class EndCard extends SpriteComponent with HasGameRef {
       _tickTimer -= 0.2;
       return;
     }
+
     Rect replay = Position.rectFrom(_replayPosition, _buttonSize);
     Rect doubleCoins = Position.rectFrom(_x2Position, _buttonSize);
     Rect back = Position.rectFrom(_goBackPosition, _buttonSize);
