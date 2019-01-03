@@ -1,11 +1,10 @@
 import 'dart:async';
 
-import 'package:google_sign_in/google_sign_in.dart';
-
 import 'buy.dart';
 import 'options.dart';
 import 'score.dart';
 import 'skin_list.dart';
+import 'play_user.dart';
 
 class Data {
   static SkinList skinList;
@@ -13,7 +12,7 @@ class Data {
   static Score score;
   static Buy buy;
 
-  static GoogleSignInAccount user;
+  static PlayUser user;
   static Options currentOptions;
 
   static Future loadAll() async {

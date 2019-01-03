@@ -1,21 +1,18 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
+import '../play_user.dart';
 import '../ads.dart';
 import '../constants.dart';
 import '../data.dart';
 import 'coin_widget.dart';
 import 'gui_commons.dart';
 import 'store_button_widget.dart';
-
-final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -25,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool showingTutorial = false;
   bool loading = true;
-  String username;
+  PlayUser user;
 
   _HomeScreenState() {
     var ps = <Future>[
@@ -69,26 +66,20 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
     Future.wait(ps).then((rs) => this.setState(() => loading = false));
     if (ENABLE_LOGIN) {
-      _handleSignIn();
+      _performSignIn();
     }
   }
 
-  Future<FirebaseUser> _handleSignIn() async {
-    GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: [
-        'email',
-        'https://www.googleapis.com/auth/contacts.readonly',
-      ],
-    );
-    GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    FirebaseUser user = await _auth.signInWithGoogle(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    print('signed in ${user.displayName}');
-    setState(() => username = user.displayName);
-    return user;
+  void _performSignIn() async {
+    try {
+      PlayUser user = await PlayUser.singIn();
+      setState(() => this.user = user);
+    } catch (ex) {
+      print('Error: $ex');
+      Scaffold.of(context).showSnackBar(new SnackBar(
+        content: new Text(ex),
+      ));
+    }
   }
 
   void addToScore(String newScore) async {
@@ -101,14 +92,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget userCard() {
-    if (username == null) {
-      const S = 2.0;
+    const S = 2.0;
+    if (user == null) {
       return GestureDetector(
           child: Image.asset('assets/images/google-play-button.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 89 * S, height: 17 * S),
-          onTap: () => _handleSignIn(),
+          onTap: () => _performSignIn(),
       );
     }
-    return Text(username);
+    return Stack(
+      children: [
+        Image.asset('assets/images/username-panel.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 72 * S, height: 18 * S),
+        Positioned(child: Text(user.account.displayName, style: TextStyle(fontFamily: '5x5', fontSize: 28.0)), right: 0, top: 0),
+        Positioned(child: Image.memory(user.avatarBytes.buffer.asUint8List()), left: 0, top: 0),
+      ],
+    );
   }
 
   @override
