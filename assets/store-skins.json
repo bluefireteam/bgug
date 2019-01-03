@@ -6,14 +6,14 @@
       "cost": 0
     },
     {
-      "name": "Archer",
-      "file": "archer.png",
-      "cost": 600
+      "name": "Solid Gold",
+      "file": "gold.png",
+      "cost": 0
     },
     {
-      "name": "Astronaut",
-      "file": "astronaut.png",
-      "cost": 1000
+      "name": "Jumper",
+      "file": "jumping.png",
+      "cost": 0
     },
     {
       "name": "Bunny",
@@ -26,9 +26,14 @@
       "cost": 400
     },
     {
-      "name": "Chef",
-      "file": "chef.png",
-      "cost": 600
+      "name": "Monk",
+      "file": "monk.png",
+      "cost": 400
+    },
+    {
+      "name": "Zeus",
+      "file": "zeus.png",
+      "cost": 500
     },
     {
       "name": "Clown",
@@ -38,6 +43,16 @@
     {
       "name": "Cop",
       "file": "cop.png",
+      "cost": 600
+    },
+    {
+      "name": "Chef",
+      "file": "chef.png",
+      "cost": 600
+    },
+    {
+      "name": "Archer",
+      "file": "archer.png",
       "cost": 600
     },
     {
@@ -51,14 +66,19 @@
       "cost": 800
     },
     {
-      "name": "Gentleman",
-      "file": "gentleman.png",
-      "cost": 1000
+      "name": "The Chosen",
+      "file": "the-chosen.png",
+      "cost": 800
     },
     {
-      "name": "Monk",
-      "file": "monk.png",
-      "cost": 400
+      "name": "Marathonist",
+      "file": "marathonist.png",
+      "cost": 800
+    },
+    {
+      "name": "Crusader",
+      "file": "crusader-knight.png",
+      "cost": 800
     },
     {
       "name": "Pirate",
@@ -66,8 +86,23 @@
       "cost": 800
     },
     {
+      "name": "Ghost",
+      "file": "ghost.png",
+      "cost": 900
+    },
+    {
       "name": "Santa",
       "file": "santa.png",
+      "cost": 1000
+    },
+    {
+      "name": "Egg Bot",
+      "file": "egg-bot.png",
+      "cost": 1000
+    },
+    {
+      "name": "Grim Reaper",
+      "file": "reaper.png",
       "cost": 1000
     },
     {
@@ -81,44 +116,9 @@
       "cost": 1000
     },
     {
-      "name": "Vampire",
-      "file": "vampire.png",
+      "name": "Gentleman",
+      "file": "gentleman.png",
       "cost": 1000
-    },
-    {
-      "name": "Retro Explorer",
-      "file": "explorer.png",
-      "cost": 3000
-    },
-    {
-      "name": "The Chosen",
-      "file": "the-chosen.png",
-      "cost": 800
-    },
-    {
-      "name": "Egg Bot",
-      "file": "egg-bot.png",
-      "cost": 1000
-    },
-    {
-      "name": "Grim Reaper",
-      "file": "reaper.png",
-      "cost": 1000
-    },
-    {
-      "name": "Marathonist",
-      "file": "marathonist.png",
-      "cost": 800
-    },
-    {
-      "name": "Ghost",
-      "file": "ghost.png",
-      "cost": 900
-    },
-    {
-      "name": "Crusader",
-      "file": "crusader-knight.png",
-      "cost": 800
     },
     {
       "name": "Alien",
@@ -131,9 +131,9 @@
       "cost": 1000
     },
     {
-      "name": "Zeus",
-      "file": "zeus.png",
-      "cost": 500
+      "name": "Astronaut",
+      "file": "astronaut.png",
+      "cost": 1000
     },
     {
       "name": "T-Rex",
@@ -141,14 +141,14 @@
       "cost": 1000
     },
     {
-      "name": "Jumper",
-      "file": "jumping.png",
-      "cost": 0
+      "name": "Vampire",
+      "file": "vampire.png",
+      "cost": 1000
     },
     {
-      "name": "Solid Gold",
-      "file": "gold.png",
-      "cost": 0
+      "name": "Retro Explorer",
+      "file": "explorer.png",
+      "cost": 3000
     }
   ]
 }
