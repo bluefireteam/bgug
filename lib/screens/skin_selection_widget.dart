@@ -66,7 +66,7 @@ class _CoinTrace extends Component {
 }
 
 class _SkinCardComponent extends Component with Resizable {
-  static Sprite btnOn = new Sprite('store/store-ui.png', y: 37, width: 100, height: 36);
+  static Sprite btnOn = new Sprite('store/store-ui.png', y: 36, width: 100, height: 36);
   static Sprite btnOff = new Sprite('store/store-ui.png', width: 100, height: 36);
 
   _SkinSelectionGame gameRef;
@@ -98,7 +98,7 @@ class _ArrowButton extends SpriteComponent {
   _SkinSelectionGame gameRef;
   bool left;
 
-  _ArrowButton(this.gameRef, this.left) : super.fromSprite(1.0, 1.0, new Sprite('store/store-ui.png', x: left ? 0 : 15, y: 72, width: 15, height: 64));
+  _ArrowButton(this.gameRef, this.left) : super.fromSprite(1.0, 1.0, new Sprite('store/store-ui.png', x: left ? 0 : 16, y: 72, width: 16, height: 64));
 
   bool get _show => left ? gameRef.selected > 0 : gameRef.selected < gameRef.skins.length - 1;
 
@@ -123,7 +123,7 @@ class _ArrowButton extends SpriteComponent {
 }
 
 class _SkinComponent extends AnimationComponent with Resizable {
-  static const SPEED = 425.0;
+  static const SPEED = 1025.0;
 
   bool locked;
   bool left;

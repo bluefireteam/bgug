@@ -12,3 +12,5 @@ pubspec.lock
 *.g.dart
 .dart_tool/
 .vscode
+
+ios/Podfile
