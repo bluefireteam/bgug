@@ -17,3 +17,19 @@ Name: Super Jumper
 Icon: super-jumper.png
 Description: Make a total of 1000 jumps
 Secret: Yes
+
+Name: The Disguised Bot
+Icon: first-skin.png
+Description: Bought your first skin
+
+Name: A Small Collection
+Icon: 10-skins.png
+Description: Bought 10 skins
+
+Name: The Collector
+Icon: 20-skins.png
+Description: Bought 20 skins
+
+Name: The Completionist
+Icon: 30-skins.png
+Description: Bought 30 skins
