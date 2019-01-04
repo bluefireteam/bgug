@@ -8,7 +8,7 @@ dependencies:
     path: ../flame
   json_annotation: 2.0.0
   shared_preferences: 0.4.1
-  firebase_admob: 0.5.4
+  firebase_admob: 0.7.0
   play_games: 0.2.0
 
 dev_dependencies:

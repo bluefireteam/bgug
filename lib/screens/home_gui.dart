@@ -102,8 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Stack(
       children: [
         Image.asset('assets/images/username-panel.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 72 * S, height: 18 * S),
-        Positioned(child: Text(user.account.displayName, style: TextStyle(fontFamily: '5x5', fontSize: 28.0)), right: 0, top: 0),
-        Positioned(child: Image.memory(user.avatarBytes.buffer.asUint8List()), left: 0, top: 0),
+        Positioned(child: Text(user.account.displayName, style: TextStyle(fontFamily: '5x5', fontSize: 14.0)), right: 0, top: 0),
+        Positioned(child: RawImage(image: user.avatar, width: S * 9, height: S * 9), left: S * 7, top: S * 2, width: S * 9, height: S * 9),
       ],
     );
   }

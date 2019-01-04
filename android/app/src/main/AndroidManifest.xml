@@ -11,6 +11,7 @@
 
         <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/app_id"/>
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-1451557002406313~7960207117"/>
 
         <activity
                 android:name=".MainActivity"
