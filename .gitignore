@@ -10,7 +10,6 @@ pubspec.lock
 .flutter-plugins
 *.iml
 google-services.json
-android/keys
 *.g.dart
 .dart_tool/
 .vscode
