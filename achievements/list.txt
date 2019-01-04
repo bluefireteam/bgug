@@ -1,7 +1,19 @@
 Name: Half Marathoner
 Icon: half-marathon.png
 Description: Run a total distance of a half marathon (21 kilometers)
+Secret: Yes
 
 Name: Marathoner
 Icon: marathon.png
 Description: Run a total distance of a full marathon (42 kilometers)
+Secret: Yes
+
+Name: Jumper
+Icon: jumper.png
+Description: Make a total of 500 jumps
+Secret: Yes
+
+Name: Super Jumper
+Icon: super-jumper.png
+Description: Make a total of 1000 jumps
+Secret: Yes
