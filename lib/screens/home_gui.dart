@@ -80,7 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _performSignIn() async {
     try {
       Data.user = await PlayUser.singIn();
+      print('user: '); print(Data.user);
       SavedData data = await Data.fetch(false);
+      print('data: '); print(data);
       if (data != null) {
         if (Data.pristine) {
           Data.forceData(data);
@@ -90,13 +92,18 @@ class _HomeScreenState extends State<HomeScreen> {
           });
           return;
         }
+      } else {
+        await Data.loadLocalSoftData();
       }
       setState(() {
         this.user = Data.user;
         this.loading = false;
       });
     } catch (ex) {
+      Data.user = null;
+      await Data.loadLocalSoftData();
       setState(() {
+        this.user = null;
         this.loading = false;
       });
       print('Error: $ex');
@@ -214,9 +221,9 @@ class _HomeScreenState extends State<HomeScreen> {
               pad(
                   GestureDetector(
                       child: Text('gems', style: title),
-                      onTap: () {
+                      onTap: () async {
                         Data.buy.coins += 50;
-                        Data.save();
+                        await Data.save();
                       }),
                   2.0), // TODO remove this hack
             ],
