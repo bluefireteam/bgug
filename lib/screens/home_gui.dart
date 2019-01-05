@@ -13,7 +13,6 @@ import '../data.dart';
 import 'coin_widget.dart';
 import 'gui_commons.dart';
 import 'store_button_widget.dart';
-import 'merge_resolution.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -24,7 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int showingTutorial = -1; // -1 not showing, 0 page 0, 1 page 1
   bool loading = true;
   PlayUser user;
-  MergeResolution mergeResolution;
 
   _HomeScreenState() {
     var ps = <Future>[
@@ -80,18 +78,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _performSignIn() async {
     try {
       Data.user = await PlayUser.singIn();
-      print('user: '); print(Data.user);
       SavedData data = await Data.fetch(false);
-      print('data: '); print(data);
       if (data != null) {
-        if (Data.pristine) {
-          Data.forceData(data);
-        } else {
-          setState(() {
-            mergeResolution = Data.merge(data);
-          });
-          return;
-        }
+        Data.setData(data);
       } else {
         await Data.loadLocalSoftData();
       }
@@ -118,15 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
     if (user == null) {
       return GestureDetector(
         child: Container(
-          margin: const EdgeInsets.only(left: 12),
-          child: Image.asset(
-            'assets/images/google-play-button.png',
-            filterQuality: FilterQuality.none,
-            fit: BoxFit.cover,
-            width: 89 * S,
-            height: 17 * S
-          )
-        ),
+            margin: const EdgeInsets.only(left: 12),
+            child: Image.asset('assets/images/google-play-button.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 89 * S, height: 17 * S)),
         onTap: () => _performSignIn(),
       );
     }
@@ -183,27 +165,6 @@ class _HomeScreenState extends State<HomeScreen> {
         behavior: HitTestBehavior.opaque,
         onTap: () => setState(() => showingTutorial = showingTutorial == 0 ? 1 : -1),
       );
-    }
-
-    if (mergeResolution != null) {
-      return LayoutBuilder(builder: (_, BoxConstraints size) {
-        return GestureDetector(
-          child: Stack(
-            children: [
-              main,
-              Center(child: Text('merge! tap left to keep cloud and right to keep local')),
-            ],
-          ),
-          behavior: HitTestBehavior.opaque,
-          onTapDown: (TapDownDetails dt) {
-            double x = dt.globalPosition.dx;
-            bool left = x / size.maxWidth < 0.5;
-            SavedData data = left ? mergeResolution.fromCloud : mergeResolution.fromLocal;
-            Data.forceData(data);
-            mergeResolution = null;
-          },
-        );
-      });
     }
 
     return main;

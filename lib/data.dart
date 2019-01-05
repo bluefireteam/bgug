@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:bgug/screens/merge_resolution.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:play_games/play_games.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,7 +37,7 @@ class SavedData {
       ..showTutorial = s1.showTutorial || s2.showTutorial
       ..options = s1.options ?? s2.options
       ..score = Score.merge(s1.score, s2.score)
-      ..buy =  Buy.merge(s1.buy, s2.buy);
+      ..buy = Buy.merge(s1.buy, s2.buy);
   }
 }
 
@@ -157,8 +156,16 @@ class Data {
     _data = data;
   }
 
-  static MergeResolution merge(SavedData cloudData) {
-    return MergeResolution(_data, cloudData);
+  static void mergeData(SavedData other) {
+    _data = SavedData.merge(other, _data);
+  }
+
+  static void setData(SavedData data) {
+    if (Data.pristine) {
+      Data.forceData(data);
+    } else {
+      Data.mergeData(data);
+    }
   }
 
   static String _mergeInternal(Snapshot local, Snapshot server) {
