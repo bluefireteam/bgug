@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'components/hud.dart';
 
-const bool ENABLE_LOGIN = true;
+const bool ENABLE_LOGIN = false;
 const bool ENABLE_ADS = false;
 
 const double BAR_SIZE = 16.0;

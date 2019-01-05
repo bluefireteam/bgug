@@ -1,13 +1,15 @@
 import 'dart:ui';
 
 import 'package:flame/components/component.dart';
+import 'package:flame/sprite.dart';
 
-class Tutorial extends SpriteComponent {
+class Tutorial extends PositionComponent {
   static const FRAC = 192.0 / 162.0;
 
-  bool _remove = false;
+  static final Sprite p1 = new Sprite('tutorial.png');
+  static final Sprite p2 = new Sprite('tutorial-2.png');
 
-  Tutorial() : super.rectangle(1.0, 1.0, 'tutorial.png');
+  int status = 0; // 0, 1 pages ; 2+ hide
 
   @override
   void resize(Size size) {
@@ -22,9 +24,19 @@ class Tutorial extends SpriteComponent {
   int priority() => 12;
 
   @override
-  bool destroy() => _remove;
+  bool destroy() => status >= 2;
 
-  void remove() {
-    _remove = true;
+  bool tap() {
+    status++;
+    return destroy();
   }
+
+  @override
+  void render(Canvas c) {
+    prepareCanvas(c);
+    (status == 0 ? p1 : p2).render(c, width, height);
+  }
+
+  @override
+  void update(double t) {}
 }

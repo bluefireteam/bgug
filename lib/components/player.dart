@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flame/anchor.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/flame.dart';

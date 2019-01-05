@@ -65,6 +65,7 @@ class Data {
   static bool get playGames => user != null;
 
   static Future<bool> getAndToggleShowTutorial() async {
+    return true; /// FIXME
     if (_data.showTutorial) {
       _data.showTutorial = false;
       await save();

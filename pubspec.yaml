@@ -64,6 +64,7 @@ flutter:
     - assets/images/endgame_bg.png
     - assets/images/endgame_buttons.png
     - assets/images/tutorial.png
+    - assets/images/tutorial-2.png
     - assets/images/splash_screen.png
     - assets/images/google-play-button.png
     - assets/images/username-panel.png

@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool showingTutorial = false;
+  int showingTutorial = -1; // -1 not showing, 0 page 0, 1 page 1
   bool loading = true;
   PlayUser user;
   MergeResolution mergeResolution;
@@ -56,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'endgame_bg.png',
         'endgame_buttons.png',
         'tutorial.png',
+        'tutorial-2.png',
         'splash_screen.png',
         'google-play-button.png',
         'store/skins_panel.png',
@@ -147,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Widget main = renderContent(context);
 
-    if (showingTutorial) {
+    if (showingTutorial != -1) {
       return GestureDetector(
         child: LayoutBuilder(builder: (_, BoxConstraints size) {
           double potWidth = 3 * size.maxWidth / 4;
@@ -159,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               main,
               Positioned(
-                child: Image.asset('assets/images/tutorial.png', fit: BoxFit.cover, filterQuality: FilterQuality.none),
+                child: Image.asset('assets/images/tutorial${showingTutorial == 0 ? '' : '-2'}.png', fit: BoxFit.cover, filterQuality: FilterQuality.none),
                 left: (size.maxWidth - width) / 2,
                 top: (size.maxHeight - height) / 2,
                 width: width,
@@ -169,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }),
         behavior: HitTestBehavior.opaque,
-        onTap: () => setState(() => showingTutorial = false),
+        onTap: () => setState(() => showingTutorial = showingTutorial == 0 ? 1 : -1),
       );
     }
 
@@ -221,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               btn('Play', () => Navigator.of(context).pushNamed('/start')),
               btn('Score', () => Navigator.of(context).pushNamed('/score')),
-              btn('How to Play', () => setState(() => showingTutorial = true)),
+              btn('How to Play', () => setState(() => showingTutorial = 0)),
               btn('Exit', () => SystemNavigator.pop()),
             ],
             mainAxisAlignment: MainAxisAlignment.center,

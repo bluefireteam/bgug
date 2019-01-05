@@ -173,6 +173,9 @@ class BgugGame extends BaseGame {
   }
 
   void startInput(Position p, int dt) {
+    if (state == GameState.END_CARD || state == GameState.TUTORIAL) {
+      return;
+    }
     if (p != null && player != null && !player.dead()) {
       if (p.x > size.width / 2) {
         queryComponents.hud().startGauge();
@@ -189,8 +192,9 @@ class BgugGame extends BaseGame {
       return;
     }
     if (state == GameState.TUTORIAL) {
-      state = GameState.RUNNING;
-      tutorial.remove();
+      if (tutorial.tap()) {
+        state = GameState.RUNNING;
+      }
       return;
     }
     if (p != null && player != null) {
