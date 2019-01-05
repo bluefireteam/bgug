@@ -185,7 +185,7 @@ class _SkinComponent extends AnimationComponent with Resizable {
   void resize(Size size) {
     super.resize(size);
 
-    double frac = 6;
+    double frac = 5;
 
     width = frac * 16.0;
     height = frac * 18.0;
