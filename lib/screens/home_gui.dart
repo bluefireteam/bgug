@@ -5,6 +5,7 @@ import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:play_games/play_games.dart';
 
 import '../play_user.dart';
 import '../ads.dart';
@@ -20,6 +21,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  bool showingAchievements = false;
   int showingTutorial = -1; // -1 not showing, 0 page 0, 1 page 1
   bool loading = true;
   PlayUser user;
@@ -112,12 +115,19 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: () => _performSignIn(),
       );
     }
-    return Stack(
-      children: [
-        Image.asset('assets/images/username-panel.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 88 * S, height: 18 * S),
-        Positioned(child: Text(user.account.displayName, style: TextStyle(fontFamily: '5x5', fontSize: 14.0)), right: (S * 20), top: 10),
-        Positioned(child: RawImage(image: user.avatar, width: S * 9, height: S * 9), right: S * 7, top: S * 2, width: S * 9, height: S * 9),
-      ],
+    return GestureDetector(
+      child: Stack(
+        children: [
+          Image.asset('assets/images/username-panel.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 88 * S, height: 18 * S),
+          Positioned(child: Text(user.account.displayName, style: TextStyle(fontFamily: '5x5', fontSize: 14.0)), right: (S * 20), top: 10),
+          Positioned(child: RawImage(image: user.avatar, width: S * 9, height: S * 9), right: S * 7, top: S * 2, width: S * 9, height: S * 9),
+        ],
+      ),
+      onTap: () async {
+        setState(() => showingAchievements = true);
+        await PlayGames.showAchievements();
+        setState(() => showingAchievements = false);
+      },
     );
   }
 
@@ -164,6 +174,13 @@ class _HomeScreenState extends State<HomeScreen> {
         }),
         behavior: HitTestBehavior.opaque,
         onTap: () => setState(() => showingTutorial = showingTutorial == 0 ? 1 : -1),
+      );
+    }
+
+    if (showingAchievements) {
+      return GestureDetector(
+        child: main,
+        behavior: HitTestBehavior.opaque,
       );
     }
 

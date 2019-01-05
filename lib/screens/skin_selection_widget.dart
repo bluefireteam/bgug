@@ -278,6 +278,7 @@ class _SkinSelectionGame extends BaseGame {
           this.skin.locked = false;
           buying = false;
           loading = true;
+          Data.checkAchievementsAndSkins();
           Data.save().then((_) => loading = false);
         });
       }

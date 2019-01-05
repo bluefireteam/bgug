@@ -284,6 +284,7 @@ class BgugGame extends BaseGame {
     if (shouldScore) {
       Data.buy.coins += endCard.coins;
       Data.score.score(this);
+      Data.checkAchievementsAndSkins();
       await Data.save();
     }
   }

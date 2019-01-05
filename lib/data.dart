@@ -59,6 +59,45 @@ class Data {
   static bool isSaving = false;
   static bool hasOpened = false;
 
+  static void checkAchievementsAndSkins() {
+    if (score.totalDistance >= 21000) {
+      _achievement('achievement_half_marathoner');
+    }
+    if (score.totalDistance >= 42000) {
+      _achievement('achievement_marathoner');
+      if (!buy.skinsOwned.contains('marathonist.png')) {
+        buy.skinsOwned.add('marathonist.png');
+      }
+    }
+    if (score.totalJumps > 500) {
+      _achievement('achievement_jumper');
+    }
+    if (score.totalJumps > 1000) {
+      _achievement('achievement_super_jumper');
+      if (!buy.skinsOwned.contains('jumping.png')) {
+        buy.skinsOwned.add('jumping.png');
+      }
+    }
+    if (buy.skinsOwned.length > 1) {
+      _achievement('achievement_the_disguised_bot');
+    }
+    if (buy.skinsOwned.length > 10) {
+      _achievement('achievement_a_small_collection');
+    }
+    if (buy.skinsOwned.length > 20) {
+      _achievement('achievement_the_collector');
+    }
+    if (buy.skinsOwned.length > 30) {
+      _achievement('achievement_the_completionist');
+    }
+  }
+
+  static Future _achievement(String name) async {
+    if (user != null) {
+      await PlayGames.unlockAchievementByName(name);
+    }
+  }
+
   static Future loadHardData() {
     return SkinList.fetch().then((r) => skinList = r);
   }
