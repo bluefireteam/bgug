@@ -2,28 +2,37 @@ import 'dart:ui';
 
 import 'package:flame/anchor.dart';
 import 'package:flame/components/text_box_component.dart';
+import 'package:flame/text_config.dart';
 
-TextBoxConfig config = TextBoxConfig(
+import '../palette.dart';
+
+TextBoxConfig boxConfig = TextBoxConfig(
   maxWidth: 400.0,
   margin: 8.0,
   timePerChar: 0.0,
-  dismissDelay: 4,
+  dismissDelay: 3.0,
+);
+
+TextConfig textConfig = TextConfig(
+  fontFamily: '5x5',
+  fontSize: 16.0,
+  color: Palette.text.color,
 );
 
 class Toast extends TextBoxComponent {
-  Toast(String text) : super(text, boxConfig: config) {
-    anchor = Anchor.bottomCenter;
+  Toast(String text) : super(text, config: textConfig, boxConfig: boxConfig) {
+    anchor = Anchor.topCenter;
   }
 
   @override
   void drawBackground(Canvas c) {
-    c.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0.0, 0.0, width, height), Radius.circular(20.0)), new Paint()..color = const Color(0xFFFF00FF));
+    c.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0.0, 0.0, width, height), Radius.circular(20.0)), Palette.bg.paint);
   }
 
   @override
   resize(Size size) {
     x = size.width / 2;
-    y = size.height - 8.0;
+    y = 8.0;
   }
 
   @override
