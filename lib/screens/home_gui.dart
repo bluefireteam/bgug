@@ -106,11 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void addToScore(String newScore) async {
-    Data.score.scores.add(newScore);
-    Data.save();
-  }
-
   Widget userCard() {
     const S = 2.0;
     if (user == null) {

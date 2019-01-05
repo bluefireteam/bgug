@@ -23,7 +23,6 @@ class MyGameBinder extends BgugGame {
     if (this.screen != null) {
       (() async {
         if (state == GameState.STOPPED) {
-          Data.save();
           if (shouldScore) {
             await this.screen.addToScore(this);
           }

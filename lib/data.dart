@@ -49,6 +49,7 @@ class Data {
   static PlayUser user;
   static Options currentOptions;
   static bool pristine = true;
+  static bool isSaving = false;
 
   static Future loadHardData() {
     return SkinList.fetch().then((r) => skinList = r);
@@ -75,9 +76,19 @@ class Data {
   }
 
   static Future save() async {
+    if (isSaving) {
+      return Future.delayed(Duration(seconds: 3)).then((_) => save());
+    }
+    isSaving = true;
     pristine = false;
     String data = json.encode(_data.toJson());
 
+    Object result = await _saveInternal(data);
+    isSaving = false;
+    return result;
+  }
+
+  static Future<Object> _saveInternal(String data) async {
     if (playGames) {
       await PlayGames.saveSnapshot(SAVE_NAME, data);
       return await PlayGames.openSnapshot(SAVE_NAME);
