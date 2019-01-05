@@ -115,15 +115,24 @@ class _HomeScreenState extends State<HomeScreen> {
     const S = 2.0;
     if (user == null) {
       return GestureDetector(
-        child: Image.asset('assets/images/google-play-button.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 89 * S, height: 17 * S),
+        child: Container(
+          margin: const EdgeInsets.only(left: 12),
+          child: Image.asset(
+            'assets/images/google-play-button.png',
+            filterQuality: FilterQuality.none,
+            fit: BoxFit.cover,
+            width: 89 * S,
+            height: 17 * S
+          )
+        ),
         onTap: () => _performSignIn(),
       );
     }
     return Stack(
       children: [
-        Image.asset('assets/images/username-panel.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 72 * S, height: 18 * S),
-        Positioned(child: Text(user.account.displayName, style: TextStyle(fontFamily: '5x5', fontSize: 14.0)), right: 0, top: 0),
-        Positioned(child: RawImage(image: user.avatar, width: S * 9, height: S * 9), left: S * 7, top: S * 2, width: S * 9, height: S * 9),
+        Image.asset('assets/images/username-panel.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 88 * S, height: 18 * S),
+        Positioned(child: Text(user.account.displayName, style: TextStyle(fontFamily: '5x5', fontSize: 14.0)), right: (S * 20), top: 10),
+        Positioned(child: RawImage(image: user.avatar, width: S * 9, height: S * 9), right: S * 7, top: S * 2, width: S * 9, height: S * 9),
       ],
     );
   }
@@ -243,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           child,
           Positioned(child: Column(children: [pad(StoreButtonWidget(), 4.0), pad(CoinWidget(), 4.0)]), top: 12.0, right: 12.0),
-          Positioned(child: userCard(), bottom: 12.0, left: 12.0),
+          Positioned(child: userCard(), bottom: 5, left: 0),
         ],
       ),
     );
