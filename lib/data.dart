@@ -40,11 +40,11 @@ class Data {
   static SkinList skinList;
   static SavedData _data;
 
-  static Options get options => _data.options;
+  static Options get options => _data.options ??= new Options();
 
-  static Score get score => _data.score;
+  static Score get score => _data.score ??= new Score();
 
-  static Buy get buy => _data.buy;
+  static Buy get buy => _data.buy ??= new Buy();
 
   static PlayUser user;
   static Options currentOptions;
@@ -62,6 +62,7 @@ class Data {
   }
 
   static bool get hasData => _data != null;
+
   static bool get playGames => user != null;
 
   static Future<bool> getAndToggleShowTutorial() async {
