@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:flame/components/animation_component.dart';
-import 'package:flame/flame.dart';
 
+import '../sfx.dart';
 import '../constants.dart';
 import '../mixins/has_game_ref.dart';
 
@@ -22,7 +22,7 @@ class Coin extends AnimationComponent with HasGameRef {
     if (gameRef != null && this.toRect().overlaps(gameRef.player.toRect())) {
       this.collected = true;
       gameRef.currentCoins++;
-      Flame.audio.play('gem_collect.wav');
+      Sfx.play('gem_collect.wav');
     }
   }
 

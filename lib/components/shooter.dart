@@ -1,18 +1,18 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:flame/flame.dart';
 import 'package:flame/animation.dart';
+import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
-import 'package:flame/components/animation_component.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
-import 'player.dart';
-import '../mixins/has_game_ref.dart';
 import '../constants.dart';
 import '../data.dart';
+import '../mixins/has_game_ref.dart';
+import '../sfx.dart';
+import 'player.dart';
 
 math.Random random = new math.Random();
 
@@ -169,11 +169,11 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
   void nextAction() {
     if (action == 'shooting') {
       action = 'shoot';
-      Flame.audio.play('laser_shoot.wav');
+      Sfx.play('laser_shoot.wav');
     } else if (random.nextDouble() < 0.2) {
       action = 'shooting';
       shooting.reset();
-      Flame.audio.play('laser_load.wav');
+      Sfx.play('laser_load.wav');
     } else {
       if (y <= yi) {
         y = yi;
