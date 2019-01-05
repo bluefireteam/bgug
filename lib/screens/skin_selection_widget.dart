@@ -263,7 +263,7 @@ class _SkinSelectionGame extends BaseGame {
       if (currentOwn) {
         Data.buy.selectedSkin = skins[selected].file;
         loading = true;
-        Data.buy.save().then((_) => loading = false);
+        Data.save().then((_) => loading = false);
       } else if (skins[selected].cost > 0 && Data.buy.coins >= skins[selected].cost) {
         buying = true;
         Position start = Position(camera.x + 20 + 32.0 / 2, camera.y + 20 + 32.0 / 2);
@@ -278,7 +278,7 @@ class _SkinSelectionGame extends BaseGame {
           this.skin.locked = false;
           buying = false;
           loading = true;
-          Data.buy.save().then((_) => loading = false);
+          Data.save().then((_) => loading = false);
         });
       }
     }

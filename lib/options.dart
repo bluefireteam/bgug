@@ -1,14 +1,9 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:json_annotation/json_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'options.g.dart';
 
 @JsonSerializable()
 class Options {
-  bool showTutorial;
   double bulletSpeed;
 
   int buttonCost;
@@ -27,7 +22,6 @@ class Options {
   bool get hasLimit => mapSize != -1;
 
   Options() {
-    this.showTutorial = true;
     this.bulletSpeed = 500.0;
     this.buttonCost = 5;
     this.buttonIncCost = 2;
@@ -43,27 +37,4 @@ class Options {
 
   factory Options.fromJson(Map<String, dynamic> json) => _$OptionsFromJson(json);
   Map<String, dynamic> toJson() => _$OptionsToJson(this);
-
-  Future save() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('options.v2', json.encode(toJson()));
-  }
-
-  static Future<Options> fetch() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonStr = prefs.getString('options.v2');
-    if (jsonStr == null) {
-      return new Options();
-    }
-    return new Options.fromJson(json.decode(jsonStr));
-  }
-
-  Future<bool> getAndToggleShowTutorial() async {
-    if (showTutorial) {
-      showTutorial = false;
-      await save();
-      return true;
-    }
-    return false;
-  }
 }

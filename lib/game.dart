@@ -42,6 +42,7 @@ class BgugGame extends BaseGame {
   Button button;
   bool won = false;
   int _points = 0, currentCoins = 0;
+  int totalJumps = 0, totalDives = 0;
   int lastGeneratedSector = -1;
   Future<AudioPlayer> music;
   int _currentSlot;
@@ -210,8 +211,10 @@ class BgugGame extends BaseGame {
             }
           }
         } else if (p.x > size.width / 2) {
+          totalJumps++;
           player.jump(dt);
         } else {
+          totalDives++;
           player.dive();
         }
       }
@@ -260,10 +263,6 @@ class BgugGame extends BaseGame {
     } else if (options.hasLimit && camera.x > options.mapSize - size.width) {
       camera.x = options.mapSize - size.width;
     }
-  }
-
-  String score() {
-    return 'Scored ${hud.maxDistance.toStringAsFixed(2)} meters earning $currentCoins coins.';
   }
 
   bool handlingClick() {

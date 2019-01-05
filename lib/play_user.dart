@@ -10,7 +10,7 @@ class PlayUser {
 
   static Future<PlayUser> singIn() async {
     try {
-      SigninResult result = await PlayGames.signIn().timeout(new Duration(seconds: 30), onTimeout: () => throw 'Timeout 30 seconds');
+      SigninResult result = await PlayGames.signIn(scopeSnapshot: true).timeout(new Duration(seconds: 30), onTimeout: () => throw 'Timeout 30 seconds');
       if (result.success) {
         await PlayGames.setPopupOptions().timeout(new Duration(seconds: 5), onTimeout: () => throw 'Timeout 5 seconds');
         Account acc = result.account;

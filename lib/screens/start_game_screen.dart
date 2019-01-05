@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../options.dart';
 import '../data.dart';
 import '../game.dart';
 import '../main.dart';
+import '../options.dart';
 import 'gui_commons.dart';
 
 class StartGameScreen extends StatefulWidget {
@@ -23,9 +23,9 @@ class MyGameBinder extends BgugGame {
     if (this.screen != null) {
       (() async {
         if (state == GameState.STOPPED) {
-          Data.buy.save();
+          Data.save();
           if (shouldScore) {
-            await this.screen.addToScore(score());
+            await this.screen.addToScore(this);
           }
         }
         this.screen.redraw();
@@ -35,9 +35,9 @@ class MyGameBinder extends BgugGame {
 }
 
 class _StartGameScreenState extends State<StartGameScreen> {
-  addToScore(String newScore) async {
-    Data.score.scores.add(newScore);
-    Data.score.save();
+  addToScore(BgugGame game) async {
+    Data.score.score(game);
+    Data.save();
   }
 
   redraw() {
@@ -99,7 +99,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
   }
 
   startGame(bool shouldSore, Options options) async {
-    bool showTutorial = await Data.options.getAndToggleShowTutorial();
+    bool showTutorial = await Data.getAndToggleShowTutorial();
     Data.currentOptions = options;
     Main.game = new MyGameBinder(this, shouldSore, showTutorial);
     setState(() {});

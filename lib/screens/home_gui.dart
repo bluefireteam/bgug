@@ -13,6 +13,7 @@ import '../data.dart';
 import 'coin_widget.dart';
 import 'gui_commons.dart';
 import 'store_button_widget.dart';
+import 'merge_resolution.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -23,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool showingTutorial = false;
   bool loading = true;
   PlayUser user;
+  MergeResolution mergeResolution;
 
   _HomeScreenState() {
     var ps = <Future>[
@@ -62,41 +64,58 @@ class _HomeScreenState extends State<HomeScreen> {
         'store/times_2_panel.png',
         'store/x2coins-certificate.png',
       ]).then((images) => print('Done loading ' + images.length.toString() + ' images.')),
-      Data.loadAll(),
+      Data.loadHardData(),
     ];
-    Future.wait(ps).then((rs) => this.setState(() => loading = false));
-    if (ENABLE_LOGIN) {
-      _performSignIn();
-    }
+    Future.wait(ps).then((rs) async {
+      if (ENABLE_LOGIN) {
+        _performSignIn();
+      } else {
+        await Data.loadLocalSoftData();
+        this.setState(() => loading = false);
+      }
+    });
   }
 
   void _performSignIn() async {
     try {
-      PlayUser user = await PlayUser.singIn();
-      setState(() => this.user = user);
+      Data.user = await PlayUser.singIn();
+      SavedData data = await Data.fetch(false);
+      if (data != null) {
+        if (Data.pristine) {
+          Data.forceData(data);
+        } else {
+          setState(() {
+            mergeResolution = Data.merge(data);
+          });
+          return;
+        }
+      }
+      setState(() {
+        this.user = Data.user;
+        this.loading = false;
+      });
     } catch (ex) {
+      setState(() {
+        this.loading = false;
+      });
       print('Error: $ex');
       Scaffold.of(context).showSnackBar(new SnackBar(
-        content: new Text(ex),
+        content: new Text(ex.toString()),
       ));
     }
   }
 
   void addToScore(String newScore) async {
     Data.score.scores.add(newScore);
-    Data.score.save();
-  }
-
-  void redraw() {
-    this.setState(() => {});
+    Data.save();
   }
 
   Widget userCard() {
     const S = 2.0;
     if (user == null) {
       return GestureDetector(
-          child: Image.asset('assets/images/google-play-button.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 89 * S, height: 17 * S),
-          onTap: () => _performSignIn(),
+        child: Image.asset('assets/images/google-play-button.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 89 * S, height: 17 * S),
+        onTap: () => _performSignIn(),
       );
     }
     return Stack(
@@ -154,6 +173,27 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
+    if (mergeResolution != null) {
+      return LayoutBuilder(builder: (_, BoxConstraints size) {
+        return GestureDetector(
+          child: Stack(
+            children: [
+              main,
+              Center(child: Text('merge! tap left to keep cloud and right to keep local')),
+            ],
+          ),
+          behavior: HitTestBehavior.opaque,
+          onTapDown: (TapDownDetails dt) {
+            double x = dt.globalPosition.dx;
+            bool left = x / size.maxWidth < 0.5;
+            SavedData data = left ? mergeResolution.fromCloud : mergeResolution.fromLocal;
+            Data.forceData(data);
+            mergeResolution = null;
+          },
+        );
+      });
+    }
+
     return main;
   }
 
@@ -171,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text('gems', style: title),
                       onTap: () {
                         Data.buy.coins += 50;
-                        Data.buy.save();
+                        Data.save();
                       }),
                   2.0), // TODO remove this hack
             ],

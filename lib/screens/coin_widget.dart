@@ -12,7 +12,7 @@ import '../components/coin.dart';
 class _TextComponent extends Component with Resizable {
   @override
   void render(Canvas c) {
-    String text = Data.buy.coins.toString();
+    String text = Data.hasData ? Data.buy.coins.toString() : '';
     Position p = Position(size.width, size.height / 2);
     defaultText.render(c, text, p, anchor: Anchor.centerRight);
   }

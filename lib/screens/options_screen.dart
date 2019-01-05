@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../data.dart';
 import '../options.dart';
 import 'gui_commons.dart';
 
@@ -24,23 +25,12 @@ class OptionsScreen extends StatefulWidget {
 }
 
 class _OptionsState extends State<OptionsScreen> {
-  Options options;
   TextFormField currentTextField;
 
-  _OptionsState() {
-    _start();
-  }
-
-  _start() async {
-    Options opt = await Options.fetch();
-    setState(() => options = opt);
-  }
+  Options get options => Data.options;
 
   @override
   Widget build(BuildContext context) {
-    if (options == null) {
-      return Center(child: Text('Loading...'));
-    }
     if (currentTextField != null) {
       return rootContainer(Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +58,7 @@ class _OptionsState extends State<OptionsScreen> {
             children: [
               pad(Text('OpTiOnS', style: title), 20.0),
               btn('Save', () {
-                options.save().then((a) {
+                Data.save().then((a) {
                   Navigator.of(context).pop();
                 });
               }),

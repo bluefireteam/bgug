@@ -1,31 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../score.dart';
+import '../data.dart';
 import 'gui_commons.dart';
 
-class ScoreScreen extends StatefulWidget {
-  @override
-  State<ScoreScreen> createState() => new _ScoreState();
-}
-
-class _ScoreState extends State<ScoreScreen> {
-  Score score;
-
-  _ScoreState() {
-    _start();
-  }
-
-  _start() async {
-    Score scr = await Score.fetch();
-    setState(() => score = scr);
-  }
-
+class ScoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    if (score == null) {
-      return Center(child: Text('Loading...'));
-    }
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -50,7 +31,7 @@ class _ScoreState extends State<ScoreScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
-                children: score.scores.map((s) => Text(s)).toList(),
+                children: Data.score.scores.map((s) => Text(s)).toList(),
               ),
             ),
           ),
