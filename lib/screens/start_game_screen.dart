@@ -18,27 +18,13 @@ class MyGameBinder extends BgugGame {
   MyGameBinder(this.screen, bool shouldSore, bool showTutorial) : super(shouldSore, showTutorial);
 
   @override
-  set state(GameState state) {
-    super.state = state;
-    if (this.screen != null) {
-      (() async {
-        if (state == GameState.STOPPED) {
-          if (shouldScore) {
-            await this.screen.addToScore(this);
-          }
-        }
-        this.screen.redraw();
-      })();
-    }
+  void stop() {
+    super.stop();
+    this.screen?.redraw();
   }
 }
 
 class _StartGameScreenState extends State<StartGameScreen> {
-  addToScore(BgugGame game) async {
-    Data.score.score(game);
-    Data.save();
-  }
-
   redraw() {
     this.setState(() => {});
   }
@@ -47,7 +33,12 @@ class _StartGameScreenState extends State<StartGameScreen> {
   Widget build(BuildContext context) {
     if (Main.game != null) {
       if (Main.game.state != GameState.STOPPED) {
-        return Main.game.widget;
+        return WillPopScope(
+          onWillPop: () async {
+            return await Main.game.willPop();
+          },
+          child: Main.game.widget,
+        );
       } else {
         Main.game = null;
         setState(() {});

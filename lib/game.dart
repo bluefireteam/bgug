@@ -42,13 +42,15 @@ class BgugGame extends BaseGame {
   bool shouldScore;
   Button button;
   bool won = false;
-  int _points = 0, currentCoins = 0;
-  int totalJumps = 0, totalDives = 0;
+  int _points = 0,
+      currentCoins = 0;
+  int totalJumps = 0,
+      totalDives = 0;
   int lastGeneratedSector = -1;
   Future<AudioPlayer> music;
   int _currentSlot;
   Ad endGameAd;
-  GameState _state;
+  GameState state;
 
   QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
 
@@ -64,17 +66,6 @@ class BgugGame extends BaseGame {
 
   @override
   OrderedSet<Component> get components => queryComponents;
-
-  GameState get state => _state;
-
-  set state(GameState state) {
-    if (state == GameState.STOPPED) {
-      if (music != null) {
-        music.then((p) => p.release());
-      }
-    }
-    _state = state;
-  }
 
   int get points => _points;
 
@@ -289,9 +280,11 @@ class BgugGame extends BaseGame {
     return state == GameState.TUTORIAL || state == GameState.RUNNING || state == GameState.END_CARD;
   }
 
-  void award(int coins) {
+  void award() async {
     if (shouldScore) {
-      Data.buy.coins += coins;
+      Data.buy.coins += endCard.coins;
+      Data.score.score(this);
+      await Data.save();
     }
   }
 
@@ -315,5 +308,26 @@ class BgugGame extends BaseGame {
       Sfx.enable = false;
       this.state = GameState.PAUSED;
     }
+  }
+
+  Future<bool> willPop() async {
+    if (state == GameState.TUTORIAL) {
+      state = GameState.RUNNING;
+    } else if (this.state == GameState.RUNNING) {
+      if (player.dead()) {
+        showEndCard();
+      } else {
+        player.die();
+      }
+    } else if (this.state == GameState.END_CARD) {
+      endCard.doClickBack();
+      return true;
+    }
+    return false;
+  }
+
+  void stop() {
+    state = GameState.STOPPED;
+    music?.then((p) => p?.release());
   }
 }

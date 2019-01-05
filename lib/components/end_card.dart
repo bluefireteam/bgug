@@ -75,14 +75,26 @@ class EndCard extends SpriteComponent with HasGameRef {
 
     Offset relativeTap = tap.minus(new Position(x, y)).toOffset();
     if (replay.contains(relativeTap)) {
-      gameRef.award(coins);
-      gameRef.restart();
+      doClickReplay();
     } else if (_showAdButton && doubleCoins.contains(relativeTap)) {
-      gameRef.showAd();
+      doClickShowAd();
     } else if (back.contains(relativeTap)) {
-      gameRef.award(coins);
-      gameRef.state = GameState.STOPPED;
+      doClickBack();
     }
+  }
+
+  void doClickReplay() {
+    gameRef.award();
+    gameRef.restart();
+  }
+
+  void doClickShowAd() {
+    gameRef.showAd();
+  }
+
+  void doClickBack() {
+    gameRef.award();
+    gameRef.stop();
   }
 
   @override
