@@ -216,6 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
               btn('Play', () => Navigator.of(context).pushNamed('/start')),
               btn('Score', () => Navigator.of(context).pushNamed('/score')),
               btn('How to Play', () => setState(() => showingTutorial = 0)),
+              btn('Credits', () => Navigator.of(context).pushNamed('/credits')),
               btn('Exit', () => SystemNavigator.pop()),
             ],
             mainAxisAlignment: MainAxisAlignment.center,

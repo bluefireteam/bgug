@@ -12,6 +12,7 @@ import 'screens/score_screen.dart';
 import 'screens/start_game_screen.dart';
 import 'screens/store_screen.dart';
 import 'screens/skins_screen.dart';
+import 'screens/credits_screen.dart';
 
 class Main {
   static BgugGame game;
@@ -39,6 +40,7 @@ main() async {
       '/score': (BuildContext ctx) => Scaffold(body: ScoreScreen()),
       '/store': (BuildContext ctx) => Scaffold(body: StoreScreen()),
       '/skins': (BuildContext ctx) => Scaffold(body: SkinScreen()),
+      '/credits': (BuildContext ctx) => Scaffold(body: CreditsScreen()),
     },
   ));
 
