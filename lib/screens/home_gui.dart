@@ -197,7 +197,10 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Column(
             children: [
-              pad(Text('BREAK', style: title), 2.0),
+              pad(GestureDetector(child: Text('BREAK', style: title), onTap: () {
+                Data.forceData(new SavedData());
+                Data.save();
+              }), 2.0),
               pad(Text('guns', style: title), 2.0),
               pad(Text('USING', style: title), 2.0),
               pad(

@@ -4,6 +4,7 @@ import 'package:flame/anchor.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
+import 'package:flame/palette.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart' as material;
@@ -18,6 +19,7 @@ class Button extends PositionComponent with HasGameRef, Resizable {
   int cost, incCost;
 
   bool get active => gameRef.points >= cost;
+  bool get ghost => gameRef.maxedOutBlocks;
 
   Animation activeAnimation;
   Sprite inactiveSprite;
@@ -38,7 +40,7 @@ class Button extends PositionComponent with HasGameRef, Resizable {
   }
 
   int click(int points) {
-    if (active) {
+    if (!ghost && active) {
       int currentCost = cost;
       cost += incCost;
       return currentCost;
@@ -48,12 +50,17 @@ class Button extends PositionComponent with HasGameRef, Resizable {
 
   @override
   void render(Canvas canvas) {
-    Sprite sprite = active ? activeAnimation.getSprite() : inactiveSprite;
+    final Paint white = BasicPalette.white.paint;
+    final Paint transparent = BasicPalette.black.withAlpha(120).paint;
+    Sprite sprite = !ghost && active ? activeAnimation.getSprite() : inactiveSprite;
     if (sprite != null && sprite.loaded() && x != null && y != null) {
       prepareCanvas(canvas);
+      sprite.paint = ghost ? transparent : white;
       sprite.render(canvas, width, height);
-      gem.renderRect(canvas, new Rect.fromLTWH(-14.0, -16.0, 16.0, 16.0));
-      renderText(canvas);
+      if (!ghost) {
+        gem.renderRect(canvas, new Rect.fromLTWH(-14.0, -16.0, 16.0, 16.0));
+        renderText(canvas);
+      }
     }
   }
 
