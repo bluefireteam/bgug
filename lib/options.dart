@@ -8,6 +8,7 @@ class Options {
 
   int buttonCost;
   int buttonIncCost;
+  int coinsAwardedPerBlock;
 
   int maxHoldJumpMillis;
   double gravityImpulse;
@@ -17,14 +18,14 @@ class Options {
 
   int mapSize;
   bool hasGuns;
-  bool gunRespawn;
 
   bool get hasLimit => mapSize != -1;
 
   Options() {
     this.bulletSpeed = 500.0;
     this.buttonCost = 5;
-    this.buttonIncCost = 2;
+    this.buttonIncCost = 0;
+    this.coinsAwardedPerBlock = 4;
     this.maxHoldJumpMillis = 500;
     this.gravityImpulse = 1875.0;
     this.jumpImpulse = 7000.0;
@@ -32,7 +33,6 @@ class Options {
     this.jumpTimeMultiplier = 0.0004;
     this.mapSize = -1; // infinite
     this.hasGuns = true;
-    this.gunRespawn = false;
   }
 
   factory Options.fromJson(Map<String, dynamic> json) => _$OptionsFromJson(json);

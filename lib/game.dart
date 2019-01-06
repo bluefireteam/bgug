@@ -38,14 +38,12 @@ class BgugGame extends BaseGame {
   static Options get options => Data.currentOptions;
 
   double _lastDt;
-  bool hasPausedAlready = false;
+  bool hasPausedAlready;
   bool shouldScore;
   Button button;
-  bool won = false;
-  int _points = 0, currentCoins = 0;
-  int totalJumps = 0, totalDives = 0;
-  int lastGeneratedSector = -1;
-  int _currentSlot;
+  int points, currentCoins;
+  int totalJumps, totalDives;
+  int lastGeneratedSector;
   Ad endGameAd;
   GameState state;
 
@@ -61,27 +59,11 @@ class BgugGame extends BaseGame {
 
   Iterable<Shooter> get shooters => queryComponents.shooters();
 
+  int amountBlocks = 0;
+  bool get maxedOutBlocks => amountBlocks == 8;
+
   @override
   OrderedSet<Component> get components => queryComponents;
-
-  int get points => _points;
-
-  set points(int points) {
-    _points = points;
-    button?.points = points;
-  }
-
-  int get currentSlot => _currentSlot;
-
-  set currentSlot(int currentSlot) {
-    _currentSlot = currentSlot;
-    shooters.forEach((shooter) {
-      shooter.currentSlot = currentSlot;
-      if (size != null) {
-        shooter.resize(size);
-      }
-    });
-  }
 
   BgugGame(this.shouldScore, bool showTutorial) {
     _start(showTutorial ? GameState.TUTORIAL : GameState.RUNNING);
@@ -112,45 +94,48 @@ class BgugGame extends BaseGame {
 
   void restart() {
     components.clear();
-    won = false;
-    hasPausedAlready = false;
-
-    _points = 0;
-    currentCoins = 0;
-    totalJumps = 0;
-    totalDives = 0;
-    _lastDt = 0;
-
-    lastGeneratedSector = -1;
-    currentSlot = 0;
-
     _start(GameState.RUNNING);
   }
 
   void _start(GameState state) {
-    add(new Background());
+    resetVariables();
 
-    add(new Hud());
-    add(new Top());
-    add(new Floor());
-    add(new Player());
+    add(Background());
+
+    add(Hud());
+    add(Top());
+    add(Floor());
+    add(Player());
 
     if (options.hasGuns) {
-      add(new ShooterCane());
-      add(new Shooter('up', currentSlot));
-      add(new Shooter('down', currentSlot));
-      add(new Block(currentSlot = Block.nextSlot(-1)));
-      add(new Block(currentSlot = Block.nextSlot(currentSlot)));
-      add(button = new Button());
+      addBlock();
+      addBlock();
+      add(ShooterCane());
+      add(Shooter('up'));
+      add(Shooter('down'));
+      add(button = Button());
     }
 
     this.state = state;
     if (this.state == GameState.TUTORIAL) {
-      add(new Tutorial());
+      add(Tutorial());
     }
 
     endGameAd = Ad.loadAd();
     Music.play(Song.GAME);
+  }
+
+  void resetVariables() {
+    hasPausedAlready = false;
+
+    points = 0;
+    currentCoins = 0;
+    totalJumps = 0;
+    totalDives = 0;
+    amountBlocks = 0;
+    _lastDt = 0;
+
+    lastGeneratedSector = -1;
   }
 
   @override
@@ -161,6 +146,16 @@ class BgugGame extends BaseGame {
     if (size != null) {
       c.resize(size);
     }
+  }
+
+  void addBlock() {
+    add(new Block(Block.orderToSlot(amountBlocks)));
+    amountBlocks++;
+  }
+
+  void addBlockWithTween() {
+    add(new BlockTween(button.toPosition(), Block.orderToSlot(amountBlocks)));
+    amountBlocks++;
   }
 
   void startInput(Position p, int dt) {
@@ -200,13 +195,7 @@ class BgugGame extends BaseGame {
           int dPoint = button.click(points);
           if (dPoint != 0) {
             points -= dPoint;
-            currentSlot = Block.nextSlot(currentSlot);
-            if (currentSlot == Block.WIN && !options.gunRespawn) {
-              won = true;
-              showEndCard();
-            } else {
-              add(new BlockTween(button.toPosition(), currentSlot));
-            }
+            addBlockWithTween();
           }
         } else if (p.x > size.width / 2) {
           totalJumps++;
@@ -252,7 +241,6 @@ class BgugGame extends BaseGame {
       cameraFollow(player);
 
       if (options.hasLimit && player.x >= options.mapSize) {
-        won = true;
         player.velocity.x = 0;
         showEndCard();
       }

@@ -28,8 +28,8 @@ class WorldGen {
     int length = (SECTOR_LENGTH - 2 * SECTOR_MARGIN).round();
 
     List<PositionComponent> list = new List();
-    int blockMaxAmont = (4 + sector / 4).round();
-    for (int i = random.nextInt(blockMaxAmont); i > 0; i--) {
+    int blockMaxAmount = (4 + sector / 4).round();
+    for (int i = random.nextInt(blockMaxAmount); i > 0; i--) {
       double x = start + random.nextInt(length);
       UpObstacle obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
       obstacle.resize(size);
