@@ -80,6 +80,7 @@ flutter:
     - assets/audio/laser_load.wav
     - assets/audio/laser_shoot.wav
     - assets/audio/music.wav
+    - assets/audio/menu.mp3
     - assets/store-skins.json
   fonts:
     - family: 5x5

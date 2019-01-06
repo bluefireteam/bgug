@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'game.dart';
+import 'music.dart';
 import 'screens/home_gui.dart';
 import 'screens/options_screen.dart';
 import 'screens/score_screen.dart';
@@ -16,17 +17,28 @@ class Main {
   static BgugGame game;
 }
 
+class _Handler extends WidgetsBindingObserver {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      Music.resume();
+    } else {
+      Music.pause();
+    }
+  }
+}
+
 main() async {
   Flame.audio.disableLog();
 
   runApp(new MaterialApp(
-    home: new Scaffold(body: new HomeScreen()),
+    home: new Scaffold(body: HomeScreen()),
     routes: {
-      '/start': (BuildContext ctx) => new Scaffold(body: new StartGameScreen()),
-      '/options': (BuildContext ctx) => new Scaffold(body: new OptionsScreen()),
-      '/score': (BuildContext ctx) => new Scaffold(body: new ScoreScreen()),
-      '/store': (BuildContext ctx) => new Scaffold(body: new StoreScreen()),
-      '/skins': (BuildContext ctx) => new Scaffold(body: new SkinScreen()),
+      '/start': (BuildContext ctx) => Scaffold(body: StartGameScreen()),
+      '/options': (BuildContext ctx) => Scaffold(body: OptionsScreen()),
+      '/score': (BuildContext ctx) => Scaffold(body: ScoreScreen()),
+      '/store': (BuildContext ctx) => Scaffold(body: StoreScreen()),
+      '/skins': (BuildContext ctx) => Scaffold(body: SkinScreen()),
     },
   ));
 
@@ -51,4 +63,6 @@ main() async {
         lastTimestamp = lastPost = null;
       }
     });
+
+  WidgetsBinding.instance.addObserver(new _Handler());
 }
