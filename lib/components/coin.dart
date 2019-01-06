@@ -1,7 +1,11 @@
 import 'dart:ui';
+import 'dart:math' as math;
 
 import 'package:flame/animation.dart';
 import 'package:flame/components/animation_component.dart';
+import 'package:flame/components/component.dart';
+import 'package:flame/position.dart';
+import 'package:flame/sprite.dart';
 
 import '../sfx.dart';
 import '../constants.dart';
@@ -55,4 +59,62 @@ class Coin extends _BaseCoin with HasGameRef {
 
   @override
   bool destroy() => collected;
+}
+
+class CoinTrace extends Component {
+  static final Sprite _coin = new Sprite('coin.png', width: 16.0, height: 16.0);
+  static final Position _size = new Position(32.0, 32.0);
+
+  static final math.Random rand = new math.Random();
+
+  static const MAX_TIME = 1.0;
+  static const STDEV = 40.0;
+
+  double clock = 0.0;
+  Position start, end, _current;
+  List<Position> coins = [];
+  bool hud;
+
+  Function doAfter;
+
+  static void _nothing() {}
+
+  CoinTrace(this.hud, this.start, this.end, {this.doAfter = _nothing}) : _current = start.clone();
+
+  Future get after => Future.delayed(Duration(milliseconds: (1000 * (MAX_TIME - clock)).round()));
+
+  @override
+  void render(Canvas c) {
+    coins.forEach((p) {
+      _coin.renderCentered(c, p.clone().add(_current), _size);
+    });
+  }
+
+  @override
+  void update(double t) {
+    clock += t;
+    if (clock >= MAX_TIME) {
+      clock = MAX_TIME;
+      doAfter();
+    }
+    double dx = end.x - start.x;
+    double dy = end.y - start.y;
+    _current.x = start.x + dx * clock / MAX_TIME;
+    _current.y = start.y + dy * clock / MAX_TIME;
+
+    if (clock <= MAX_TIME / 4) {
+      if (rand.nextDouble() < 0.25) {
+        coins.add(new Position(STDEV * rand.nextDouble() - STDEV / 2, STDEV * rand.nextDouble() - STDEV / 2));
+      }
+    }
+  }
+
+  @override
+  bool destroy() => clock == MAX_TIME;
+
+  @override
+  bool isHud() => hud;
+
+  @override
+  int priority() => 24;
 }

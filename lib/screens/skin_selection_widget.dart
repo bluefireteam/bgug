@@ -11,59 +11,16 @@ import 'package:flame/sprite.dart';
 import 'package:flame/text_config.dart';
 import 'package:flutter/widgets.dart';
 
-import '../components/lock.dart';
+import '../components/coin.dart';
 import '../components/floor.dart';
+import '../components/lock.dart';
 import '../constants.dart';
 import '../data.dart';
-import '../util.dart';
 import '../skin_list.dart';
+import '../util.dart';
 
 math.Random rand = math.Random();
 TextConfig config = defaultText.withFontSize(24.0);
-
-class _CoinTrace extends Component {
-  static final Sprite _coin = new Sprite('coin.png', width: 16.0, height: 16.0);
-  static final Position _size = new Position(32.0, 32.0);
-
-  static const MAX_TIME = 1.0;
-  static const STDEV = 40.0;
-
-  double clock = 0.0;
-  Position start, end, _current;
-  List<Position> coins = [];
-
-  _CoinTrace(this.start, this.end) : _current = start.clone();
-
-  Future get after => Future.delayed(Duration(milliseconds: (1000 * (MAX_TIME - clock)).round()));
-
-  @override
-  void render(Canvas c) {
-    coins.forEach((p) {
-      _coin.renderCentered(c, p.clone().add(_current), _size);
-    });
-  }
-
-  @override
-  void update(double t) {
-    clock += t;
-    if (clock > MAX_TIME) {
-      clock = MAX_TIME;
-    }
-    double dx = end.x - start.x;
-    double dy = end.y - start.y;
-    _current.x = start.x + dx * clock / MAX_TIME;
-    _current.y = start.y + dy * clock / MAX_TIME;
-
-    if (clock <= MAX_TIME / 4) {
-      if (rand.nextDouble() < 0.25) {
-        coins.add(new Position(STDEV * rand.nextDouble() - STDEV / 2, STDEV * rand.nextDouble() - STDEV / 2));
-      }
-    }
-  }
-
-  @override
-  bool destroy() => clock == MAX_TIME;
-}
 
 class _SkinCardComponent extends Component with Resizable {
   static Sprite btnOn = new Sprite('store/store-ui.png', y: 36, width: 100, height: 36);
@@ -265,7 +222,7 @@ class _SkinSelectionGame extends BaseGame {
         buying = true;
         Position start = Position(camera.x + 20 + 32.0 / 2, camera.y + 20 + 32.0 / 2);
         Position end = Position((size.width - 200) / 2 + 200 / 2, 64.0 + 72 / 2);
-        _CoinTrace trace = _CoinTrace(start, end);
+        CoinTrace trace = CoinTrace(false, start, end);
         addLater(trace);
         this.lock.closed = false;
         trace.after.then((_) {

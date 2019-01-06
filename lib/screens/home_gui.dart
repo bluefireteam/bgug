@@ -37,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'death.wav',
         'gem_collect.wav',
         'jump.wav',
+        'block.wav',
         'laser_load.wav',
         'laser_shoot.wav',
         'music.wav',

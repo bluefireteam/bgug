@@ -11,6 +11,7 @@ import 'package:ordered_set/ordered_set.dart';
 
 import 'ads.dart';
 import 'components/background.dart';
+import 'components/block.dart';
 import 'components/button.dart';
 import 'components/end_card.dart';
 import 'components/floor.dart';
@@ -204,7 +205,7 @@ class BgugGame extends BaseGame {
               won = true;
               showEndCard();
             } else {
-              add(new Block(currentSlot));
+              add(new BlockTween(button.toPosition(), currentSlot));
             }
           }
         } else if (p.x > size.width / 2) {

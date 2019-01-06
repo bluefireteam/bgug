@@ -12,6 +12,7 @@ import '../constants.dart';
 import '../data.dart';
 import '../mixins/has_game_ref.dart';
 import '../sfx.dart';
+import 'block.dart';
 import 'player.dart';
 
 math.Random random = new math.Random();
@@ -223,60 +224,5 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
   @override
   bool destroy() {
     return _destroy;
-  }
-}
-
-class Block extends SpriteComponent {
-  static int minUp(int currentSlot) {
-    if (currentSlot <= 0 || currentSlot == 7) {
-      return 1;
-    } else if (currentSlot == 1 || currentSlot == 6) {
-      return 2;
-    } else {
-      return 3;
-    }
-  }
-
-  static int maxDown(int currentSlot) {
-    if (currentSlot <= 0 || currentSlot == 7 || currentSlot == 1) {
-      return 6;
-    } else if (currentSlot == 6 || currentSlot == 2) {
-      return 5;
-    } else {
-      return 4;
-    }
-  }
-
-  static const int WIN = -2;
-
-  static int nextSlot(int currentSlot) {
-    const Map<int, int> MAP = const {
-      -1: 0,
-      0: 7,
-      7: 1,
-      1: 6,
-      6: 2,
-      2: 5,
-      5: 3,
-      3: 4,
-      4: Block.WIN
-    };
-    return MAP[currentSlot];
-  }
-
-  int slot;
-
-  Block(this.slot) : super.fromSprite(16.0, 16.0, new Sprite('block.png'));
-
-  @override
-  void resize(Size size) {
-    this.width = this.height = sizeTenth(size);
-    this.x = size.width - this.width;
-    this.y = sizeTop(size) + this.slot * this.height;
-  }
-
-  @override
-  bool isHud() {
-    return true;
   }
 }

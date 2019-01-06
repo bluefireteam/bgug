@@ -77,6 +77,7 @@ flutter:
     - assets/audio/death.wav
     - assets/audio/gem_collect.wav
     - assets/audio/jump.wav
+    - assets/audio/block.wav
     - assets/audio/laser_load.wav
     - assets/audio/laser_shoot.wav
     - assets/audio/music.wav
