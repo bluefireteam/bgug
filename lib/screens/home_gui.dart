@@ -7,10 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:play_games/play_games.dart';
 
-import '../play_user.dart';
 import '../ads.dart';
 import '../constants.dart';
 import '../data.dart';
+import '../music.dart';
+import '../play_user.dart';
 import 'coin_widget.dart';
 import 'gui_commons.dart';
 import 'store_button_widget.dart';
@@ -67,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'store/x2coins-certificate.png',
       ]).then((images) => print('Done loading ' + images.length.toString() + ' images.')),
       Data.loadHardData(),
+      Music.init(),
     ];
     Future.wait(ps).then((rs) async {
       if (ENABLE_LOGIN) {
@@ -75,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await Data.loadLocalSoftData();
         this.setState(() => loading = false);
       }
+      Music.play(Song.MENU);
     });
   }
 

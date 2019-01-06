@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../data.dart';
 import '../game.dart';
 import '../main.dart';
+import '../music.dart';
 import '../options.dart';
 import 'gui_commons.dart';
 
@@ -20,6 +21,7 @@ class MyGameBinder extends BgugGame {
   @override
   void stop() {
     super.stop();
+    Music.play(Song.MENU);
     this.screen?.redraw();
   }
 }

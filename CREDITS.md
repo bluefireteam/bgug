@@ -15,6 +15,7 @@ These are the resources used in this game. They are all free for commercial use.
  * Audio assets
 
    https://opengameart.org/content/8bit-theme
+   http://mrjoshuamclean.com/royalty-free-music/?genre=Chiptune
 
 Made using the [flame](https://github.com/luanpotter/flame) engine.
 

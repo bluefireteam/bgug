@@ -2,10 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flame/components/component.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/position.dart';
 import 'package:flutter/material.dart' as material;
@@ -25,6 +23,7 @@ import 'components/tutorial.dart';
 import 'constants.dart';
 import 'data.dart';
 import 'mixins/has_game_ref.dart';
+import 'music.dart';
 import 'options.dart';
 import 'queryable_ordered_set.dart';
 import 'sfx.dart';
@@ -42,12 +41,9 @@ class BgugGame extends BaseGame {
   bool shouldScore;
   Button button;
   bool won = false;
-  int _points = 0,
-      currentCoins = 0;
-  int totalJumps = 0,
-      totalDives = 0;
+  int _points = 0, currentCoins = 0;
+  int totalJumps = 0, totalDives = 0;
   int lastGeneratedSector = -1;
-  Future<AudioPlayer> music;
   int _currentSlot;
   Ad endGameAd;
   GameState state;
@@ -152,11 +148,8 @@ class BgugGame extends BaseGame {
       add(new Tutorial());
     }
 
-    if (music != null) {
-      music.then((p) => p.release());
-    }
-    music = Flame.audio.loop('music.wav');
     endGameAd = Ad.loadAd();
+    Music.play(Song.GAME);
   }
 
   @override
@@ -280,7 +273,7 @@ class BgugGame extends BaseGame {
     return state == GameState.TUTORIAL || state == GameState.RUNNING || state == GameState.END_CARD;
   }
 
-  void award() async {
+  Future award() async {
     if (shouldScore) {
       Data.buy.coins += endCard.coins;
       Data.score.score(this);
@@ -291,9 +284,11 @@ class BgugGame extends BaseGame {
 
   @override
   void lifecycleStateChange(AppLifecycleState state) {
+    if (this.state == GameState.AD || this.state == GameState.STOPPED || this.state == GameState.END_CARD) {
+      return;
+    }
     if (state == AppLifecycleState.resumed) {
       if (this.state == GameState.PAUSED) {
-        music.then((m) => m?.resume());
         Sfx.enable = true;
         this.state = GameState.RUNNING;
         if (hasPausedAlready) {
@@ -305,7 +300,6 @@ class BgugGame extends BaseGame {
       }
     } else {
       _lastDt = null;
-      music.then((m) => m?.pause());
       Sfx.enable = false;
       this.state = GameState.PAUSED;
     }
@@ -329,6 +323,5 @@ class BgugGame extends BaseGame {
 
   void stop() {
     state = GameState.STOPPED;
-    music?.then((p) => p?.release());
   }
 }
