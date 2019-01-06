@@ -59,8 +59,15 @@ class BgugGame extends BaseGame {
 
   Iterable<Shooter> get shooters => queryComponents.shooters();
 
-  int amountBlocks = 0;
-  bool get maxedOutBlocks => amountBlocks == 8;
+  Iterable<BaseBlock> get blocks => queryComponents.blocks();
+
+  int get uppermostOccupiedSlot => blocks.where((b) => b.upper()).fold(0, (total, b2) => math.max(total, b2.slot));
+  int get uppermostFreeSlot => uppermostOccupiedSlot == 3 ? null : uppermostOccupiedSlot + 1;
+  int get lowermostOccupiedSlot => blocks.where((b) => b.lower()).fold(7, (total, b2) => math.min(total, b2.slot));
+  int get lowermostFreeSlot => lowermostOccupiedSlot == 4 ? null : lowermostOccupiedSlot - 1;
+  int get nextFreeSlot => Block.SLOT_ORDER.firstWhere((slot) => !blocks.any((b) => b.slot == slot));
+
+  bool get maxedOutBlocks => blocks.length == 8;
 
   @override
   OrderedSet<Component> get components => queryComponents;
@@ -108,8 +115,8 @@ class BgugGame extends BaseGame {
     add(Player());
 
     if (options.hasGuns) {
-      addBlock();
-      addBlock();
+      add(new Block(nextFreeSlot, true));
+      add(new Block(nextFreeSlot, true));
       add(ShooterCane());
       add(Shooter('up'));
       add(Shooter('down'));
@@ -132,7 +139,6 @@ class BgugGame extends BaseGame {
     currentCoins = 0;
     totalJumps = 0;
     totalDives = 0;
-    amountBlocks = 0;
     _lastDt = 0;
 
     lastGeneratedSector = -1;
@@ -146,16 +152,6 @@ class BgugGame extends BaseGame {
     if (size != null) {
       c.resize(size);
     }
-  }
-
-  void addBlock() {
-    add(new Block(Block.orderToSlot(amountBlocks)));
-    amountBlocks++;
-  }
-
-  void addBlockWithTween() {
-    add(new BlockTween(button.toPosition(), Block.orderToSlot(amountBlocks)));
-    amountBlocks++;
   }
 
   void startInput(Position p, int dt) {
@@ -195,7 +191,7 @@ class BgugGame extends BaseGame {
           int dPoint = button.click(points);
           if (dPoint != 0) {
             points -= dPoint;
-            addBlockWithTween();
+            add(new BlockTween(button.toPosition(), nextFreeSlot));
           }
         } else if (p.x > size.width / 2) {
           totalJumps++;

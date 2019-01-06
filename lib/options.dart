@@ -9,6 +9,7 @@ class Options {
   int buttonCost;
   int buttonIncCost;
   int coinsAwardedPerBlock;
+  double blockLifespan;
 
   int maxHoldJumpMillis;
   double gravityImpulse;
@@ -23,9 +24,10 @@ class Options {
 
   Options() {
     this.bulletSpeed = 500.0;
-    this.buttonCost = 5;
+    this.buttonCost = 4;
     this.buttonIncCost = 0;
-    this.coinsAwardedPerBlock = 4;
+    this.coinsAwardedPerBlock = 3;
+    this.blockLifespan = 24.0;
     this.maxHoldJumpMillis = 500;
     this.gravityImpulse = 1875.0;
     this.jumpImpulse = 7000.0;

@@ -59,7 +59,7 @@ class QueryableOrderedSet<T, E> extends OrderedSet<T> {
 }
 
 enum Queries {
-  Block,
+  BaseBlock,
   Player,
   Shooter,
   Hud,
@@ -69,7 +69,7 @@ enum Queries {
 
 class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
   QueryableOrderedSetImpl() : super(Comparing.on((c) => c.priority())) {
-    this.register(Queries.Block, (e) => e is Block);
+    this.register(Queries.BaseBlock, (e) => e is BaseBlock);
     this.register(Queries.Player, (e) => e is Player);
     this.register(Queries.Shooter, (e) => e is Shooter);
     this.register(Queries.Hud, (e) => e is Hud);
@@ -81,8 +81,8 @@ class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
     return _postFilter<Shooter>(Queries.Shooter);
   }
 
-  Iterable<Block> blocks() {
-    return _postFilter<Block>(Queries.Block);
+  Iterable<BaseBlock> blocks() {
+    return _postFilter<BaseBlock>(Queries.BaseBlock);
   }
 
   Player player() {

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:bgug/palette.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
 import 'package:flame/position.dart';
@@ -11,20 +12,33 @@ import '../data.dart';
 import '../mixins/has_game_ref.dart';
 import '../sfx.dart';
 
-class BlockTween extends SpriteComponent with HasGameRef, Resizable {
+class BaseBlock {
+  int slot;
+
+  bool upper() {
+    return slot <= 3;
+  }
+
+  bool lower() {
+    return slot > 3;
+  }
+}
+
+class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
   static const TIME_TWEEN = 1.0;
   static const TIME_UP = 0.5;
   static const TIME_DOWN = 0.1;
   static const TOTAL_TIME = TIME_TWEEN + TIME_UP + TIME_DOWN;
   static const MAX_SCALE = 1.25;
 
-  int slot;
   bool done = false;
   Position src, dest = new Position.empty();
   double clock = 0.0;
   bool _played = false;
 
-  BlockTween(this.src, this.slot) : super.fromSprite(16.0, 16.0, new Sprite('block.png'));
+  BlockTween(this.src, int slot) : super.fromSprite(16.0, 16.0, new Sprite('block.png')) {
+    this.slot = slot;
+  }
 
   @override
   void update(double t) {
@@ -53,8 +67,9 @@ class BlockTween extends SpriteComponent with HasGameRef, Resizable {
     }
 
     if (clock >= TOTAL_TIME) {
-      gameRef.addLater(Block(slot));
-      gameRef.addLater(CoinTrace(true, dest, gameRef.hud.getActualCoinPosition(), doAfter: () => gameRef.currentCoins += Data.options.coinsAwardedPerBlock));
+      gameRef.addLater(Block(slot, false));
+      gameRef.addLater(
+          CoinTrace(true, dest, gameRef.hud.getActualCoinPosition(), doAfter: () => gameRef.currentCoins += Data.currentOptions.coinsAwardedPerBlock));
       done = true;
     }
   }
@@ -81,7 +96,7 @@ class BlockTween extends SpriteComponent with HasGameRef, Resizable {
   bool destroy() => done;
 }
 
-class Block extends SpriteComponent {
+class Block extends SpriteComponent with BaseBlock, HasGameRef {
   static int minUp(int currentSlot) {
     if (currentSlot <= 0 || currentSlot == 7) {
       return 1;
@@ -112,9 +127,37 @@ class Block extends SpriteComponent {
     return SLOT_ORDER[amountBlocks];
   }
 
-  int slot;
+  bool eternal;
+  double clock = 0.0;
+  bool _destroy = false;
 
-  Block(this.slot) : super.fromSprite(16.0, 16.0, new Sprite('block.png'));
+  Block(slot, this.eternal) : super.fromSprite(16.0, 16.0, new Sprite('block.png')) {
+    this.slot = slot;
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+    if (!eternal && Data.currentOptions.blockLifespan != -1) {
+      double frac = clock / Data.currentOptions.blockLifespan;
+      canvas.drawRect(Rect.fromLTWH(0.0, height - 6.0, width, 6.0), Palette.grey.paint);
+      canvas.drawRect(Rect.fromLTWH(1.0, height - 5.0, (width - 2.0) * frac, 4.0), Palette.green.paint);
+    }
+  }
+
+  @override
+  void update(double t) {
+    if (eternal || _destroy) {
+      return;
+    }
+
+    clock += t;
+    clock = clock.clamp(0, Data.currentOptions.blockLifespan);
+
+    if (clock == Data.currentOptions.blockLifespan) {
+      _destroy = true;
+    }
+  }
 
   @override
   void resize(Size size) {
@@ -125,4 +168,7 @@ class Block extends SpriteComponent {
 
   @override
   bool isHud() => true;
+
+  @override
+  bool destroy() => _destroy;
 }

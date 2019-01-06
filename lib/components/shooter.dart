@@ -205,8 +205,8 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
   }
 
   void updateBoundaries() {
-    int currentSlot = Block.orderToSlot(gameRef.amountBlocks - 1);
     if (kind == 'up') {
+      int currentSlot = gameRef.uppermostOccupiedSlot;
       var minUp = Block.minUp(currentSlot);
       if (minUp == null) {
         _hide = true;
@@ -217,6 +217,7 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
         y = y.clamp(yi, yf);
       }
     } else {
+      int currentSlot = gameRef.lowermostOccupiedSlot;
       var maxDown = Block.maxDown(currentSlot);
       if (maxDown == null) {
         _hide = true;
