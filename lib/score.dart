@@ -40,7 +40,7 @@ class Score {
   Map<String, dynamic> toJson() => _$ScoreToJson(this);
 
   void score(BgugGame game) {
-    double distance = game.hud.maxDistance;
+    double distance = game.hud.maxDistanceInMeters;
     int jumps = game.totalJumps;
     int dives = game.totalDives;
     int gems = game.points;
