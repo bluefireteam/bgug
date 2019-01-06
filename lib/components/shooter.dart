@@ -22,9 +22,7 @@ class Bullet extends AnimationComponent with HasGameRef {
   double speed;
 
   Bullet(this.speed, Size size, Position p)
-      : super(16.0, 16.0, new Animation.sequenced('bullet.png', 3,
-            textureWidth: 16.0, textureHeight: 16.0)
-          ..stepTime = 0.075) {
+      : super(16.0, 16.0, new Animation.sequenced('bullet.png', 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
     this.width = this.height = (1.0 - 2 * FRAC) * sizeTenth(size);
     this.x = p.x - this.width + 7.0;
     this.y = p.y + FRAC * sizeTenth(size);
@@ -76,9 +74,7 @@ class ShooterCane extends PositionComponent {
   }
 
   @override
-  bool isHud() {
-    return true;
-  }
+  bool isHud() => true;
 }
 
 class Shooter extends SpriteComponent with HasGameRef, Resizable {
@@ -90,17 +86,17 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
   double clock = 0.0;
   String action;
   bool down = true;
-  int currentSlot;
-  bool _destroy = false;
+  bool _hide = false;
 
-  Animation shooting = new Animation.sequenced('shooter.png', 2,
-      textureWidth: 32.0, textureX: 32.0);
+  Animation shooting = new Animation.sequenced('shooter.png', 2, textureWidth: 32.0, textureX: 32.0);
 
-  Shooter(this.kind, this.currentSlot)
-      : super.fromSprite(32.0, 46.0, new Sprite('shooter.png', width: 32.0));
+  Shooter(this.kind) : super.fromSprite(32.0, 46.0, new Sprite('shooter.png', width: 32.0));
 
   @override
   void render(Canvas c) {
+    if (_hide) {
+      return;
+    }
     if (action == 'shooting') {
       if (shooting.loaded() && x != null && y != null) {
         prepareCanvas(c);
@@ -113,6 +109,8 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
 
   @override
   void update(double dt) {
+    updateBoundaries();
+
     clock += dt;
     if (clock > 1.0) {
       clock -= 1.0;
@@ -168,10 +166,14 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
   }
 
   void nextAction() {
+    if (_hide) {
+      action = '';
+      return;
+    }
     if (action == 'shooting') {
       action = 'shoot';
       Sfx.play('laser_shoot.wav');
-    } else if (random.nextDouble() < 0.2) {
+    } else if (yi == yf || random.nextDouble() < 0.2) {
       action = 'shooting';
       shooting.reset();
       Sfx.play('laser_load.wav');
@@ -191,38 +193,42 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
   void resize(Size size) {
     super.resize(size);
     x = size.width - width;
-
     step = sizeTenth(size);
     height = step;
     action = '';
+    updateBoundaries();
     if (kind == 'up') {
-      var minUp = Block.minUp(currentSlot);
-      if (minUp == 3) {
-        // TODO Flame.audio.play('?') destruction audio
-        _destroy = true;
-      }
-      yi = sizeTop(size) + step * minUp;
-      yf = sizeTop(size) + step * 3;
       y = yi;
     } else {
-      var maxDown = Block.maxDown(currentSlot);
-      if (maxDown == 4) {
-        // TODO Flame.audio.play('?') destruction audio
-        _destroy = true;
-      }
-      yi = sizeTop(size) + step * 4;
-      yf = sizeTop(size) + step * maxDown;
       y = yf;
     }
   }
 
-  @override
-  bool isHud() {
-    return true;
+  void updateBoundaries() {
+    int currentSlot = Block.orderToSlot(gameRef.amountBlocks - 1);
+    if (kind == 'up') {
+      var minUp = Block.minUp(currentSlot);
+      if (minUp == null) {
+        _hide = true;
+      } else {
+        _hide = false;
+        yi = sizeTop(size) + step * minUp;
+        yf = sizeTop(size) + step * 3;
+        y = y.clamp(yi, yf);
+      }
+    } else {
+      var maxDown = Block.maxDown(currentSlot);
+      if (maxDown == null) {
+        _hide = true;
+      } else {
+        _hide = false;
+        yi = sizeTop(size) + step * 4;
+        yf = sizeTop(size) + step * maxDown;
+        y = y.clamp(yi, yf);
+      }
+    }
   }
 
   @override
-  bool destroy() {
-    return _destroy;
-  }
+  bool isHud() => true;
 }

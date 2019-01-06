@@ -9,14 +9,15 @@ import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart' as material;
 
 import '../data.dart';
+import '../mixins/has_game_ref.dart';
 import '../util.dart';
 
-class Button extends PositionComponent with Resizable {
+class Button extends PositionComponent with HasGameRef, Resizable {
   static const MARGIN = 4.0;
   static const SIZE = 48.0;
-  int cost, points, incCost;
+  int cost, incCost;
 
-  bool get active => points >= cost;
+  bool get active => gameRef.points >= cost;
 
   Animation activeAnimation;
   Sprite inactiveSprite;
@@ -24,7 +25,6 @@ class Button extends PositionComponent with Resizable {
   static Sprite gem = new Sprite('gem.png');
 
   Button() {
-    points = 0;
     width = height = SIZE;
     cost = Data.currentOptions.buttonCost;
     incCost = Data.currentOptions.buttonIncCost;
@@ -60,7 +60,7 @@ class Button extends PositionComponent with Resizable {
   void renderText(Canvas canvas) {
     Position p = new Position(width / 2, -18.0);
     Color color = active ? material.Colors.green : const Color(0xFF404040);
-    smallText.withColor(color).render(canvas, '$points / $cost', p, anchor: Anchor.topCenter);
+    smallText.withColor(color).render(canvas, '${gameRef.points} / $cost', p, anchor: Anchor.topCenter);
   }
 
   @override
