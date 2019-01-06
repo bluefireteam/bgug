@@ -8,10 +8,6 @@ These are the resources used in this game. They are all free for commercial use.
 
    A small donation was made, though not required.
 
- * Other sprite assets
-
-   https://ravenmore.itch.io/2d-pickups-pack
-
  * Audio assets
 
 ```
