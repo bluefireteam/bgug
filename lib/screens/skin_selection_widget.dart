@@ -238,9 +238,6 @@ class _SkinSelectionGame extends BaseGame {
 
   @override
   void render(Canvas canvas) {
-    if (loading) {
-      return;
-    }
     super.render(canvas);
   }
 
