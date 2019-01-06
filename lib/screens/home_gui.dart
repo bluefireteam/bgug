@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'block.wav',
         'laser_load.wav',
         'laser_shoot.wav',
-        'music.wav',
+        'music.mp3',
       ]).then((audios) => print('Done loading ' + audios.length.toString() + ' audios.')),
       Flame.images.loadAll([
         'skins/asimov.png',

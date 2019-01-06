@@ -10,14 +10,14 @@ class Music {
 
   static Future init() async {
     player = new AudioCache(prefix: 'audio/', fixedPlayer: new AudioPlayer());
-    await player.loadAll(['music.wav', 'menu.mp3']);
+    await player.loadAll(['music.mp3', 'menu.mp3']);
     await player.fixedPlayer.setReleaseMode(ReleaseMode.LOOP);
   }
 
   static void play(Song song) {
     Music.song = song;
     if (song == Song.GAME) {
-      player.loop('music.wav');
+      player.loop('music.mp3');
     } else {
       player.loop('menu.mp3');
     }

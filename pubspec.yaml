@@ -80,7 +80,7 @@ flutter:
     - assets/audio/block.wav
     - assets/audio/laser_load.wav
     - assets/audio/laser_shoot.wav
-    - assets/audio/music.wav
+    - assets/audio/music.mp3
     - assets/audio/menu.mp3
     - assets/store-skins.json
   fonts:
