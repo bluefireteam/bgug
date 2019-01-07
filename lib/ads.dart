@@ -7,6 +7,10 @@ class Ad {
   static bool loaded;
 
   static void show() {
+    if (!ENABLE_ADS) {
+      return;
+    }
+    loaded = false;
     RewardedVideoAd.instance.show();
   }
 
@@ -19,21 +23,23 @@ class Ad {
   }
 
   static Future<bool> startup() async {
-    if (ENABLE_ADS) {
-      return FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-1451557002406313~7960207117');
+    if (!ENABLE_ADS) {
+      return false;
     }
-    return false;
+    bool result = await FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-1451557002406313~7960207117');
+    loaded = false;
+    return result;
   }
 
   static Future loadAd() async {
-    if (!ENABLE_ADS) {
+    if (!ENABLE_ADS || loaded) {
       return;
     }
     MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo(
       keywords: ['game', 'blocks', 'guns', 'platformer', 'action', 'fast'],
     );
-    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) => handle(event);
     loaded = false;
+    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) => handle(event);
     await RewardedVideoAd.instance.load(adUnitId: 'ca-app-pub-1451557002406313/3618896211', targetingInfo: targetingInfo);
   }
 }
