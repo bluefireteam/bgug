@@ -3,21 +3,19 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'constants.dart';
 
 class Ad {
-  InterstitialAd _ad;
-  MobileAdListener listener;
-  bool loaded;
+  static Function(RewardedVideoAdEvent) listener;
+  static bool loaded;
 
-  set ad(InterstitialAd ad) {
+  static void show() {
+    if (!ENABLE_ADS) {
+      return;
+    }
     loaded = false;
-    _ad = ad..load();
+    RewardedVideoAd.instance.show();
   }
 
-  void show() {
-    _ad.show();
-  }
-
-  void handle(MobileAdEvent evt) {
-    if (evt == MobileAdEvent.loaded) {
+  static void handle(RewardedVideoAdEvent evt) {
+    if (evt == RewardedVideoAdEvent.loaded) {
       loaded = true;
     } else {
       listener(evt);
@@ -25,27 +23,23 @@ class Ad {
   }
 
   static Future<bool> startup() async {
-    if (ENABLE_ADS) {
-      return FirebaseAdMob.instance.initialize(
-          appId: 'ca-app-pub-1451557002406313~7960207117');
+    if (!ENABLE_ADS) {
+      return false;
     }
-    return false;
+    bool result = await FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-1451557002406313~7960207117');
+    loaded = false;
+    return result;
   }
 
-  static Ad loadAd() {
-    if (!ENABLE_ADS) {
-      return null;
+  static Future loadAd() async {
+    if (!ENABLE_ADS || loaded) {
+      return;
     }
     MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo(
-      keywords: ['game', 'blocks', 'guns'],
-      testDevices: ['7C7297F768C9EDFA141F5C3E1821C8E2'],
+      keywords: ['game', 'blocks', 'guns', 'platformer', 'action', 'fast'],
     );
-    var ad = new Ad();
-    ad.ad = new InterstitialAd(
-      adUnitId: 'ca-app-pub-1451557002406313/3919043844',
-      targetingInfo: targetingInfo,
-      listener: (evt) => ad.handle(evt),
-    );
-    return ad;
+    loaded = false;
+    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) => handle(event);
+    await RewardedVideoAd.instance.load(adUnitId: 'ca-app-pub-1451557002406313/3618896211', targetingInfo: targetingInfo);
   }
 }

@@ -2,10 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flame/components/component.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/position.dart';
 import 'package:flutter/material.dart' as material;
@@ -13,6 +11,7 @@ import 'package:ordered_set/ordered_set.dart';
 
 import 'ads.dart';
 import 'components/background.dart';
+import 'components/block.dart';
 import 'components/button.dart';
 import 'components/end_card.dart';
 import 'components/floor.dart';
@@ -25,6 +24,7 @@ import 'components/tutorial.dart';
 import 'constants.dart';
 import 'data.dart';
 import 'mixins/has_game_ref.dart';
+import 'music.dart';
 import 'options.dart';
 import 'queryable_ordered_set.dart';
 import 'sfx.dart';
@@ -38,17 +38,13 @@ class BgugGame extends BaseGame {
   static Options get options => Data.currentOptions;
 
   double _lastDt;
-  bool hasPausedAlready = false;
+  bool hasPausedAlready;
   bool shouldScore;
   Button button;
-  bool won = false;
-  int _points = 0, currentCoins = 0;
-  int totalJumps = 0, totalDives = 0;
-  int lastGeneratedSector = -1;
-  Future<AudioPlayer> music;
-  int _currentSlot;
-  Ad endGameAd;
-  GameState _state;
+  int points, currentCoins;
+  int totalJumps, totalDives;
+  int lastGeneratedSector;
+  GameState state;
 
   QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
 
@@ -62,38 +58,18 @@ class BgugGame extends BaseGame {
 
   Iterable<Shooter> get shooters => queryComponents.shooters();
 
+  Iterable<BaseBlock> get blocks => queryComponents.blocks();
+
+  int get uppermostOccupiedSlot => blocks.where((b) => b.upper()).fold(0, (total, b2) => math.max(total, b2.slot));
+  int get uppermostFreeSlot => uppermostOccupiedSlot == 3 ? null : uppermostOccupiedSlot + 1;
+  int get lowermostOccupiedSlot => blocks.where((b) => b.lower()).fold(7, (total, b2) => math.min(total, b2.slot));
+  int get lowermostFreeSlot => lowermostOccupiedSlot == 4 ? null : lowermostOccupiedSlot - 1;
+  int get nextFreeSlot => Block.SLOT_ORDER.firstWhere((slot) => !blocks.any((b) => b.slot == slot));
+
+  bool get maxedOutBlocks => blocks.length == 8;
+
   @override
   OrderedSet<Component> get components => queryComponents;
-
-  GameState get state => _state;
-
-  set state(GameState state) {
-    if (state == GameState.STOPPED) {
-      if (music != null) {
-        music.then((p) => p.release());
-      }
-    }
-    _state = state;
-  }
-
-  int get points => _points;
-
-  set points(int points) {
-    _points = points;
-    button?.points = points;
-  }
-
-  int get currentSlot => _currentSlot;
-
-  set currentSlot(int currentSlot) {
-    _currentSlot = currentSlot;
-    shooters.forEach((shooter) {
-      shooter.currentSlot = currentSlot;
-      if (size != null) {
-        shooter.resize(size);
-      }
-    });
-  }
 
   BgugGame(this.shouldScore, bool showTutorial) {
     _start(showTutorial ? GameState.TUTORIAL : GameState.RUNNING);
@@ -104,68 +80,65 @@ class BgugGame extends BaseGame {
     add(new EndCard());
   }
 
-  bool hasAd() {
-    return endGameAd != null && endGameAd.loaded;
-  }
-
   void showAd() {
     if (hasAd()) {
       state = GameState.AD;
-      endGameAd.listener = (evt) {
+      Ad.listener = (evt) {
         print('Event : ${evt.toString()}');
-        if (evt == MobileAdEvent.closed) {
+        if (evt == RewardedVideoAdEvent.rewarded) {
           endCard.doubleCoins = true;
           state = GameState.END_CARD;
         }
       };
-      endGameAd.show();
+      Ad.show();
     }
   }
 
+  bool hasAd() => Ad.loaded;
+
   void restart() {
     components.clear();
-    won = false;
+    _start(GameState.RUNNING);
+  }
+
+  void _start(GameState state) {
+    resetVariables();
+
+    add(Background());
+
+    add(Hud());
+    add(Top());
+    add(Floor());
+    add(Player());
+
+    if (options.hasGuns) {
+      add(new Block(nextFreeSlot, true));
+      add(new Block(nextFreeSlot, true));
+      add(ShooterCane());
+      add(Shooter('up'));
+      add(Shooter('down'));
+      add(button = Button());
+    }
+
+    this.state = state;
+    if (this.state == GameState.TUTORIAL) {
+      add(Tutorial());
+    }
+
+    Ad.loadAd();
+    Music.play(Song.GAME);
+  }
+
+  void resetVariables() {
     hasPausedAlready = false;
 
-    _points = 0;
+    points = 0;
     currentCoins = 0;
     totalJumps = 0;
     totalDives = 0;
     _lastDt = 0;
 
     lastGeneratedSector = -1;
-    currentSlot = 0;
-
-    _start(GameState.RUNNING);
-  }
-
-  void _start(GameState state) {
-    add(new Background());
-
-    add(new Hud());
-    add(new Top());
-    add(new Floor());
-    add(new Player());
-
-    if (options.hasGuns) {
-      add(new ShooterCane());
-      add(new Shooter('up', currentSlot));
-      add(new Shooter('down', currentSlot));
-      add(new Block(currentSlot = Block.nextSlot(-1)));
-      add(new Block(currentSlot = Block.nextSlot(currentSlot)));
-      add(button = new Button());
-    }
-
-    this.state = state;
-    if (this.state == GameState.TUTORIAL) {
-      add(new Tutorial());
-    }
-
-    if (music != null) {
-      music.then((p) => p.release());
-    }
-    music = Flame.audio.loop('music.wav');
-    endGameAd = Ad.loadAd();
   }
 
   @override
@@ -215,13 +188,7 @@ class BgugGame extends BaseGame {
           int dPoint = button.click(points);
           if (dPoint != 0) {
             points -= dPoint;
-            currentSlot = Block.nextSlot(currentSlot);
-            if (currentSlot == Block.WIN && !options.gunRespawn) {
-              won = true;
-              showEndCard();
-            } else {
-              add(new Block(currentSlot));
-            }
+            add(new BlockTween(button.toPosition(), nextFreeSlot));
           }
         } else if (p.x > size.width / 2) {
           totalJumps++;
@@ -267,7 +234,6 @@ class BgugGame extends BaseGame {
       cameraFollow(player);
 
       if (options.hasLimit && player.x >= options.mapSize) {
-        won = true;
         player.velocity.x = 0;
         showEndCard();
       }
@@ -289,17 +255,22 @@ class BgugGame extends BaseGame {
     return state == GameState.TUTORIAL || state == GameState.RUNNING || state == GameState.END_CARD;
   }
 
-  void award(int coins) {
+  Future award() async {
     if (shouldScore) {
-      Data.buy.coins += coins;
+      Data.buy.coins += endCard.coins;
+      Data.score.score(this);
+      Data.checkAchievementsAndSkins();
+      await Data.save();
     }
   }
 
   @override
   void lifecycleStateChange(AppLifecycleState state) {
+    if (this.state == GameState.AD || this.state == GameState.STOPPED || this.state == GameState.END_CARD) {
+      return;
+    }
     if (state == AppLifecycleState.resumed) {
       if (this.state == GameState.PAUSED) {
-        music.then((m) => m?.resume());
         Sfx.enable = true;
         this.state = GameState.RUNNING;
         if (hasPausedAlready) {
@@ -311,9 +282,28 @@ class BgugGame extends BaseGame {
       }
     } else {
       _lastDt = null;
-      music.then((m) => m?.pause());
       Sfx.enable = false;
       this.state = GameState.PAUSED;
     }
+  }
+
+  Future<bool> willPop() async {
+    if (state == GameState.TUTORIAL) {
+      state = GameState.RUNNING;
+    } else if (this.state == GameState.RUNNING) {
+      if (player.dead()) {
+        showEndCard();
+      } else {
+        player.die();
+      }
+    } else if (this.state == GameState.END_CARD) {
+      endCard.doClickBack();
+      return true;
+    }
+    return false;
+  }
+
+  void stop() {
+    state = GameState.STOPPED;
   }
 }

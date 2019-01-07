@@ -13,11 +13,11 @@ class Tutorial extends PositionComponent {
 
   @override
   void resize(Size size) {
-    width = 2 * size.width / 3;
-    height = width / FRAC;
+    width = (2 * size.width / 3) - 10;
+    height = (width / FRAC) -5;
 
-    x = (size.width - width) / 2;
-    y = (size.height - height) / 2;
+    x = ((size.width - width) / 2) + 5;
+    y = ((size.height - height) / 2) + 5;
   }
 
   @override

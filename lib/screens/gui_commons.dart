@@ -5,6 +5,9 @@ const title = const TextStyle(fontSize: 64.0, fontFamily: 'Blox2');
 const text = const TextStyle(fontSize: 32.0, fontFamily: 'Squared Display');
 const small_text = const TextStyle(fontSize: 16.0, fontFamily: 'Squared Display');
 
+const black_medium_text = const TextStyle(fontSize: 20.0, fontFamily: 'Squared Display', color: Colors.black);
+const medium_link = const TextStyle(fontSize: 20.0, fontFamily: 'Squared Display', color: Colors.blue);
+
 final rootContainer = (Widget child) => Container(
       decoration: BoxDecoration(
         image: DecorationImage(

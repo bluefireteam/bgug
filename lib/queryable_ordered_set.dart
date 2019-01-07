@@ -2,14 +2,14 @@ import 'package:flame/components/component.dart';
 import 'package:ordered_set/comparing.dart';
 import 'package:ordered_set/ordered_set.dart';
 
-import 'components/player.dart';
-import 'components/tutorial.dart';
+import 'components/block.dart';
 import 'components/end_card.dart';
 import 'components/hud.dart';
+import 'components/player.dart';
 import 'components/shooter.dart';
+import 'components/tutorial.dart';
 
 class QueryableOrderedSet<T, E> extends OrderedSet<T> {
-
   Map<E, bool Function(T)> _fns = {};
   Map<E, List<T>> _cache = {};
 
@@ -59,6 +59,7 @@ class QueryableOrderedSet<T, E> extends OrderedSet<T> {
 }
 
 enum Queries {
+  BaseBlock,
   Player,
   Shooter,
   Hud,
@@ -68,6 +69,7 @@ enum Queries {
 
 class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
   QueryableOrderedSetImpl() : super(Comparing.on((c) => c.priority())) {
+    this.register(Queries.BaseBlock, (e) => e is BaseBlock);
     this.register(Queries.Player, (e) => e is Player);
     this.register(Queries.Shooter, (e) => e is Shooter);
     this.register(Queries.Hud, (e) => e is Hud);
@@ -77,6 +79,10 @@ class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
 
   Iterable<Shooter> shooters() {
     return _postFilter<Shooter>(Queries.Shooter);
+  }
+
+  Iterable<BaseBlock> blocks() {
+    return _postFilter<BaseBlock>(Queries.BaseBlock);
   }
 
   Player player() {

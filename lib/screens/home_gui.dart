@@ -5,15 +5,16 @@ import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:play_games/play_games.dart';
 
-import '../play_user.dart';
 import '../ads.dart';
 import '../constants.dart';
 import '../data.dart';
+import '../music.dart';
+import '../play_user.dart';
 import 'coin_widget.dart';
 import 'gui_commons.dart';
 import 'store_button_widget.dart';
-import 'merge_resolution.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -21,10 +22,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  bool showingAchievements = false;
   int showingTutorial = -1; // -1 not showing, 0 page 0, 1 page 1
   bool loading = true;
   PlayUser user;
-  MergeResolution mergeResolution;
 
   _HomeScreenState() {
     var ps = <Future>[
@@ -35,9 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
         'death.wav',
         'gem_collect.wav',
         'jump.wav',
+        'block.wav',
         'laser_load.wav',
         'laser_shoot.wav',
-        'music.wav',
+        'music.mp3',
       ]).then((audios) => print('Done loading ' + audios.length.toString() + ' audios.')),
       Flame.images.loadAll([
         'skins/asimov.png',
@@ -66,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'store/x2coins-certificate.png',
       ]).then((images) => print('Done loading ' + images.length.toString() + ' images.')),
       Data.loadHardData(),
+      Music.init(),
     ];
     Future.wait(ps).then((rs) async {
       if (ENABLE_LOGIN) {
@@ -74,6 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await Data.loadLocalSoftData();
         this.setState(() => loading = false);
       }
+      Music.play(Song.MENU);
     });
   }
 
@@ -82,21 +87,19 @@ class _HomeScreenState extends State<HomeScreen> {
       Data.user = await PlayUser.singIn();
       SavedData data = await Data.fetch(false);
       if (data != null) {
-        if (Data.pristine) {
-          Data.forceData(data);
-        } else {
-          setState(() {
-            mergeResolution = Data.merge(data);
-          });
-          return;
-        }
+        Data.setData(data);
+      } else {
+        await Data.loadLocalSoftData();
       }
       setState(() {
         this.user = Data.user;
         this.loading = false;
       });
     } catch (ex) {
+      Data.user = null;
+      await Data.loadLocalSoftData();
       setState(() {
+        this.user = null;
         this.loading = false;
       });
       print('Error: $ex');
@@ -106,25 +109,29 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void addToScore(String newScore) async {
-    Data.score.scores.add(newScore);
-    Data.save();
-  }
-
   Widget userCard() {
     const S = 2.0;
     if (user == null) {
       return GestureDetector(
-        child: Image.asset('assets/images/google-play-button.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 89 * S, height: 17 * S),
+        child: Container(
+            margin: const EdgeInsets.only(left: 12),
+            child: Image.asset('assets/images/google-play-button.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 89 * S, height: 17 * S)),
         onTap: () => _performSignIn(),
       );
     }
-    return Stack(
-      children: [
-        Image.asset('assets/images/username-panel.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 72 * S, height: 18 * S),
-        Positioned(child: Text(user.account.displayName, style: TextStyle(fontFamily: '5x5', fontSize: 14.0)), right: 0, top: 0),
-        Positioned(child: RawImage(image: user.avatar, width: S * 9, height: S * 9), left: S * 7, top: S * 2, width: S * 9, height: S * 9),
-      ],
+    return GestureDetector(
+      child: Stack(
+        children: [
+          Image.asset('assets/images/username-panel.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 88 * S, height: 18 * S),
+          Positioned(child: Text(user.account.displayName, style: TextStyle(fontFamily: '5x5', fontSize: 14.0)), right: (S * 20), top: 10),
+          Positioned(child: RawImage(image: user.avatar, width: S * 9, height: S * 9), right: S * 7, top: S * 2, width: S * 9, height: S * 9),
+        ],
+      ),
+      onTap: () async {
+        setState(() => showingAchievements = true);
+        await PlayGames.showAchievements();
+        setState(() => showingAchievements = false);
+      },
     );
   }
 
@@ -174,25 +181,11 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    if (mergeResolution != null) {
-      return LayoutBuilder(builder: (_, BoxConstraints size) {
-        return GestureDetector(
-          child: Stack(
-            children: [
-              main,
-              Center(child: Text('merge! tap left to keep cloud and right to keep local')),
-            ],
-          ),
-          behavior: HitTestBehavior.opaque,
-          onTapDown: (TapDownDetails dt) {
-            double x = dt.globalPosition.dx;
-            bool left = x / size.maxWidth < 0.5;
-            SavedData data = left ? mergeResolution.fromCloud : mergeResolution.fromLocal;
-            Data.forceData(data);
-            mergeResolution = null;
-          },
-        );
-      });
+    if (showingAchievements) {
+      return GestureDetector(
+        child: main,
+        behavior: HitTestBehavior.opaque,
+      );
     }
 
     return main;
@@ -204,15 +197,18 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Column(
             children: [
-              pad(Text('BREAK', style: title), 2.0),
+              pad(GestureDetector(child: Text('BREAK', style: title), onTap: () {
+                Data.forceData(new SavedData());
+                Data.save();
+              }), 2.0),
               pad(Text('guns', style: title), 2.0),
               pad(Text('USING', style: title), 2.0),
               pad(
                   GestureDetector(
                       child: Text('gems', style: title),
-                      onTap: () {
+                      onTap: () async {
                         Data.buy.coins += 50;
-                        Data.save();
+                        await Data.save();
                       }),
                   2.0), // TODO remove this hack
             ],
@@ -223,6 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
               btn('Play', () => Navigator.of(context).pushNamed('/start')),
               btn('Score', () => Navigator.of(context).pushNamed('/score')),
               btn('How to Play', () => setState(() => showingTutorial = 0)),
+              btn('Credits', () => Navigator.of(context).pushNamed('/credits')),
               btn('Exit', () => SystemNavigator.pop()),
             ],
             mainAxisAlignment: MainAxisAlignment.center,
@@ -243,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           child,
           Positioned(child: Column(children: [pad(StoreButtonWidget(), 4.0), pad(CoinWidget(), 4.0)]), top: 12.0, right: 12.0),
-          Positioned(child: userCard(), bottom: 12.0, left: 12.0),
+          Positioned(child: userCard(), bottom: 5, left: 0),
         ],
       ),
     );

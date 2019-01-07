@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:json_annotation/json_annotation.dart';
 
 import 'game.dart';
@@ -38,7 +40,7 @@ class Score {
   Map<String, dynamic> toJson() => _$ScoreToJson(this);
 
   void score(BgugGame game) {
-    double distance = game.hud.maxDistance;
+    double distance = game.hud.maxDistanceInMeters;
     int jumps = game.totalJumps;
     int dives = game.totalDives;
     int gems = game.points;
@@ -71,5 +73,20 @@ class Score {
       maxCoins = coins;
     }
     totalCoins += coins;
+  }
+
+  static Score merge(Score score1, Score score2) {
+    return new Score()
+      ..scores = (new Set()..addAll(score1.scores)..addAll(score2.scores)).toList().cast<String>()
+      ..maxDistance = math.max(score1.maxDistance, score2.maxDistance)
+      ..totalDistance = math.max(score1.totalDistance, score2.totalDistance)
+      ..maxJumps = math.max(score1.maxJumps, score2.maxJumps)
+      ..totalJumps = math.max(score1.totalJumps, score2.totalJumps)
+      ..maxDives = math.max(score1.maxDives, score2.maxDives)
+      ..totalDives = math.max(score1.totalDives, score2.totalDives)
+      ..maxGems = math.max(score1.maxGems, score2.maxGems)
+      ..totalGems = math.max(score1.totalGems, score2.totalGems)
+      ..maxCoins = math.max(score1.maxCoins, score2.maxCoins)
+      ..totalCoins = math.max(score1.totalCoins, score2.totalCoins);
   }
 }

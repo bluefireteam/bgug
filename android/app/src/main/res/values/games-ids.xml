@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
 <resources>
+    <!-- app_id -->
     <string name="app_id" translatable="false">311527627307</string>
+    <!-- package_name -->
     <string name="package_name" translatable="false">xyz.luan.bgug</string>
-    <string name="achievement_test" translatable="false">CgkIq7T5w4gJEAIQAg</string>
+    <!-- achievement Half Marathoner -->
+    <string name="achievement_half_marathoner" translatable="false">CgkIq7T5w4gJEAIQCg</string>
+    <!-- achievement Marathoner -->
+    <string name="achievement_marathoner" translatable="false">CgkIq7T5w4gJEAIQAw</string>
+    <!-- achievement Jumper -->
+    <string name="achievement_jumper" translatable="false">CgkIq7T5w4gJEAIQBA</string>
+    <!-- achievement Super Jumper -->
+    <string name="achievement_super_jumper" translatable="false">CgkIq7T5w4gJEAIQBQ</string>
+    <!-- achievement The Disguised Bot -->
+    <string name="achievement_the_disguised_bot" translatable="false">CgkIq7T5w4gJEAIQBg</string>
+    <!-- achievement A Small Collection -->
+    <string name="achievement_a_small_collection" translatable="false">CgkIq7T5w4gJEAIQBw</string>
+    <!-- achievement The Collector -->
+    <string name="achievement_the_collector" translatable="false">CgkIq7T5w4gJEAIQCA</string>
+    <!-- achievement The Completionist -->
+    <string name="achievement_the_completionist" translatable="false">CgkIq7T5w4gJEAIQCQ</string>
 </resources>

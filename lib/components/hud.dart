@@ -21,6 +21,9 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
   static const WIDTH = SCALE * SRC_WIDTH;
   static const HEIGHT = SCALE * SRC_HEIGHT;
 
+  static final Position _coinPosition = Position(SCALE * 200.0, SCALE * 10.0);
+  static final Position _gemPosition = Position(SCALE * 161.0, SCALE * 10.0);
+
   static final bgPaint = new Paint()..color = const Color(0xFF626262);
 
   Rect bgRect;
@@ -102,13 +105,15 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
   }
 
   void renderGems(Canvas canvas) {
-    final Position where = Position(SCALE * 161.0, SCALE * 10.0);
-    defaultText.render(canvas, gameRef.points.toString(), where);
+    defaultText.render(canvas, gameRef.points.toString(), _gemPosition);
   }
 
   void renderCoins(Canvas canvas) {
-    final Position where = Position(SCALE * 200.0, SCALE * 10.0);
-    defaultText.render(canvas, gameRef.currentCoins.toString(), where);
+    defaultText.render(canvas, gameRef.currentCoins.toString(), _coinPosition);
+  }
+
+  Position getActualCoinPosition() {
+    return toPosition().add(_coinPosition);
   }
 
   void renderGauge(Canvas canvas) {

@@ -8,13 +8,15 @@ These are the resources used in this game. They are all free for commercial use.
 
    A small donation was made, though not required.
 
- * Other sprite assets
-
-   https://ravenmore.itch.io/2d-pickups-pack
-
  * Audio assets
 
-   https://opengameart.org/content/8bit-theme
+```
+   Contains music ©2018 Joshua McLean (mrjoshuamclean.com)
+   Licensed under Creative Commons Attribution-ShareAlike 4.0 International
+```
+
+   https://freesound.org/people/Mrthenoronha/sounds/371922/
+   http://mrjoshuamclean.com/royalty-free-music
 
 Made using the [flame](https://github.com/luanpotter/flame) engine.
 
