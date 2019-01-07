@@ -44,7 +44,6 @@ class BgugGame extends BaseGame {
   int points, currentCoins;
   int totalJumps, totalDives;
   int lastGeneratedSector;
-  Ad endGameAd;
   GameState state;
 
   QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
@@ -81,23 +80,21 @@ class BgugGame extends BaseGame {
     add(new EndCard());
   }
 
-  bool hasAd() {
-    return endGameAd != null && endGameAd.loaded;
-  }
-
   void showAd() {
     if (hasAd()) {
       state = GameState.AD;
-      endGameAd.listener = (evt) {
+      Ad.listener = (evt) {
         print('Event : ${evt.toString()}');
-        if (evt == MobileAdEvent.closed) {
+        if (evt == RewardedVideoAdEvent.rewarded) {
           endCard.doubleCoins = true;
           state = GameState.END_CARD;
         }
       };
-      endGameAd.show();
+      Ad.show();
     }
   }
+
+  bool hasAd() => Ad.loaded;
 
   void restart() {
     components.clear();
@@ -128,7 +125,7 @@ class BgugGame extends BaseGame {
       add(Tutorial());
     }
 
-    endGameAd = Ad.loadAd();
+    Ad.loadAd();
     Music.play(Song.GAME);
   }
 
