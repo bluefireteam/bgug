@@ -141,7 +141,7 @@ class Block extends SpriteComponent with BaseBlock, HasGameRef {
     if (!eternal && Data.currentOptions.blockLifespan != -1) {
       double frac = clock / Data.currentOptions.blockLifespan;
       canvas.drawRect(Rect.fromLTWH(0.0, height - 6.0, width, 6.0), Palette.grey.paint);
-      canvas.drawRect(Rect.fromLTWH(1.0, height - 5.0, (width - 2.0) * frac, 4.0), Palette.green.paint);
+      canvas.drawRect(Rect.fromLTWH(1.0, height - 5.0, (width - 2.0) * (1 - frac), 4.0), Palette.green.paint);
     }
   }
 
