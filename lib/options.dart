@@ -39,4 +39,8 @@ class Options {
 
   factory Options.fromJson(Map<String, dynamic> json) => _$OptionsFromJson(json);
   Map<String, dynamic> toJson() => _$OptionsToJson(this);
+
+  Options clone() {
+    return Options.fromJson(toJson());
+  }
 }
