@@ -25,29 +25,37 @@ class OptionsScreen extends StatefulWidget {
 }
 
 class _OptionsState extends State<OptionsScreen> {
-  TextFormField currentTextField;
+  Widget currentEditor;
+  Options options;
 
-  Options get options => Data.options;
+  _OptionsState() {
+    this.options = Data.options.clone();
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (currentTextField != null) {
+    if (currentEditor != null) {
       return rootContainer(Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          currentTextField,
-          btn('Go back', () => setState(() => currentTextField = null)),
+          currentEditor,
+          btn('Go back', () => setState(() => currentEditor = null)),
         ],
       ));
     }
-    final optionItemBuilder = (String title, String value, Validator validator, void Function(String) setter) => optionLine(title, value, () {
-          this.setState(() => currentTextField = textField(title, validator, value, setter));
+
+    final boolItemBuilder = (String title, bool value, void Function(bool) setter) => optionLine(title, '$value', () {
+          this.setState(() => currentEditor = StatefulCheckbox(value: value, onChanged: setter));
+        });
+    final stringItemBuilder = (String title, String value, Validator validator, void Function(String) setter) => optionLine(title, value, () {
+          this.setState(() => currentEditor = textField(title, validator, value, setter));
         });
     final intItemBuilder = (String title, int value, void Function(int) setter) {
-      return optionItemBuilder(title, value.toString(), intValidator, (str) => setter(int.parse(str)));
+      return stringItemBuilder(title, value.toString(), intValidator, (str) => setter(int.parse(str)));
     };
     final doubleItemBuilder = (String title, double value, void Function(double) setter) {
-      return optionItemBuilder(title, value.toString(), doubleValidator, (str) => setter(double.parse(str)));
+      return stringItemBuilder(title, value.toString(), doubleValidator, (str) => setter(double.parse(str)));
     };
     return rootContainer(
       Row(
@@ -58,6 +66,7 @@ class _OptionsState extends State<OptionsScreen> {
             children: [
               pad(Text('OpTiOnS', style: title), 20.0),
               btn('Save', () {
+                Data.options = options;
                 Data.save().then((a) {
                   Navigator.of(context).pop();
                 });
@@ -89,6 +98,16 @@ class _OptionsState extends State<OptionsScreen> {
                       (v) => options.buttonIncCost = v,
                     ),
                     intItemBuilder(
+                      'Coins Awarded Per Block Placed',
+                      options.coinsAwardedPerBlock,
+                      (v) => options.coinsAwardedPerBlock = v,
+                    ),
+                    doubleItemBuilder(
+                      'Block Lifespan (seconds)',
+                      options.blockLifespan,
+                      (v) => options.blockLifespan = v,
+                    ),
+                    intItemBuilder(
                       'Max Hold Jump (millis)',
                       options.maxHoldJumpMillis,
                       (v) => options.maxHoldJumpMillis = v,
@@ -113,7 +132,16 @@ class _OptionsState extends State<OptionsScreen> {
                       options.jumpTimeMultiplier,
                       (v) => options.jumpTimeMultiplier = v,
                     ),
-                    // TODO new options
+                    intItemBuilder(
+                      'Map Size (-1 for infinite)',
+                      options.mapSize,
+                      (v) => options.mapSize = v,
+                    ),
+                    boolItemBuilder(
+                      'Has Guns',
+                      options.hasGuns,
+                      (v) => options.hasGuns = v,
+                    ),
                   ],
                 ),
               ),

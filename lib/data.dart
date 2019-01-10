@@ -49,6 +49,8 @@ class Data {
 
   static Options get options => _data.options ??= new Options();
 
+  static set options(Options options) => _data.options = options ?? new Options();
+
   static Score get score => _data.score ??= new Score();
 
   static Buy get buy => _data.buy ??= new Buy();
