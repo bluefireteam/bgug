@@ -8,6 +8,8 @@ part 'score.g.dart';
 
 @JsonSerializable()
 class Score {
+  static const MAX_SCORES = 10;
+
   List<String> scores;
 
   double maxDistance;
@@ -47,7 +49,8 @@ class Score {
     int coins = game.currentCoins;
 
     String score = 'Scored ${distance.toStringAsFixed(2)} meters earning $coins coins.';
-    scores.add(score);
+    scores.insert(0, score);
+    scores = normalize(scores);
 
     if (distance > maxDistance) {
       maxDistance = distance;
@@ -75,9 +78,11 @@ class Score {
     totalCoins += coins;
   }
 
+  static List<String> normalize(List<String> scores) => scores.sublist(0, MAX_SCORES.clamp(0, scores.length));
+
   static Score merge(Score score1, Score score2) {
     return new Score()
-      ..scores = (new Set()..addAll(score1.scores)..addAll(score2.scores)).toList().cast<String>()
+      ..scores = normalize((new Set()..addAll(score1.scores)..addAll(score2.scores)).toList().cast<String>())
       ..maxDistance = math.max(score1.maxDistance, score2.maxDistance)
       ..totalDistance = math.max(score1.totalDistance, score2.totalDistance)
       ..maxJumps = math.max(score1.maxJumps, score2.maxJumps)
