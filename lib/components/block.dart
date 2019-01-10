@@ -25,7 +25,7 @@ class BaseBlock {
 }
 
 class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
-  static const TIME_TWEEN = 1.0;
+  static const TIME_TWEEN = 0.5;
   static const TIME_UP = 0.5;
   static const TIME_DOWN = 0.1;
   static const TOTAL_TIME = TIME_TWEEN + TIME_UP + TIME_DOWN;

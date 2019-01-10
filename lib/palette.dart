@@ -10,6 +10,6 @@ class Palette {
   static PaletteEntry text = PaletteEntry(Color(0xFFDA9A00));
 
   // block
-  static PaletteEntry grey = PaletteEntry(Color(0xFF3C3C3C));
-  static PaletteEntry green = PaletteEntry(Color(0xFF2E8B57));
+  static PaletteEntry grey = PaletteEntry(Color(0xFF404040));
+  static PaletteEntry green = PaletteEntry(Color(0xFF54a286));
 }
