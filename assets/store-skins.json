@@ -1,26 +1,6 @@
 {
   "skins": [
     {
-      "name": "Asimov",
-      "file": "asimov.png",
-      "cost": 0
-    },
-    {
-      "name": "Solid Gold",
-      "file": "gold.png",
-      "cost": 0
-    },
-    {
-      "name": "Jumper",
-      "file": "jumping.png",
-      "cost": 0
-    },
-    {
-      "name": "Marathonist",
-      "file": "marathonist.png",
-      "cost": 0
-    },
-    {
       "name": "Cat",
       "file": "cat.png",
       "cost": 400
@@ -61,16 +41,6 @@
       "cost": 600
     },
     {
-      "name": "Cowboy",
-      "file": "cowboy.png",
-      "cost": 800
-    },
-    {
-      "name": "Firefighter",
-      "file": "firefighter.png",
-      "cost": 800
-    },
-    {
       "name": "The Chosen",
       "file": "the-chosen.png",
       "cost": 800
@@ -86,9 +56,34 @@
       "cost": 800
     },
     {
+      "name": "Cowboy",
+      "file": "cowboy.png",
+      "cost": 800
+    },
+    {
+      "name": "Firefighter",
+      "file": "firefighter.png",
+      "cost": 800
+    },
+    {
       "name": "Ghost",
       "file": "ghost.png",
       "cost": 900
+    },
+    {
+      "name": "Grim Reaper",
+      "file": "reaper.png",
+      "cost": 1000
+    },
+    {
+      "name": "T-Rex",
+      "file": "t-rex.png",
+      "cost": 1000
+    },
+    {
+      "name": "Vampire",
+      "file": "vampire.png",
+      "cost": 1000
     },
     {
       "name": "Gentleman",
@@ -101,8 +96,8 @@
       "cost": 1000
     },
     {
-      "name": "Grim Reaper",
-      "file": "reaper.png",
+      "name": "Astronaut",
+      "file": "astronaut.png",
       "cost": 1000
     },
     {
@@ -136,24 +131,29 @@
       "cost": 1000
     },
     {
-      "name": "Astronaut",
-      "file": "astronaut.png",
-      "cost": 1000
-    },
-    {
-      "name": "T-Rex",
-      "file": "t-rex.png",
-      "cost": 1000
-    },
-    {
-      "name": "Vampire",
-      "file": "vampire.png",
-      "cost": 1000
-    },
-    {
       "name": "Retro Explorer",
       "file": "explorer.png",
       "cost": 3000
+    },
+    {
+      "name": "Asimov",
+      "file": "asimov.png",
+      "cost": 0
+    },
+    {
+      "name": "Jumper",
+      "file": "jumping.png",
+      "cost": 0
+    },
+    {
+      "name": "Marathonist",
+      "file": "marathonist.png",
+      "cost": 0
+    },
+    {
+      "name": "Solid Gold",
+      "file": "gold.png",
+      "cost": 0
     }
   ]
 }
