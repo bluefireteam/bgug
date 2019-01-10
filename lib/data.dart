@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'buy.dart';
 import 'options.dart';
 import 'play_user.dart';
-import 'score.dart';
+import 'stats.dart';
 import 'skin_list.dart';
 
 part 'data.g.dart';
@@ -16,7 +16,7 @@ part 'data.g.dart';
 @JsonSerializable()
 class SavedData {
   Options options;
-  Score score;
+  Stats stats;
   Buy buy;
 
   bool showTutorial;
@@ -24,7 +24,7 @@ class SavedData {
   SavedData() {
     showTutorial = true;
     options = new Options();
-    score = new Score();
+    stats = new Stats();
     buy = new Buy();
   }
 
@@ -36,7 +36,7 @@ class SavedData {
     return new SavedData()
       ..showTutorial = s1.showTutorial || s2.showTutorial
       ..options = s1.options ?? s2.options
-      ..score = Score.merge(s1.score, s2.score)
+      ..stats = Stats.merge(s1.stats, s2.stats)
       ..buy = Buy.merge(s1.buy, s2.buy);
   }
 }
@@ -51,7 +51,7 @@ class Data {
 
   static set options(Options options) => _data.options = options ?? new Options();
 
-  static Score get score => _data.score ??= new Score();
+  static Stats get stats => _data.stats ??= new Stats();
 
   static Buy get buy => _data.buy ??= new Buy();
 
@@ -62,19 +62,19 @@ class Data {
   static bool hasOpened = false;
 
   static void checkAchievementsAndSkins() {
-    if (score.totalDistance >= 21000) {
+    if (stats.totalDistance >= 21000) {
       _achievement('achievement_half_marathoner');
     }
-    if (score.totalDistance >= 42000) {
+    if (stats.totalDistance >= 42000) {
       _achievement('achievement_marathoner');
       if (!buy.skinsOwned.contains('marathonist.png')) {
         buy.skinsOwned.add('marathonist.png');
       }
     }
-    if (score.totalJumps > 500) {
+    if (stats.totalJumps > 500) {
       _achievement('achievement_jumper');
     }
-    if (score.totalJumps > 1000) {
+    if (stats.totalJumps > 1000) {
       _achievement('achievement_super_jumper');
       if (!buy.skinsOwned.contains('jumping.png')) {
         buy.skinsOwned.add('jumping.png');
