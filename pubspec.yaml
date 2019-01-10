@@ -92,6 +92,3 @@ flutter:
     - family: Blox2
       fonts:
         - asset: assets/fonts/blox2.ttf
-    - family: Squared Display
-      fonts:
-        - asset: assets/fonts/squared_display.ttf

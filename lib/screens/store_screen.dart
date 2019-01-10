@@ -48,7 +48,7 @@ class _StoreState extends State<StoreScreen> {
                           ),
                           Positioned(
                             child: GestureDetector(
-                              child: Center(child: Text('\$ 1.00', style: TextStyle(fontSize: 20.0, fontFamily: 'Squared Display'))),
+                              child: Center(child: Text('\$ 1.00', style: TextStyle(fontSize: 20.0, fontFamily: '5x5'))),
                               onTap: () => print('buy x2 man'),
                             ),
                             left: 0,
