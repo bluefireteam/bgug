@@ -98,7 +98,7 @@ class _OptionsState extends State<OptionsScreen> {
                       (v) => options.buttonIncCost = v,
                     ),
                     intItemBuilder(
-                      'Coins Awarded Per Block Placed',
+                      'Coins Awarded Per Block',
                       options.coinsAwardedPerBlock,
                       (v) => options.coinsAwardedPerBlock = v,
                     ),
