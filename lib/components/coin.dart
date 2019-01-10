@@ -67,7 +67,7 @@ class CoinTrace extends Component {
 
   static final math.Random rand = new math.Random();
 
-  static const MAX_TIME = 1.0;
+  static const MAX_TIME = 0.8;
   static const STDEV = 40.0;
 
   double clock = 0.0;

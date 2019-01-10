@@ -156,7 +156,7 @@ class BgugGame extends BaseGame {
       return;
     }
     if (p != null && player != null && !player.dead()) {
-      if (p.x > size.width / 2) {
+      if (p.x < size.width / 2) {
         queryComponents.hud().startGauge();
       }
     }
@@ -191,11 +191,11 @@ class BgugGame extends BaseGame {
             add(new BlockTween(button.toPosition(), nextFreeSlot));
           }
         } else if (p.x > size.width / 2) {
-          totalJumps++;
-          player.jump(dt);
-        } else {
           totalDives++;
           player.dive();
+        } else {
+          totalJumps++;
+          player.jump(dt);
         }
       }
     }
