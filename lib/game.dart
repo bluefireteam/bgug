@@ -258,7 +258,7 @@ class BgugGame extends BaseGame {
   Future award() async {
     if (shouldScore) {
       Data.buy.coins += endCard.coins;
-      Data.score.score(this);
+      Data.stats.calculateStats(this);
       Data.checkAchievementsAndSkins();
       await Data.save();
     }

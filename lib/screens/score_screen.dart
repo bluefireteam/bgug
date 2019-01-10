@@ -31,7 +31,7 @@ class ScoreScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
-                children: Data.score.scores.map((s) => Text(s)).toList(),
+                children: Data.stats.scores.map((s) => Text(s.toText())).toList(),
               ),
             ),
           ),
