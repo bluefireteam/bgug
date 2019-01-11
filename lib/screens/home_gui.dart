@@ -197,20 +197,10 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Column(
             children: [
-              pad(GestureDetector(child: Text('BREAK', style: title), onTap: () {
-                Data.forceData(new SavedData());
-                Data.save();
-              }), 2.0),
+              pad(Text('BREAK', style: title), 2.0),
               pad(Text('guns', style: title), 2.0),
               pad(Text('USING', style: title), 2.0),
-              pad(
-                  GestureDetector(
-                      child: Text('gems', style: title),
-                      onTap: () async {
-                        Data.buy.coins += 50;
-                        await Data.save();
-                      }),
-                  2.0), // TODO remove this hack
+              pad(Text('gems', style: title), 2.0),
             ],
             mainAxisAlignment: MainAxisAlignment.center,
           ),
