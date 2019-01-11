@@ -5,11 +5,12 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:play_games/play_games.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'async_saver.dart';
 import 'buy.dart';
 import 'options.dart';
 import 'play_user.dart';
-import 'stats.dart';
 import 'skin_list.dart';
+import 'stats.dart';
 
 part 'data.g.dart';
 
@@ -213,5 +214,11 @@ class Data {
     SavedData s1 = SavedData.fromJson(json.decode(local.content));
     SavedData s2 = SavedData.fromJson(json.decode(server.content));
     return json.encode(SavedData.merge(s1, s2).toJson());
+  }
+
+  static void saveAsync() async {
+    AsyncSaver saver = AsyncSaver.start();
+    await Data.save();
+    saver.stop();
   }
 }

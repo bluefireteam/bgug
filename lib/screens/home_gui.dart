@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:play_games/play_games.dart';
 
 import '../ads.dart';
+import '../async_saver.dart';
 import '../constants.dart';
 import '../data.dart';
 import '../music.dart';
@@ -22,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   bool showingAchievements = false;
   int showingTutorial = -1; // -1 not showing, 0 page 0, 1 page 1
   bool loading = true;
@@ -197,10 +197,24 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Column(
             children: [
-              pad(Text('BREAK', style: title), 2.0),
+              pad(
+                  GestureDetector(
+                      child: Text('BREAK', style: title),
+                      onTap: () {
+                        Data.forceData(new SavedData());
+                        Data.save(); // TODO remove this hack
+                      }),
+                  2.0),
               pad(Text('guns', style: title), 2.0),
               pad(Text('USING', style: title), 2.0),
-              pad(Text('gems', style: title), 2.0),
+              pad(
+                  GestureDetector(
+                      child: Text('gems', style: title),
+                      onTap: () async {
+                        Data.buy.coins += 50;
+                        Data.saveAsync();
+                      }),
+                  2.0), // TODO remove this hack
             ],
             mainAxisAlignment: MainAxisAlignment.center,
           ),
@@ -231,6 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child,
           Positioned(child: Column(children: [pad(StoreButtonWidget(), 4.0), pad(CoinWidget(), 4.0)]), top: 12.0, right: 12.0),
           Positioned(child: userCard(), bottom: 5, left: 0),
+          Positioned(child: AsyncSaver.widget, bottom: 4.0, right: 4.0),
         ],
       ),
     );
