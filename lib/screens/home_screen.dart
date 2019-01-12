@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (loading) {
       return Container(
         decoration: BoxDecoration(
-          color: Color(0xFF404040),
+          color: Color(0xFF000000),
         ),
         child: Image.asset(
           "assets/images/splash_screen.png",
