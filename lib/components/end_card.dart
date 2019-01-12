@@ -5,8 +5,9 @@ import 'package:flame/components/component.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
-import '../util.dart';
+import '../iap.dart';
 import '../mixins/has_game_ref.dart';
+import '../util.dart';
 
 class EndCard extends SpriteComponent with HasGameRef {
   static const COIN_TO_GEM_RATIO = 4;
@@ -20,7 +21,7 @@ class EndCard extends SpriteComponent with HasGameRef {
   static final Sprite buttonGoBack = new Sprite('endgame_buttons.png', height: 16.0, y: 32.0);
   static final Sprite buttonX2Coins = new Sprite('endgame_buttons.png', height: 16.0, y: 16.0);
 
-  bool doubleCoins = false; // TODO allow Player to buy this!
+  bool get doubleCoins => IAP.pro;
   double _tickTimer;
   bool loading = false;
 
