@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'async_saver.dart';
 import 'buy.dart';
+import 'iap.dart';
 import 'options.dart';
 import 'play_user.dart';
 import 'skin_list.dart';
@@ -105,11 +106,10 @@ class Data {
     return SkinList.fetch().then((r) => skinList = r);
   }
 
-  static Future loadLocalSoftData() {
+  static Future loadLocalSoftData() async {
     pristine = true;
-    return Data.fetch(true).then((r) {
-      return _data = r;
-    });
+    _data = await Data.fetch(true);
+    validatePro(IAP.pro);
   }
 
   static bool get hasData => _data != null;
@@ -196,10 +196,12 @@ class Data {
   static void forceData(SavedData data) {
     pristine = false;
     _data = data;
+    validatePro(IAP.pro);
   }
 
   static void mergeData(SavedData other) {
     _data = SavedData.merge(other, _data);
+    validatePro(IAP.pro);
   }
 
   static void setData(SavedData data) {
@@ -220,5 +222,19 @@ class Data {
     AsyncSaver saver = AsyncSaver.start();
     await Data.save();
     saver.stop();
+  }
+
+  static void validatePro(bool pro) {
+    final String goldSkin = 'gold.png';
+    if (pro) {
+      if (!buy.skinsOwned.contains(goldSkin)) {
+        buy.skinsOwned.add(goldSkin);
+      }
+    } else {
+      buy.skinsOwned.remove(goldSkin);
+      if (buy.selectedSkin == goldSkin) {
+        buy.selectedSkin = 'asimov.png';
+      }
+    }
   }
 }

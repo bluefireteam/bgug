@@ -11,6 +11,7 @@ import '../ads.dart';
 import '../async_saver.dart';
 import '../constants.dart';
 import '../data.dart';
+import '../iap.dart';
 import '../music.dart';
 import '../play_user.dart';
 import 'coin_widget.dart';
@@ -69,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'store/x2coins-certificate.png',
       ]).then((images) => print('Done loading ' + images.length.toString() + ' images.')),
       Data.loadHardData(),
+      IAP.setup(),
       Music.init(),
     ];
     Future.wait(ps).then((rs) async {

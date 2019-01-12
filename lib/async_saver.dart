@@ -1,7 +1,8 @@
 import 'dart:math' as math;
-import 'package:bgug/palette.dart';
+
 import 'package:flutter/material.dart';
 
+import 'palette.dart';
 import 'screens/gui_commons.dart';
 
 class _AsyncSaverWidget extends StatefulWidget {

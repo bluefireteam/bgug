@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:bgug/palette.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
 import 'package:flame/position.dart';
@@ -10,6 +9,7 @@ import '../components/coin.dart';
 import '../constants.dart';
 import '../data.dart';
 import '../mixins/has_game_ref.dart';
+import '../palette.dart';
 import '../sfx.dart';
 
 class BaseBlock {
