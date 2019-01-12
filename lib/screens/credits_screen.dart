@@ -9,7 +9,8 @@ const CREDITS = [
   ["- Game developed by ", "Fireslime Team", "https://fireslime.xyz"],
   ["- Contains music ©2018 Joshua McLean ", "(mrjoshuamclean.com)", "http://mrjoshuamclean.com/"],
   ["Licensed under Creative Commons Attribution-ShareAlike 4.0 International"],
-  ["- Audio effects from ", "Mrthenoronha", "https://freesound.org/people/Mrthenoronha/sounds/371922/"],
+  ["- Audio effects from ", "Jdwasabi", "https://jdwasabi.itch.io/8-bit-16-bit-sound-effects-pack"],
+  ["- And also from ", "Mrthenoronha", "https://freesound.org/people/Mrthenoronha/sounds/371922/"],
   ["- Base graphic assets by ", "0x72", "https://0x72.itch.io/16x16-robot-tileset"],
 ];
 
