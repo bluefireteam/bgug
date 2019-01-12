@@ -245,11 +245,26 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Stack(
         children: [
           child,
-          Positioned(child: Column(children: [pad(StoreButtonWidget(), 4.0), pad(CoinWidget(), 4.0)]), top: 12.0, right: 12.0),
+          Positioned(
+              child: Column(
+                children: [Row(children: this.topRightButtons()), pad(CoinWidget(), 4.0)],
+                crossAxisAlignment: CrossAxisAlignment.end,
+              ),
+              top: 12.0,
+              right: 12.0),
           Positioned(child: userCard(), bottom: 5, left: 0),
           Positioned(child: AsyncSaver.widget, bottom: 4.0, right: 4.0),
         ],
       ),
     );
+  }
+
+  List<Widget> topRightButtons() {
+    List<Widget> result = [];
+    if (IAP.pro) {
+      result.add(ProBadge());
+    }
+    result.add(StoreButtonWidget());
+    return result;
   }
 }

@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 
 import 'game.dart';
 import 'music.dart';
-import 'screens/home_gui.dart';
+import 'screens/home_screen.dart';
 import 'screens/options_screen.dart';
 import 'screens/score_screen.dart';
 import 'screens/start_game_screen.dart';
