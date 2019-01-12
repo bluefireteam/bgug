@@ -9,11 +9,17 @@ class IAP {
   static bool pro;
 
   static Future setup() async {
-    await FlutterInappPurchase.initConnection;
-    List<IAPItem> items = await FlutterInappPurchase.getProducts([PRODUCT_ID]);
-    List<PurchasedItem> purchases = await FlutterInappPurchase.getPurchaseHistory();
-    iap = items.first;
-    pro = purchases.isNotEmpty && purchases.first.productId == PRODUCT_ID;
+    try {
+      await FlutterInappPurchase.initConnection;
+      List<IAPItem> items = await FlutterInappPurchase.getProducts([PRODUCT_ID]);
+      List<PurchasedItem> purchases = await FlutterInappPurchase.getPurchaseHistory();
+      iap = items.first;
+      pro = purchases.isNotEmpty && purchases.first.productId == PRODUCT_ID;
+    } catch (ex) {
+      print('Error with IAP setup: $ex');
+      iap = null;
+      pro = false;
+    }
   }
 
   static Future purchase() async {

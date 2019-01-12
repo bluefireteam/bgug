@@ -59,6 +59,9 @@ class _StoreState extends State<StoreScreen> {
     if (IAP.pro) {
       return Center(child: Text('You have the full version, thanks!', style: text));
     }
+    if (IAP.iap == null) {
+      return Center(child: Text('You must have Google Play Services to buy the game.', style: text));
+    }
     return LayoutBuilder(builder: (ctx, constraints) {
       return Stack(
         children: [
