@@ -21,7 +21,9 @@ class EndCard extends SpriteComponent with HasGameRef {
   static final Sprite buttonGoBack = new Sprite('endgame_buttons.png', height: 16.0, y: 32.0);
   static final Sprite buttonX2Coins = new Sprite('endgame_buttons.png', height: 16.0, y: 16.0);
 
-  bool get doubleCoins => IAP.pro;
+  bool get doubleCoins => seenAd || IAP.pro;
+  bool seenAd = false;
+
   double _tickTimer;
   bool loading = false;
 
@@ -29,7 +31,7 @@ class EndCard extends SpriteComponent with HasGameRef {
 
   double get _scaleFactor => height / 144.0;
 
-  bool get _showAdButton => gameRef.hasAd() && !doubleCoins;
+  bool get _showAdButton => !doubleCoins && gameRef.hasAd();
 
   Position get _buttonSize => new Position(_scaleFactor * 64.0, _scaleFactor * 16.0);
 

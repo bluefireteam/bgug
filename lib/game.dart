@@ -86,9 +86,9 @@ class BgugGame extends BaseGame {
       Ad.listener = (evt) {
         print('Event : ${evt.toString()}');
         if (evt == RewardedVideoAdEvent.rewarded) {
-          endCard.doubleCoins = true;
-          state = GameState.END_CARD;
+          endCard.seenAd = true;
         }
+        state = GameState.END_CARD;
       };
       Ad.show();
     }
