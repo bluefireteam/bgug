@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'game.dart';
@@ -10,9 +11,13 @@ part 'stats.g.dart';
 class Score {
   double distance;
   int coins;
+
   Score(this.distance, this.coins);
+
   factory Score.fromJson(Map<String, dynamic> json) => _$ScoreFromJson(json);
+
   Map<String, dynamic> toJson() => _$ScoreToJson(this);
+
   String toText() => 'Scored ${distance.toStringAsFixed(2)} meters earning $coins coins.';
 }
 
@@ -103,5 +108,20 @@ class Stats {
       ..totalGems = math.max(stats1.totalGems, stats2.totalGems)
       ..maxCoins = math.max(stats1.maxCoins, stats2.maxCoins)
       ..totalCoins = math.max(stats1.totalCoins, stats2.totalCoins);
+  }
+
+  List<String> statsList() {
+    return [
+      'Max Distance (m): ${maxDistance.toStringAsFixed(2)}',
+      'Total Distance (m): ${totalDistance.toStringAsFixed(2)}',
+      'Max Jumps: $maxJumps',
+      'Total Jumps: $totalJumps',
+      'Max Dives: $maxDives',
+      'Total Dives: $totalDives',
+      'Max Gems: $maxGems',
+      'Total Gems: $totalGems',
+      'Max Coins: $maxCoins',
+      'Total Coins: $totalCoins',
+    ];
   }
 }

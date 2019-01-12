@@ -28,11 +28,26 @@ class ScoreScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ListView(
-                children: Data.stats.scores.map((s) => Text(s.toText())).toList(),
-              ),
+            child: Column(
+              children: [
+                Expanded(
+                    child: pad(
+                      ListView(
+                        children: [Text('Scores (last 10 games)', style: small_text)]..addAll(Data.stats.scores.map((s) => Text(s.toText()))),
+                      ),
+                      16.0,
+                    ),
+                    flex: 1),
+                Expanded(
+                    child: pad(
+                        ListView(
+                          children: [Text('Stats', style: small_text)]..addAll(Data.stats.statsList().map((s) => Text(s))),
+                        ),
+                        16.0),
+                    flex: 1),
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
             ),
           ),
         ],
