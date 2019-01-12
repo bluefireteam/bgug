@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import '../iap.dart';
@@ -78,8 +79,10 @@ class _StoreState extends State<StoreScreen> {
                   await IAP.purchase();
                   showToast('Congratulations, you just bought the game! Thanks ;)');
                 } catch (ex) {
-                  print('Error buying game:');
-                  print(ex);
+                  if (ex is PlatformException && ex.details == 'responseCode: 1') {
+                    return; // user canceled
+                  }
+                  print('Error buying game: $ex');
                   showToast('Error while buying: ${ex.toString()}');
                 } finally {
                   setState(() {});
