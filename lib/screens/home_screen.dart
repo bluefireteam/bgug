@@ -93,13 +93,13 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         await Data.loadLocalSoftData();
       }
-      await PlayUser.setAutoLogin(true);
+      await PlayUser.setDisableAutoLogin(false);
       setState(() {
         this.user = Data.user;
         this.loading = false;
       });
     } catch (ex) {
-      await PlayUser.setAutoLogin(false);
+      await PlayUser.setDisableAutoLogin(true);
       Data.user = null;
       await Data.loadLocalSoftData();
       setState(() {

@@ -32,10 +32,12 @@ class PlayUser {
   static Future<bool> isDisableAutoLogin() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String value = prefs.getString('bgug.disable_auto_login');
+    print('Get disable_auto_login: $value');
     return value == 'true';
   }
 
-  static Future<bool> setAutoLogin(bool value) async {
+  static Future<bool> setDisableAutoLogin(bool value) async {
+    print('Set disable_auto_login: $value');
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return await prefs.setString('bgug.disable_auto_login', value.toString());
   }
