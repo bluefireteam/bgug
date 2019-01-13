@@ -84,7 +84,7 @@ class BgugGame extends BaseGame {
     if (hasAd()) {
       state = GameState.AD;
       Ad.listener = (evt) {
-        print('Event : ${evt.toString()}');
+        print('Ad:Event : ${evt.toString()}');
         if (evt == RewardedVideoAdEvent.rewarded) {
           endCard.seenAd = true;
         }

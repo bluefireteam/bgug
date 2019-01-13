@@ -16,7 +16,11 @@ class Ad {
 
   static void handle(RewardedVideoAdEvent evt) {
     if (evt == RewardedVideoAdEvent.loaded) {
+      print('Ad: loaded an ad succesfully');
       loaded = true;
+    } else if (evt == RewardedVideoAdEvent.failedToLoad) {
+      print('Ad: failed to loaded an ad');
+      loaded = false;
     } else {
       listener(evt);
     }
