@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Music.init(),
     ];
     Future.wait(ps).then((rs) async {
-      if (ENABLE_LOGIN) {
+      if (ENABLE_LOGIN && (await PlayUser.shouldAutoLogin())) {
         _performSignIn();
       } else {
         await Data.loadLocalSoftData();
@@ -93,11 +93,13 @@ class _HomeScreenState extends State<HomeScreen> {
       } else {
         await Data.loadLocalSoftData();
       }
+      await PlayUser.setAutoLogin(true);
       setState(() {
         this.user = Data.user;
         this.loading = false;
       });
     } catch (ex) {
+      await PlayUser.setAutoLogin(false);
       Data.user = null;
       await Data.loadLocalSoftData();
       setState(() {
@@ -199,24 +201,10 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Column(
             children: [
-              pad(
-                  GestureDetector(
-                      child: Text('BREAK', style: title),
-                      onTap: () {
-                        Data.forceData(new SavedData());
-                        Data.save(); // TODO remove this hack
-                      }),
-                  2.0),
+              pad(Text('BREAK', style: title), 2.0),
               pad(Text('guns', style: title), 2.0),
               pad(Text('USING', style: title), 2.0),
-              pad(
-                  GestureDetector(
-                      child: Text('gems', style: title),
-                      onTap: () async {
-                        Data.buy.coins += 50;
-                        Data.saveAsync();
-                      }),
-                  2.0), // TODO remove this hack
+              pad(Text('gems', style: title), 2.0),
             ],
             mainAxisAlignment: MainAxisAlignment.center,
           ),

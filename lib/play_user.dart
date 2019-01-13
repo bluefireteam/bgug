@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:play_games/play_games.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PlayUser {
   Account account;
@@ -22,5 +23,20 @@ class PlayUser {
     } catch (e) {
       throw 'Unable to login to play games; error: $e';
     }
+  }
+
+  static Future<bool> shouldAutoLogin() async {
+    return !(await isDisableAutoLogin());
+  }
+
+  static Future<bool> isDisableAutoLogin() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String value = prefs.getString('bgug.disable_auto_login');
+    return value == 'true';
+  }
+
+  static Future<bool> setAutoLogin(bool value) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await prefs.setString('bgug.disable_auto_login', value.toString());
   }
 }
