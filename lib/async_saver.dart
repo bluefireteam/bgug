@@ -86,11 +86,21 @@ class _AnimatedCheckState extends State<_AnimatedCheck> with TickerProviderState
 
   _AnimatedCheckState() {
     _controller = AnimationController(duration: const Duration(seconds: 1), vsync: this);
-    _curve = CurvedAnimation(parent: _controller, curve: Curves.easeOut)
-      ..addListener(() => setState(() {
-            _value = _curve.value;
-          }));
+    _curve = CurvedAnimation(parent: _controller, curve: Curves.easeOut)..addListener(this._animate);
     _controller.forward();
+  }
+
+  void _animate() {
+    this.setState(() {
+      _value = _curve.value;
+    });
+  }
+
+  @override
+  void dispose() {
+    _curve.removeListener(this._animate);
+    _controller.dispose();
+    super.dispose();
   }
 
   @override

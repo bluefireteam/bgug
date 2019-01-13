@@ -102,6 +102,8 @@ class BgugGame extends BaseGame {
   }
 
   void _start(GameState state) {
+    this.state = state;
+
     resetVariables();
 
     add(Background());
@@ -120,7 +122,6 @@ class BgugGame extends BaseGame {
       add(button = Button());
     }
 
-    this.state = state;
     if (this.state == GameState.TUTORIAL) {
       add(Tutorial());
     }
@@ -170,7 +171,7 @@ class BgugGame extends BaseGame {
       return;
     }
     if (state == GameState.END_CARD) {
-      endCard.click(p);
+      endCard?.click(p);
       return;
     }
     if (state == GameState.TUTORIAL) {
@@ -266,6 +267,7 @@ class BgugGame extends BaseGame {
 
   @override
   void lifecycleStateChange(AppLifecycleState state) {
+    print('Lifecyle $state, game_state: ${this.state}');
     if (this.state == GameState.AD || this.state == GameState.STOPPED || this.state == GameState.END_CARD) {
       return;
     }
@@ -288,6 +290,7 @@ class BgugGame extends BaseGame {
   }
 
   Future<bool> willPop() async {
+    print('Called WILL POP, state: $state');
     if (state == GameState.TUTORIAL) {
       state = GameState.RUNNING;
     } else if (this.state == GameState.RUNNING) {

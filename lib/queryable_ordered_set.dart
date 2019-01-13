@@ -86,19 +86,30 @@ class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
   }
 
   Player player() {
-    return _postFilter<Player>(Queries.Player).first;
+    return _firstOrNull<Player>(Queries.Player);
   }
 
   Hud hud() {
-    return _postFilter<Hud>(Queries.Hud).first;
+    return _firstOrNull<Hud>(Queries.Hud);
   }
 
   EndCard endCard() {
-    return _postFilter<EndCard>(Queries.EndCard).first;
+    return _firstOrNull<EndCard>(Queries.EndCard);
   }
 
   Tutorial tutorial() {
-    return _postFilter<Tutorial>(Queries.Tutorial).first;
+    return _firstOrNull<Tutorial>(Queries.Tutorial);
+  }
+
+  bool has(Queries q) {
+    return _postFilter(q).isNotEmpty;
+  }
+
+  T _firstOrNull<T>(Queries e) {
+    if (!has(e)) {
+      return null;
+    }
+    return _postFilter<T>(e).first;
   }
 
   Iterable<T> _postFilter<T>(Queries e) {
