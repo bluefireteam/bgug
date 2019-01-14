@@ -1,13 +1,16 @@
 import 'package:firebase_admob/firebase_admob.dart';
 
 import 'constants.dart';
+import 'iap.dart';
 
 class Ad {
+  static bool get enableAds => ENABLE_ADS && !IAP.pro;
+
   static Function(RewardedVideoAdEvent) listener;
   static bool loaded;
 
   static void show() {
-    if (!ENABLE_ADS) {
+    if (!enableAds) {
       return;
     }
     loaded = false;
@@ -27,7 +30,7 @@ class Ad {
   }
 
   static Future<bool> startup() async {
-    if (!ENABLE_ADS) {
+    if (!enableAds) {
       return false;
     }
     bool result = await FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-1451557002406313~7960207117');
@@ -36,7 +39,7 @@ class Ad {
   }
 
   static Future loadAd() async {
-    if (!ENABLE_ADS || loaded) {
+    if (!enableAds || loaded) {
       return;
     }
     MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo(

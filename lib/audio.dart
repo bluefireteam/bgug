@@ -12,6 +12,7 @@ class Audio {
 
   static bool _enableMusic;
   static bool enableSfx;
+  static bool inited = false;
 
   static bool get enableMusic => _enableMusic;
 
@@ -28,6 +29,8 @@ class Audio {
     musicPlayer = new AudioCache(prefix: 'audio/', fixedPlayer: new AudioPlayer());
     await musicPlayer.loadAll(['music.mp3', 'menu.mp3']);
     await musicPlayer.fixedPlayer.setReleaseMode(ReleaseMode.LOOP);
+
+    inited = true;
   }
 
   static Future saveAudioControls() async {
@@ -63,6 +66,9 @@ class Audio {
   }
 
   static Future _updatePlayer() async {
+    if (!inited) {
+      return;
+    }
     bool should = !isPaused && enableMusic;
     if (song != null) {
       if (should) {
