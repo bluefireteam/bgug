@@ -5,7 +5,7 @@ import 'package:flame/components/component.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
-import '../sfx.dart';
+import '../audio.dart';
 import '../constants.dart';
 import '../mixins/has_game_ref.dart';
 
@@ -64,7 +64,7 @@ class GemMoving extends SpriteComponent with HasGameRef {
 
     if (juice.isComplete) {
       gameRef.points++;
-      Sfx.play('gem_collect.wav');
+      Audio.playSfx('gem_collect.wav');
       done = true;
     }
   }

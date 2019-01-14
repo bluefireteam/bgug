@@ -71,6 +71,10 @@ flutter:
     - assets/images/splash_screen.png
     - assets/images/google-play-button.png
     - assets/images/username-panel.png
+    - assets/images/sound/music_off.png
+    - assets/images/sound/music_on.png
+    - assets/images/sound/sfx_off.png
+    - assets/images/sound/sfx_on.png
     - assets/images/store/skins_panel.png
     - assets/images/store/store_button.png
     - assets/images/store/store-ui.png

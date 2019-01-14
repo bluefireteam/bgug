@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'game.dart';
-import 'music.dart';
+import 'audio.dart';
 import 'screens/home_screen.dart';
 import 'screens/options_screen.dart';
 import 'screens/score_screen.dart';
@@ -22,9 +22,9 @@ class _Handler extends WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      Music.resume();
+      Audio.resume();
     } else {
-      Music.pause();
+      Audio.pause();
     }
   }
 }

@@ -1,5 +1,5 @@
-import 'dart:ui';
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flame/animation.dart';
 import 'package:flame/components/animation_component.dart';
@@ -7,7 +7,7 @@ import 'package:flame/components/component.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
-import '../sfx.dart';
+import '../audio.dart';
 import '../constants.dart';
 import '../mixins/has_game_ref.dart';
 
@@ -52,7 +52,7 @@ class Coin extends _BaseCoin with HasGameRef {
     if (gameRef != null && this.toRect().overlaps(gameRef.player.toRect())) {
       this.collected = true;
       gameRef.currentCoins++;
-      Sfx.play('gem_collect.wav');
+      Audio.playSfx('gem_collect.wav');
       gameRef.addLater(_ExcitedCoin(x, y));
     }
   }

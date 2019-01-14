@@ -11,7 +11,7 @@ import 'package:flame/sprite.dart';
 import '../constants.dart';
 import '../data.dart';
 import '../mixins/has_game_ref.dart';
-import '../sfx.dart';
+import '../audio.dart';
 import 'block.dart';
 import 'player.dart';
 
@@ -172,11 +172,11 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
     }
     if (action == 'shooting') {
       action = 'shoot';
-      Sfx.play('laser_shoot.wav');
+      Audio.playSfx('laser_shoot.wav');
     } else if (yi == yf || random.nextDouble() < 0.2) {
       action = 'shooting';
       shooting.reset();
-      Sfx.play('laser_load.wav');
+      Audio.playSfx('laser_load.wav');
     } else {
       if (y <= yi) {
         y = yi;

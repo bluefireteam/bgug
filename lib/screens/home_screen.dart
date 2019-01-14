@@ -12,8 +12,9 @@ import '../async_saver.dart';
 import '../constants.dart';
 import '../data.dart';
 import '../iap.dart';
-import '../music.dart';
+import '../audio.dart';
 import '../play_user.dart';
+import 'audio_control_widget.dart';
 import 'coin_widget.dart';
 import 'gui_commons.dart';
 import 'store_button_widget.dart';
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ]).then((images) => print('Done loading ' + images.length.toString() + ' images.')),
       Data.loadHardData(),
       IAP.setup(),
-      Music.init(),
+      Audio.init(),
     ];
     Future.wait(ps).then((rs) async {
       if (ENABLE_LOGIN && (await PlayUser.shouldAutoLogin())) {
@@ -80,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
         await Data.loadLocalSoftData();
         this.setState(() => loading = false);
       }
-      Music.play(Song.MENU);
+      Audio.play(Song.MENU);
     });
   }
 
@@ -233,6 +234,11 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Stack(
         children: [
           child,
+          Positioned(
+            child: AudioControlWidget(),
+            top: 4.0,
+            left: 4.0,
+          ),
           Positioned(
               child: Column(
                 children: [Row(children: this.topRightButtons()), pad(CoinWidget(), 4.0)],

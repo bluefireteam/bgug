@@ -4,7 +4,7 @@ import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/position.dart';
 
-import '../sfx.dart';
+import '../audio.dart';
 import '../constants.dart';
 import '../data.dart';
 import '../util.dart';
@@ -94,7 +94,7 @@ class Player extends PositionComponent {
   void jump(int dt) {
     if (!falling()) {
       jumpImpulse.impulse(Data.currentOptions.jumpTimeMultiplier * dt);
-      Sfx.play('jump.wav');
+      Audio.playSfx('jump.wav');
     }
   }
 
@@ -107,7 +107,7 @@ class Player extends PositionComponent {
   void die() {
     if (!dead()) {
       state = 'dead';
-      Sfx.play('death.wav');
+      Audio.playSfx('death.wav');
     }
   }
 }

@@ -24,10 +24,9 @@ import 'components/tutorial.dart';
 import 'constants.dart';
 import 'data.dart';
 import 'mixins/has_game_ref.dart';
-import 'music.dart';
+import 'audio.dart';
 import 'options.dart';
 import 'queryable_ordered_set.dart';
-import 'sfx.dart';
 import 'world_gen.dart';
 
 math.Random random = new math.Random();
@@ -127,7 +126,7 @@ class BgugGame extends BaseGame {
     }
 
     Ad.loadAd();
-    Music.play(Song.GAME);
+    Audio.play(Song.GAME);
   }
 
   void resetVariables() {
@@ -273,7 +272,7 @@ class BgugGame extends BaseGame {
     }
     if (state == AppLifecycleState.resumed) {
       if (this.state == GameState.PAUSED) {
-        Sfx.enable = true;
+        Audio.enableSfx = true;
         this.state = GameState.RUNNING;
         if (hasPausedAlready) {
           player.die();
@@ -284,7 +283,7 @@ class BgugGame extends BaseGame {
       }
     } else {
       _lastDt = null;
-      Sfx.enable = false;
+      Audio.enableSfx = false;
       this.state = GameState.PAUSED;
     }
   }

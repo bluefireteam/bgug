@@ -5,12 +5,12 @@ import 'package:flame/components/resizable.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
+import '../audio.dart';
 import '../components/coin.dart';
 import '../constants.dart';
 import '../data.dart';
 import '../mixins/has_game_ref.dart';
 import '../palette.dart';
-import '../sfx.dart';
 
 class BaseBlock {
   int slot;
@@ -59,7 +59,7 @@ class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
     } else if (clock >= TIME_TWEEN + TIME_UP) {
       if (!_played) {
         _played = true;
-        Sfx.play('block.wav');
+        Audio.playSfx('block.wav');
       }
       double animationProgress = (clock - TIME_TWEEN - TIME_UP).clamp(0, TIME_DOWN) / TIME_DOWN;
       double currentScale = MAX_SCALE - (MAX_SCALE - 1) * animationProgress;
