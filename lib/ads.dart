@@ -30,7 +30,7 @@ class Ad {
   }
 
   static Future<bool> startup() async {
-    if (!enableAds) {
+    if (!ENABLE_ADS) {
       return false;
     }
     bool result = await FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-1451557002406313~7960207117');
