@@ -202,17 +202,17 @@ class _SkinSelectionGame extends BaseGame {
       return;
     }
     if (x < size.width / 3) {
-      selected--;
-      while (selected < 0) {
-        selected += skins.length;
-      }
-      _updateSkin(true);
-    } else if (x > 2 * size.width / 3) {
       selected++;
       while (selected >= skins.length) {
         selected -= skins.length;
       }
       _updateSkin(false);
+    } else if (x > 2 * size.width / 3) {
+      selected--;
+      while (selected < 0) {
+        selected += skins.length;
+      }
+      _updateSkin(true);
     } else {
       if (currentOwn) {
         Data.buy.selectedSkin = skins[selected].file;
