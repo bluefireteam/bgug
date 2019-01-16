@@ -1,3 +1,4 @@
+import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -40,7 +41,10 @@ class _OptionsState extends State<OptionsScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           currentEditor,
-          btn('Go back', () => setState(() => currentEditor = null)),
+          btn('Go back', () {
+            setState(() => currentEditor = null);
+            Flame.util.fullScreen();
+          }),
         ],
       ));
     }
@@ -74,6 +78,15 @@ class _OptionsState extends State<OptionsScreen> {
               btn('Cancel', () {
                 Navigator.of(context).pop();
               }),
+              Container(
+                padding: EdgeInsets.fromLTRB(0.0, 24.0, 0.0, 0.0),
+                child: btn('Reset Defaults', () {
+                  Data.options = new Options();
+                  Data.save().then((a) {
+                    Navigator.of(context).pop();
+                  });
+                }, style: small_text),
+              ),
             ],
           )),
           Expanded(
