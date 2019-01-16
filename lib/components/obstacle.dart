@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'dart:math' as math;
 
 import 'package:flame/components/component.dart';
+import 'package:flame/animation.dart';
+import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/resizable.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
@@ -10,9 +12,9 @@ import '../constants.dart';
 import '../components/player.dart';
 import '../mixins/has_game_ref.dart';
 
-class UpObstacle extends SpriteComponent with HasGameRef, Resizable {
-  UpObstacle(double x)
-      : super.fromSprite(48.0, 48.0, new Sprite('obstacle.png')) {
+class UpObstacle extends AnimationComponent with HasGameRef, Resizable {
+  UpObstacle(double x, [String texture = 'up_obstacle.png'])
+      : super(16.0, 16.0, new Animation.sequenced(texture, 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
     this.x = x;
   }
 
@@ -44,7 +46,7 @@ class UpObstacle extends SpriteComponent with HasGameRef, Resizable {
 }
 
 class Obstacle extends UpObstacle {
-  Obstacle(double x) : super(x);
+  Obstacle(double x) : super(x, 'obstacle.png');
 
   @override
   void resize(Size size) {
