@@ -60,9 +60,13 @@ class BgugGame extends BaseGame {
   Iterable<BaseBlock> get blocks => queryComponents.blocks();
 
   int get uppermostOccupiedSlot => blocks.where((b) => b.upper()).fold(0, (total, b2) => math.max(total, b2.slot));
+
   int get uppermostFreeSlot => uppermostOccupiedSlot == 3 ? null : uppermostOccupiedSlot + 1;
+
   int get lowermostOccupiedSlot => blocks.where((b) => b.lower()).fold(7, (total, b2) => math.min(total, b2.slot));
+
   int get lowermostFreeSlot => lowermostOccupiedSlot == 4 ? null : lowermostOccupiedSlot - 1;
+
   int get nextFreeSlot => Block.SLOT_ORDER.firstWhere((slot) => !blocks.any((b) => b.slot == slot));
 
   bool get maxedOutBlocks => blocks.length == 8;
@@ -293,11 +297,8 @@ class BgugGame extends BaseGame {
     if (state == GameState.TUTORIAL) {
       state = GameState.RUNNING;
     } else if (this.state == GameState.RUNNING) {
-      if (player.dead()) {
-        showEndCard();
-      } else {
-        player.die();
-      }
+      player.die();
+      showEndCard();
     } else if (this.state == GameState.END_CARD) {
       endCard.doClickBack();
       return true;
