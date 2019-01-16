@@ -165,7 +165,39 @@ class _SkinSelectionGame extends BaseGame {
   _SkinCardComponent card;
   Lock lock;
 
-  List<Skin> get skins => Data.skinList.skins;
+  List<Skin> skins;
+
+  void _updateSkinList() {
+    skins = new List.from(Data.skinList.skins);
+    skins.sort((s1, s2) {
+      if (Data.buy.selectedSkin == s1.file) {
+        return -1;
+      } else if (Data.buy.selectedSkin == s2.file) {
+        return 1;
+      }
+
+      bool has1 = Data.buy.skinsOwned.contains(s1.file);
+      bool has2 = Data.buy.skinsOwned.contains(s2.file);
+      if (has1 && !has2) {
+        return 1;
+      } else if (!has1 && has2) {
+        return -1;
+      }
+
+      bool hasPrice1 = s1.cost > 0;
+      bool hasPrice2 = s2.cost > 0;
+
+      if (hasPrice1 && !hasPrice2) {
+        return 1;
+      } else if (!hasPrice1 && hasPrice2) {
+        return -1;
+      } else if (hasPrice1 && hasPrice2) {
+        return -s1.cost.compareTo(s2.cost);
+      } else {
+        return -s1.name.compareTo(s2.name);
+      }
+    });
+  }
 
   bool get currentOwn => Data.buy.skinsOwned.contains(skins[selected].file);
 
@@ -174,6 +206,8 @@ class _SkinSelectionGame extends BaseGame {
   bool get hideGui => loading || skin.isMoving || buying;
 
   _SkinSelectionGame() {
+    _updateSkinList();
+
     add(Floor());
     add(_ArrowButton(this, true));
     add(_ArrowButton(this, false));
@@ -217,7 +251,11 @@ class _SkinSelectionGame extends BaseGame {
       if (currentOwn) {
         Data.buy.selectedSkin = skins[selected].file;
         loading = true;
-        Data.save().then((_) => loading = false);
+        Data.save().then((_) {
+          _updateSkinList();
+          selected = 0;
+          loading = false;
+        });
       } else if (skins[selected].cost > 0 && Data.buy.coins >= skins[selected].cost) {
         buying = true;
         Position start = Position(camera.x + 20 + 32.0 / 2, camera.y + 20 + 32.0 / 2);
@@ -233,7 +271,11 @@ class _SkinSelectionGame extends BaseGame {
           buying = false;
           loading = true;
           Data.checkAchievementsAndSkins();
-          Data.save().then((_) => loading = false);
+          Data.save().then((_) {
+            _updateSkinList();
+            selected = 0;
+            loading = false;
+          });
         });
       }
     }
