@@ -57,11 +57,9 @@ class _ArrowButton extends SpriteComponent {
 
   _ArrowButton(this.gameRef, this.left) : super.fromSprite(1.0, 1.0, new Sprite('store/store-ui.png', x: left ? 0 : 16, y: 72, width: 16, height: 64));
 
-  bool get _show => left ? gameRef.selected > 0 : gameRef.selected < gameRef.skins.length - 1;
-
   @override
   void render(Canvas canvas) {
-    if (!_show || gameRef.hideGui) {
+    if (gameRef.hideGui) {
       return;
     }
     super.render(canvas);
@@ -204,15 +202,17 @@ class _SkinSelectionGame extends BaseGame {
       return;
     }
     if (x < size.width / 3) {
-      if (selected > 0) {
-        selected--;
-        _updateSkin(true);
+      selected--;
+      while (selected < 0) {
+        selected += skins.length;
       }
+      _updateSkin(true);
     } else if (x > 2 * size.width / 3) {
-      if (selected < skins.length - 1) {
-        selected++;
-        _updateSkin(false);
+      selected++;
+      while (selected >= skins.length) {
+        selected -= skins.length;
       }
+      _updateSkin(false);
     } else {
       if (currentOwn) {
         Data.buy.selectedSkin = skins[selected].file;
