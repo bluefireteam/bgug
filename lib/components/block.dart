@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flame/animation.dart';
+import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
 import 'package:flame/position.dart';
@@ -11,6 +13,8 @@ import '../constants.dart';
 import '../data.dart';
 import '../mixins/has_game_ref.dart';
 import '../palette.dart';
+
+Sprite _staticBlockSprite = Sprite('block.png', x: 0, y: 0, width: 32.0, height: 32.0);
 
 class BaseBlock {
   int slot;
@@ -36,7 +40,7 @@ class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
   double clock = 0.0;
   bool _played = false;
 
-  BlockTween(this.src, int slot) : super.fromSprite(16.0, 16.0, new Sprite('block.png')) {
+  BlockTween(this.src, int slot) : super.fromSprite(16.0, 16.0, _staticBlockSprite) {
     this.slot = slot;
   }
 
@@ -75,8 +79,8 @@ class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
   }
 
   void setScale(double currentScale) {
-    width = sizeTenth(size) * currentScale;
-    height = sizeTenth(size) * currentScale;
+    width = 2 * sizeTenth(size) * currentScale;
+    height = 2 * sizeTenth(size) * currentScale;
     x -= (currentScale - 1) * width / 2;
     y -= (currentScale - 1) * height / 2;
   }
@@ -84,9 +88,9 @@ class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
   @override
   void resize(Size size) {
     super.resize(size);
-    this.width = this.height = sizeTenth(size);
-    this.dest.x = size.width - this.width;
-    this.dest.y = sizeTop(size) + this.slot * this.height;
+    this.width = this.height = 2 * sizeTenth(size);
+    this.dest.x = size.width - this.width + 0.25 * this.width;
+    this.dest.y = sizeTop(size) + this.slot * sizeTenth(size) - 0.25 * this.height;
   }
 
   @override
@@ -96,7 +100,7 @@ class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
   bool destroy() => done;
 }
 
-class Block extends SpriteComponent with BaseBlock, HasGameRef {
+class Block extends AnimationComponent with BaseBlock, HasGameRef {
   static int minUp(int currentSlot) {
     if (currentSlot <= 0 || currentSlot == 7) {
       return 1;
@@ -131,17 +135,32 @@ class Block extends SpriteComponent with BaseBlock, HasGameRef {
   double clock = 0.0;
   bool _destroy = false;
 
-  Block(slot, this.eternal) : super.fromSprite(16.0, 16.0, new Sprite('block.png')) {
+  Block(slot, this.eternal) : super(0.0, 0.0, _nameAnimation()) {
     this.slot = slot;
+  }
+
+  static Animation _nameAnimation() {
+    double stepTime = Data.currentOptions.blockLifespan / 12.0;
+    Animation animation = Animation.sequenced('block.png', 16, stepTime: stepTime, textureWidth: 32.0);
+    animation.loop = false;
+    for (int i = 11; i < 16; i++) {
+      animation.frames[i].stepTime = 0.2;
+    }
+    return animation;
   }
 
   @override
   void render(Canvas canvas) {
+    if (this.animation.done()) {
+      return;
+    }
     super.render(canvas);
     if (!eternal && Data.currentOptions.blockLifespan != -1) {
       double frac = clock / Data.currentOptions.blockLifespan;
-      canvas.drawRect(Rect.fromLTWH(0.0, height - 6.0, width, 6.0), Palette.grey.paint);
-      canvas.drawRect(Rect.fromLTWH(1.0, height - 5.0, (width - 2.0) * (1 - frac), 4.0), Palette.green.paint);
+      if (clock < Data.currentOptions.blockLifespan) {
+        canvas.drawRect(Rect.fromLTWH(width / 4, 3 * height / 4 - 6.0, width / 2, 6.0), Palette.grey.paint);
+        canvas.drawRect(Rect.fromLTWH(width / 4 + 1.0, 3 * height / 4 - 5.0, (width / 2 - 2.0) * (1 - frac), 4.0), Palette.green.paint);
+      }
     }
   }
 
@@ -151,19 +170,20 @@ class Block extends SpriteComponent with BaseBlock, HasGameRef {
       return;
     }
 
+    super.update(t);
     clock += t;
     clock = clock.clamp(0, Data.currentOptions.blockLifespan);
 
-    if (clock == Data.currentOptions.blockLifespan) {
+    if (animation.done()) {
       _destroy = true;
     }
   }
 
   @override
   void resize(Size size) {
-    this.width = this.height = sizeTenth(size);
-    this.x = size.width - this.width;
-    this.y = sizeTop(size) + this.slot * this.height;
+    this.width = this.height = 2 * sizeTenth(size);
+    this.x = size.width - this.width + 0.25 * this.width;
+    this.y = sizeTop(size) + this.slot * sizeTenth(size) - 0.25 * this.height;
   }
 
   @override
