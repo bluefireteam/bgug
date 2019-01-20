@@ -29,6 +29,25 @@ class _Handler extends WidgetsBindingObserver {
   }
 }
 
+class MyDrag extends Drag {
+
+  Position lastDragPos;
+
+  @override
+  void update(DragUpdateDetails details) {
+    lastDragPos = new Position.fromOffset(details.globalPosition);
+    Main.game?.dragTo(lastDragPos);
+  }
+
+  @override
+  void end(DragEndDetails details) {
+    if (lastDragPos != null) {
+      Main.game?.endDrag(lastDragPos);
+      lastDragPos = null;
+    }
+  }
+}
+
 main() async {
   Flame.audio.disableLog();
 
@@ -65,6 +84,8 @@ main() async {
         lastTimestamp = lastPost = null;
       }
     });
+
+  Flame.util.addGestureRecognizer(new ImmediateMultiDragGestureRecognizer()..onStart = (Offset position) => new MyDrag());
 
   WidgetsBinding.instance.addObserver(new _Handler());
 }

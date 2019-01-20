@@ -161,7 +161,9 @@ class BgugGame extends BaseGame {
     }
     if (p != null && player != null && !player.dead()) {
       if (p.x < size.width / 2) {
-        queryComponents.hud().startGauge();
+        hud.startGauge();
+      } else {
+        hud.clearGauge();
       }
     }
   }
@@ -184,7 +186,7 @@ class BgugGame extends BaseGame {
       return;
     }
     if (p != null && player != null) {
-      queryComponents.hud().clearGauge();
+      hud.clearGauge();
       if (player.dead()) {
         showEndCard();
       } else {
@@ -197,6 +199,7 @@ class BgugGame extends BaseGame {
         } else if (p.x > size.width / 2) {
           totalDives++;
           player.dive();
+          hud.clearGauge();
         } else {
           totalJumps++;
           player.jump(dt);
@@ -308,5 +311,13 @@ class BgugGame extends BaseGame {
 
   void stop() {
     state = GameState.STOPPED;
+  }
+
+  void dragTo(Position lastDragPos) {
+    hud.clearGauge();
+  }
+
+  void endDrag(Position lastDragPos) {
+    hud.clearGauge();
   }
 }
