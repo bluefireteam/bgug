@@ -1,8 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flame/anchor.dart';
-import 'package:flame/animation.dart' as animation;
-import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
 import 'package:flame/game.dart';
@@ -14,10 +12,10 @@ import 'package:flutter/widgets.dart';
 import '../components/coin.dart';
 import '../components/floor.dart';
 import '../components/lock.dart';
-import '../constants.dart';
 import '../data.dart';
 import '../skin_list.dart';
 import '../util.dart';
+import 'store_skin_component.dart';
 
 math.Random rand = math.Random();
 TextConfig config = defaultText.withFontSize(24.0);
@@ -37,7 +35,7 @@ class _SkinCardComponent extends Component with Resizable {
 
   @override
   void render(Canvas c) {
-    if (gameRef.skin.isMoving || skin == null) {
+    if (gameRef.isMoving || skin == null) {
       return;
     }
 
@@ -77,91 +75,11 @@ class _ArrowButton extends SpriteComponent {
   }
 }
 
-class _SkinComponent extends AnimationComponent with Resizable {
-  static const SPEED = 1025.0;
-
-  bool locked;
-  bool left;
-  bool leave = false;
-
-  _SkinComponent(this.locked, this.left, String skin) : super(1.0, 1.0, makeAnimation(skin)) {
-    x = null;
-  }
-
-  double get xGoal => (size.width - width) / 2;
-
-  @override
-  void render(Canvas canvas) {
-    if (loaded()) {
-      prepareCanvas(canvas);
-      Sprite sprite = this.animation.getSprite();
-      int alpha = locked ? 50 : 255;
-      sprite.paint = Paint()..color = Color(0xFFFFFFFF).withAlpha(alpha);
-      sprite.render(canvas, width, height);
-    }
-  }
-
-  @override
-  void update(double t) {
-    super.update(t);
-
-    if (leave) {
-      if (left) {
-        x -= SPEED * t;
-      } else {
-        x += SPEED * t;
-      }
-    } else if (isMoving) {
-      if (left) {
-        x += SPEED * t;
-        if (x > xGoal) {
-          x = xGoal;
-        }
-      } else {
-        x -= SPEED * t;
-        if (x < xGoal) {
-          x = xGoal;
-        }
-      }
-    }
-  }
-
-  bool get isMoving => leave || x != xGoal;
-
-  void doLeave(bool left) {
-    this.left = left;
-    this.leave = true;
-  }
-
-  @override
-  bool destroy() => x < -width || x > size.width;
-
-  @override
-  void resize(Size size) {
-    super.resize(size);
-
-    double frac = 5;
-
-    width = frac * 16.0;
-    height = frac * 18.0;
-
-    if (x == null) {
-      x = left ? -width : size.width;
-    }
-    y = sizeBottom(size) - height;
-  }
-
-  static animation.Animation makeAnimation(String skin) {
-    return animation.Animation.sequenced('skins/$skin', 8, textureWidth: 16.0);
-  }
-}
-
 class _SkinSelectionGame extends BaseGame {
   bool loading = false;
   bool buying = false;
   int selected = 0;
 
-  _SkinComponent skin;
   _SkinCardComponent card;
   Lock lock;
 
@@ -197,28 +115,70 @@ class _SkinSelectionGame extends BaseGame {
         return -s1.name.compareTo(s2.name);
       }
     });
+
+    _redrawSkinComponents();
   }
 
-  bool get currentOwn => Data.buy.skinsOwned.contains(skins[selected].file);
+  Iterable<StoreSkinComponent> get skinComponents => components.where((c) => c is StoreSkinComponent).cast();
 
-  bool get lockVisible => skin != null && !skin.isMoving && !currentOwn;
+  bool get isMoving => skinComponents.any((s) => s.isMoving);
 
-  bool get hideGui => loading || skin.isMoving || buying;
+  bool doOwnSkin(int idx) => Data.buy.skinsOwned.contains(skins[idx].file);
+
+  bool get currentOwn => doOwnSkin(selected);
+
+  bool get lockVisible => !isMoving && !currentOwn;
+
+  bool get hideGui => loading || isMoving || buying;
 
   _SkinSelectionGame() {
-    _updateSkinList();
-
     add(Floor());
     add(_ArrowButton(this, true));
     add(_ArrowButton(this, false));
     add(card = _SkinCardComponent(this));
     add(this.lock = Lock(() => lockVisible));
-    _updateSkin(false);
+
+    _updateSkinList();
   }
 
-  void _updateSkin(bool left) {
-    this.skin?.doLeave(left);
-    add(this.skin = _SkinComponent(!currentOwn, !left, skins[selected].file));
+  void _redrawSkinComponents() {
+    components.removeWhere((c) => c is StoreSkinComponent);
+    _addStartSkin(1, selected - 2);
+    _addStartSkin(2, selected - 1);
+    _addStartSkin(3, selected);
+    _addStartSkin(4, selected + 1);
+    _addStartSkin(5, selected + 2);
+
+    _updateSelectedSkin();
+  }
+
+  void _addStartSkin(int place, int idx) {
+    idx = _fixIdx(idx);
+    add(StoreSkinComponent.startAt(Place.places[place], skins[idx].file, !doOwnSkin(idx)));
+  }
+
+  int _fixIdx(int idx) {
+    return (idx + skins.length) % skins.length;
+  }
+
+  void hitPrev() {
+    skinComponents.forEach((s) => s.next());
+    int nextIdx = _fixIdx(selected - 2);
+    _addLaterSkin(StartingPlace.LEFT, nextIdx);
+  }
+
+  void hitNext() {
+    skinComponents.forEach((s) => s.prev());
+    int prevIdx = _fixIdx(selected + 2);
+    _addLaterSkin(StartingPlace.RIGHT, prevIdx);
+  }
+
+  void _addLaterSkin(StartingPlace place, int nextIdx) {
+    add(new StoreSkinComponent(place, skins[nextIdx].file, !doOwnSkin(nextIdx)));
+    _updateSelectedSkin();
+  }
+
+  void _updateSelectedSkin() {
     if (!currentOwn) {
       lock.reset();
     }
@@ -240,20 +200,20 @@ class _SkinSelectionGame extends BaseGame {
       while (selected >= skins.length) {
         selected -= skins.length;
       }
-      _updateSkin(false);
+      hitNext();
     } else if (x > 2 * size.width / 3) {
       selected--;
       while (selected < 0) {
         selected += skins.length;
       }
-      _updateSkin(true);
+      hitPrev();
     } else {
       if (currentOwn) {
         Data.buy.selectedSkin = skins[selected].file;
         loading = true;
         Data.save().then((_) {
-          _updateSkinList();
           selected = 0;
+          _updateSkinList();
           loading = false;
         });
       } else if (skins[selected].cost > 0 && Data.buy.coins >= skins[selected].cost) {
@@ -267,13 +227,13 @@ class _SkinSelectionGame extends BaseGame {
           Data.buy.coins -= skins[selected].cost;
           Data.buy.skinsOwned.add(skins[selected].file);
           Data.buy.selectedSkin = skins[selected].file;
-          this.skin.locked = false;
+          skinComponents.firstWhere((s) => s.skin == skins[selected].file)?.locked = false;
           buying = false;
           loading = true;
           Data.checkAchievementsAndSkins();
           Data.save().then((_) {
-            _updateSkinList();
             selected = 0;
+            _updateSkinList();
             loading = false;
           });
         });
