@@ -27,11 +27,11 @@ class WorldGen {
     double start = sector * SECTOR_LENGTH + SECTOR_MARGIN;
     int length = (SECTOR_LENGTH - 2 * SECTOR_MARGIN).round();
 
-    List<PositionComponent> list = new List();
+    List<PositionComponent> list = [];
     int blockMaxAmount = (4 + sector / 4).round();
     for (int i = random.nextInt(blockMaxAmount); i > 0; i--) {
       double x = start + random.nextInt(length);
-      UpObstacle obstacle = random.nextBool() ? new Obstacle(x) : new UpObstacle(x);
+      Obstacle obstacle = random.nextBool() ? new DownObstacle(x) : new UpObstacle(x);
       obstacle.resize(size);
       if (list.any((box) => box.toRect().overlaps(obstacle.toRect()) || (box.x - obstacle.x).abs() < 8.0)) {
         if (random.nextBool()) {

@@ -12,9 +12,8 @@ import '../constants.dart';
 import '../components/player.dart';
 import '../mixins/has_game_ref.dart';
 
-class UpObstacle extends AnimationComponent with HasGameRef, Resizable {
-  UpObstacle(double x, [String texture = 'up_obstacle.png'])
-      : super(16.0, 16.0, new Animation.sequenced(texture, 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
+abstract class Obstacle extends AnimationComponent with HasGameRef, Resizable {
+  Obstacle(double x, String texture) : super(16.0, 16.0, new Animation.sequenced(texture, 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
     this.x = x;
   }
 
@@ -22,7 +21,6 @@ class UpObstacle extends AnimationComponent with HasGameRef, Resizable {
   void resize(Size size) {
     super.resize(size);
     width = height = sizeTenth(size);
-    y = sizeTop(size);
   }
 
   @override
@@ -45,8 +43,18 @@ class UpObstacle extends AnimationComponent with HasGameRef, Resizable {
   }
 }
 
-class Obstacle extends UpObstacle {
-  Obstacle(double x) : super(x, 'obstacle.png');
+class UpObstacle extends Obstacle {
+  UpObstacle(double x) : super(x, 'up_obstacle.png');
+
+  @override
+  void resize(Size size) {
+    super.resize(size);
+    y = sizeTop(size);
+  }
+}
+
+class DownObstacle extends Obstacle {
+  DownObstacle(double x) : super(x, 'obstacle.png');
 
   @override
   void resize(Size size) {
