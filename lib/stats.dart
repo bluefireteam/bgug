@@ -60,7 +60,7 @@ class Stats {
     double distance = game.hud.maxDistanceInMeters;
     int jumps = game.totalJumps;
     int dives = game.totalDives;
-    int gems = game.points;
+    int gems = game.totalGems;
     int coins = game.currentCoins;
 
     Score score = Score(distance, coins);

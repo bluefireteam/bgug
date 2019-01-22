@@ -63,7 +63,8 @@ class GemMoving extends SpriteComponent with HasGameRef {
     y = juice.y;
 
     if (juice.isComplete) {
-      gameRef.points++;
+      gameRef.gems++;
+      gameRef.totalGems++;
       Audio.playSfx('gem_collect.wav');
       done = true;
     }

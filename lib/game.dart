@@ -40,7 +40,7 @@ class BgugGame extends BaseGame {
   bool hasPausedAlready;
   bool shouldScore;
   Button button;
-  int points, currentCoins;
+  int gems, currentCoins, totalGems;
   int totalJumps, totalDives;
   int lastGeneratedSector;
   GameState state;
@@ -136,7 +136,8 @@ class BgugGame extends BaseGame {
   void resetVariables() {
     hasPausedAlready = false;
 
-    points = 0;
+    gems = 0;
+    totalGems = 0;
     currentCoins = 0;
     totalJumps = 0;
     totalDives = 0;
@@ -191,9 +192,9 @@ class BgugGame extends BaseGame {
         showEndCard();
       } else {
         if (button != null && button.toRect().contains(p.toOffset())) {
-          int dPoint = button.click(points);
-          if (dPoint != 0) {
-            points -= dPoint;
+          int dPoint = button.click();
+          if (dPoint != null) {
+            gems -= dPoint;
             add(new BlockTween(button.toPosition(), nextFreeSlot));
           }
         } else if (p.x > size.width / 2) {

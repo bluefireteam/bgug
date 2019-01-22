@@ -18,7 +18,7 @@ class Button extends PositionComponent with HasGameRef, Resizable {
   static const SIZE = 48.0;
   int cost, incCost;
 
-  bool get active => gameRef.points >= cost;
+  bool get active => gameRef.gems >= cost;
   bool get ghost => gameRef.maxedOutBlocks;
 
   Animation activeAnimation;
@@ -39,13 +39,17 @@ class Button extends PositionComponent with HasGameRef, Resizable {
     activeAnimation.update(dt);
   }
 
-  int click(int points) {
-    if (!ghost && active) {
+  bool canClick() {
+    return !ghost && active;
+  }
+
+  int click() {
+    if (canClick()) {
       int currentCost = cost;
       cost += incCost;
       return currentCost;
     }
-    return 0;
+    return null;
   }
 
   @override
@@ -67,7 +71,7 @@ class Button extends PositionComponent with HasGameRef, Resizable {
   void renderText(Canvas canvas) {
     Position p = new Position(width / 2, -18.0);
     Color color = active ? material.Colors.green : const Color(0xFF404040);
-    smallText.withColor(color).render(canvas, '${gameRef.points} / $cost', p, anchor: Anchor.topCenter);
+    smallText.withColor(color).render(canvas, '${gameRef.gems} / $cost', p, anchor: Anchor.topCenter);
   }
 
   @override

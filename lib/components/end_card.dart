@@ -56,7 +56,7 @@ class EndCard extends SpriteComponent with HasGameRef {
     smallText.render(canvas, gameRef.hud.maxDistanceInMeters.toStringAsFixed(2) + ' m', Position(width / 2, 48.0), anchor: Anchor.topCenter);
 
     gem.renderCentered(canvas, Position(width / 2 - 16.0, 96.0), Position(32.0, 32.0));
-    defaultText.render(canvas, '${gameRef.points}', Position(width / 2 + 16.0, 96.0 - 8.0));
+    defaultText.render(canvas, '${gameRef.gems}', Position(width / 2 + 16.0, 96.0 - 8.0));
 
     coin.renderCentered(canvas, Position(width / 2 - 16.0, 142.0), Position(32.0, 32.0));
     bool lastTicks = _tickTimer != null && _tickTimer < CLOCK_SPEED / 3;
@@ -120,20 +120,20 @@ class EndCard extends SpriteComponent with HasGameRef {
     if (_tickTimer != null) {
       _tickTimer -= dt;
       while (_tickTimer != null && _tickTimer <= 0) {
-        if (gameRef.points >= COIN_TO_GEM_RATIO) {
-          gameRef.points -= COIN_TO_GEM_RATIO;
+        if (gameRef.gems >= COIN_TO_GEM_RATIO) {
+          gameRef.gems -= COIN_TO_GEM_RATIO;
           gameRef.currentCoins++;
         } else {
-          gameRef.points = 0;
+          gameRef.gems = 0;
         }
 
-        if (gameRef.points == 0) {
+        if (gameRef.gems == 0) {
           _tickTimer = null;
         } else {
           _tickTimer += CLOCK_SPEED;
         }
       }
-    } else if (gameRef.points > 0) {
+    } else if (gameRef.gems > 0) {
       _tickTimer = CLOCK_SPEED;
     }
   }

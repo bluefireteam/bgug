@@ -105,7 +105,7 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
   }
 
   void renderGems(Canvas canvas) {
-    defaultText.render(canvas, gameRef.points.toString(), _gemPosition);
+    defaultText.render(canvas, gameRef.gems.toString(), _gemPosition);
   }
 
   void renderCoins(Canvas canvas) {
