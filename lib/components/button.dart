@@ -4,6 +4,7 @@ import 'package:flame/anchor.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/components/resizable.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/palette.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
@@ -15,7 +16,8 @@ import '../util.dart';
 
 class Button extends PositionComponent with HasGameRef, Resizable {
   static const MARGIN = 4.0;
-  static const SIZE = 48.0;
+  static const SIZE = 68.0;
+  static const ERICK_MARGIN = 14.0;
   int cost, incCost;
 
   bool get active => gameRef.gems >= cost;
@@ -31,8 +33,8 @@ class Button extends PositionComponent with HasGameRef, Resizable {
     cost = Data.currentOptions.buttonCost;
     incCost = Data.currentOptions.buttonIncCost;
 
-    activeAnimation = new Animation.sequenced('button.png', 4, textureX: 40.0, textureWidth: 40.0);
-    inactiveSprite = new Sprite('button.png', width: 40.0);
+    activeAnimation = new Animation.sequenced('button.png', 7, textureX: 68.0, textureWidth: 68.0);
+    inactiveSprite = new Sprite('button.png', width: 68.0);
   }
 
   void update(double dt) {
@@ -62,8 +64,10 @@ class Button extends PositionComponent with HasGameRef, Resizable {
       sprite.paint = ghost ? transparent : white;
       sprite.render(canvas, width, height);
       if (!ghost) {
-        gem.renderRect(canvas, new Rect.fromLTWH(-14.0, -16.0, 16.0, 16.0));
-        renderText(canvas);
+        Flame.util.drawWhere(canvas, new Position(ERICK_MARGIN, ERICK_MARGIN - 8.0), (c) {
+          gem.renderRect(c, new Rect.fromLTWH(-14.0, -16.0, 16.0, 16.0));
+          renderText(c);
+        });
       }
     }
   }
@@ -76,13 +80,13 @@ class Button extends PositionComponent with HasGameRef, Resizable {
 
   @override
   void resize(Size size) {
-    x = size.width - MARGIN - width;
-    y = MARGIN + 16.0;
+    x = size.width - MARGIN - width - ERICK_MARGIN;
+    y = MARGIN + 24.0 - ERICK_MARGIN;
   }
 
   @override
   bool isHud() => true;
 
   @override
-  int priority() => 2;
+  int priority() => 20;
 }
