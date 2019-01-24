@@ -6,6 +6,8 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/game.dart';
 import 'package:flame/position.dart';
+import 'package:flame/flame.dart';
+import 'package:flame/text_config.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:ordered_set/ordered_set.dart';
 
@@ -32,6 +34,8 @@ import 'world_gen.dart';
 math.Random random = new math.Random();
 
 enum GameState { TUTORIAL, PAUSED, RUNNING, DEAD, END_CARD, STOPPED, AD }
+
+const TextConfig fpsTextConfig = TextConfig();
 
 class BgugGame extends BaseGame {
   static Options get options => Data.currentOptions;
@@ -70,6 +74,9 @@ class BgugGame extends BaseGame {
   int get nextFreeSlot => Block.SLOT_ORDER.firstWhere((slot) => !blocks.any((b) => b.slot == slot));
 
   bool get maxedOutBlocks => blocks.length == 8;
+
+  @override
+  bool debugMode() => false;
 
   @override
   OrderedSet<Component> get components => queryComponents;
@@ -215,6 +222,10 @@ class BgugGame extends BaseGame {
       super.render(c);
     } else {
       c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height), new Paint()..color = material.Colors.black);
+    }
+
+    if (debugMode()) {
+      fpsTextConfig.render(c, fps(10).toString(), Position(0, 0));
     }
   }
 
