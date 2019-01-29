@@ -3,6 +3,7 @@ import 'package:flame/position.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flame_gamepad/flame_gamepad.dart';
 
 import 'game.dart';
 import 'audio.dart';
@@ -84,6 +85,22 @@ main() async {
         lastTimestamp = lastPost = null;
       }
     });
+
+  var gamePadController = new FlameGamepad();
+  gamePadController.setListener((String evtType, String key) {
+    if (evtType == GAMEPAD_BUTTON_DOWN && key == GAMEPAD_BUTTON_A) {
+      lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
+      Main.game.hud.startGauge();
+    } else if (evtType == GAMEPAD_BUTTON_UP && key == GAMEPAD_BUTTON_A) {
+      int dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
+      Main.game.jumpInput(dt);
+      Main.game.hud.clearGauge();
+    } else if (evtType == GAMEPAD_BUTTON_UP && key == GAMEPAD_DPAD_DOWN) {
+      Main.game.diveInput();
+    } else if (evtType == GAMEPAD_BUTTON_UP && key == GAMEPAD_BUTTON_X) {
+      Main.game.blockInput();
+    }
+  });
 
   Flame.util.addGestureRecognizer(new ImmediateMultiDragGestureRecognizer()..onStart = (Offset position) => new MyDrag());
 

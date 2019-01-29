@@ -176,10 +176,30 @@ class BgugGame extends BaseGame {
     }
   }
 
-  void input(Position p, int dt) {
+  void diveInput() {
+    totalDives++;
+    player.dive();
+    hud.clearGauge();
+  }
+
+  void jumpInput(int dt) {
     if (dt > Data.currentOptions.maxHoldJumpMillis) {
       dt = Data.currentOptions.maxHoldJumpMillis;
     }
+
+    totalJumps++;
+    player.jump(dt);
+  }
+
+  void blockInput() {
+    int dPoint = button.click();
+    if (dPoint != null) {
+      gems -= dPoint;
+      add(new BlockTween(button.toPosition(), nextFreeSlot));
+    }
+  }
+
+  void input(Position p, int dt) {
     if (state == GameState.PAUSED) {
       return;
     }
@@ -199,18 +219,11 @@ class BgugGame extends BaseGame {
         showEndCard();
       } else {
         if (button != null && button.toRect().contains(p.toOffset())) {
-          int dPoint = button.click();
-          if (dPoint != null) {
-            gems -= dPoint;
-            add(new BlockTween(button.toPosition(), nextFreeSlot));
-          }
+          blockInput();
         } else if (p.x > size.width / 2) {
-          totalDives++;
-          player.dive();
-          hud.clearGauge();
+          diveInput();
         } else {
-          totalJumps++;
-          player.jump(dt);
+          jumpInput(dt);
         }
       }
     }
