@@ -20,7 +20,11 @@ class _AsyncSaverState extends State<_AsyncSaverWidget> {
     AsyncSaver._stopCallback = (saver) async {
       setState(() => saver._state = 1);
       await Future.delayed(Duration(seconds: 2));
-      setState(() => savers.remove(saver));
+      if (this.mounted) {
+        setState(() => savers.remove(saver));
+      } else {
+        savers.remove(saver);
+      }
     };
   }
 

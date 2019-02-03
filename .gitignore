@@ -13,4 +13,8 @@ pubspec.lock
 .dart_tool/
 .vscode
 
+.project
+.settings/
+.classpath
+
 ios/Podfile

@@ -9,11 +9,12 @@ import 'package:play_games/play_games.dart';
 
 import '../ads.dart';
 import '../async_saver.dart';
+import '../audio.dart';
 import '../constants.dart';
 import '../data.dart';
 import '../iap.dart';
-import '../audio.dart';
 import '../play_user.dart';
+import '../tutorial_status.dart';
 import 'audio_control_widget.dart';
 import 'coin_widget.dart';
 import 'gui_commons.dart';
@@ -24,9 +25,45 @@ class HomeScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _HomeScreenState();
 }
 
+class _TutorialOverlay extends StatelessWidget {
+  final Widget main;
+  final String image;
+  final void Function() onClick;
+
+  _TutorialOverlay(this.main, this.image, this.onClick);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: LayoutBuilder(builder: (_, BoxConstraints size) {
+        double potWidth = 3 * size.maxWidth / 4;
+        double potHeight = 4 * size.maxHeight / 5;
+        double frac = math.min(potWidth / 192, potHeight / 162);
+        double width = 192 * frac;
+        double height = 162 * frac;
+        return Stack(
+          children: [
+            main,
+            Positioned(
+              child: Image.asset('assets/images/$image.png',
+                  fit: BoxFit.cover, filterQuality: FilterQuality.none),
+              left: (size.maxWidth - width) / 2,
+              top: (size.maxHeight - height) / 2,
+              width: width,
+              height: height,
+            ),
+          ],
+        );
+      }),
+      behavior: HitTestBehavior.opaque,
+      onTap: onClick,
+    );
+  }
+}
+
 class _HomeScreenState extends State<HomeScreen> {
   bool showingAchievements = false;
-  int showingTutorial = -1; // -1 not showing, 0 page 0, 1 page 1
+  TutorialStatus tutorialStatus = TutorialStatus.NOT_SHOWING;
   bool loading = true;
   PlayUser user;
 
@@ -43,7 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
         'laser_load.wav',
         'laser_shoot.wav',
         'music.mp3',
-      ]).then((audios) => print('Done loading ' + audios.length.toString() + ' audios.')),
+      ]).then((audios) =>
+          print('Done loading ' + audios.length.toString() + ' audios.')),
       Flame.images.loadAll([
         'skins/asimov.png',
         'hud_bg.png',
@@ -62,6 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'endgame_buttons.png',
         'tutorial.png',
         'tutorial-2.png',
+        'tutorial-gamepad.png',
         'splash_screen.png',
         'google-play-button.png',
         'store/skins_panel.png',
@@ -69,7 +108,8 @@ class _HomeScreenState extends State<HomeScreen> {
         'store/store-ui.png',
         'store/times_2_panel.png',
         'store/x2coins-certificate.png',
-      ]).then((images) => print('Done loading ' + images.length.toString() + ' images.')),
+      ]).then((images) =>
+          print('Done loading ' + images.length.toString() + ' images.')),
       Data.loadHardData(),
       IAP.setup(),
       Audio.init(),
@@ -120,16 +160,33 @@ class _HomeScreenState extends State<HomeScreen> {
       return GestureDetector(
         child: Container(
             margin: const EdgeInsets.only(left: 12),
-            child: Image.asset('assets/images/google-play-button.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 89 * S, height: 17 * S)),
+            child: Image.asset('assets/images/google-play-button.png',
+                filterQuality: FilterQuality.none,
+                fit: BoxFit.cover,
+                width: 89 * S,
+                height: 17 * S)),
         onTap: () => _performSignIn(),
       );
     }
     return GestureDetector(
       child: Stack(
         children: [
-          Image.asset('assets/images/username-panel.png', filterQuality: FilterQuality.none, fit: BoxFit.cover, width: 88 * S, height: 18 * S),
-          Positioned(child: Text(user.account.displayName, style: TextStyle(fontFamily: '5x5', fontSize: 14.0)), right: (S * 20), top: 10),
-          Positioned(child: RawImage(image: user.avatar, width: S * 9, height: S * 9), right: S * 7, top: S * 2, width: S * 9, height: S * 9),
+          Image.asset('assets/images/username-panel.png',
+              filterQuality: FilterQuality.none,
+              fit: BoxFit.cover,
+              width: 88 * S,
+              height: 18 * S),
+          Positioned(
+              child: Text(user.account.displayName,
+                  style: TextStyle(fontFamily: '5x5', fontSize: 14.0)),
+              right: (S * 20),
+              top: 10),
+          Positioned(
+              child: RawImage(image: user.avatar, width: S * 9, height: S * 9),
+              right: S * 7,
+              top: S * 2,
+              width: S * 9,
+              height: S * 9),
         ],
       ),
       onTap: () async {
@@ -138,6 +195,19 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() => showingAchievements = false);
       },
     );
+  }
+
+  String _tutorialImage() {
+    switch (tutorialStatus) {
+      case TutorialStatus.PAGE_0_GAMEPAD:
+        return 'tutorial-gamepad';
+      case TutorialStatus.PAGE_0_REGULAR:
+        return 'tutorial';
+      case TutorialStatus.PAGE_1:
+        return 'tutorial-2';
+      default:
+        return null;
+    }
   }
 
   @override
@@ -160,30 +230,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Widget main = renderContent(context);
 
-    if (showingTutorial != -1) {
-      return GestureDetector(
-        child: LayoutBuilder(builder: (_, BoxConstraints size) {
-          double potWidth = 3 * size.maxWidth / 4;
-          double potHeight = 4 * size.maxHeight / 5;
-          double frac = math.min(potWidth / 192, potHeight / 162);
-          double width = 192 * frac;
-          double height = 162 * frac;
-          return Stack(
-            children: [
-              main,
-              Positioned(
-                child: Image.asset('assets/images/tutorial${showingTutorial == 0 ? '' : '-2'}.png', fit: BoxFit.cover, filterQuality: FilterQuality.none),
-                left: (size.maxWidth - width) / 2,
-                top: (size.maxHeight - height) / 2,
-                width: width,
-                height: height,
-              ),
-            ],
-          );
-        }),
-        behavior: HitTestBehavior.opaque,
-        onTap: () => setState(() => showingTutorial = showingTutorial == 0 ? 1 : -1),
-      );
+    if (tutorialStatus != TutorialStatus.NOT_SHOWING) {
+      return _TutorialOverlay(main, _tutorialImage(), () => this.setState(() => tutorialStatus = getNextStatus(tutorialStatus)));
     }
 
     if (showingAchievements) {
@@ -194,6 +242,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return main;
+  }
+
+  void displayTutorial() async {
+    TutorialStatus nxtStatus = await getFirstTutorialStatus();
+    setState(() => tutorialStatus = nxtStatus);
   }
 
   Widget renderContent(BuildContext context) {
@@ -213,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               btn('Play', () => Navigator.of(context).pushNamed('/start')),
               btn('Score', () => Navigator.of(context).pushNamed('/score')),
-              btn('How to Play', () => setState(() => showingTutorial = 0)),
+              btn('How to Play', displayTutorial),
               btn('Credits', () => Navigator.of(context).pushNamed('/credits')),
               btn('Exit', () => SystemNavigator.pop()),
             ],
@@ -241,7 +294,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Positioned(
               child: Column(
-                children: [Row(children: this.topRightButtons()), pad(CoinWidget(), 4.0)],
+                children: [
+                  Row(children: this.topRightButtons()),
+                  pad(CoinWidget(), 4.0)
+                ],
                 crossAxisAlignment: CrossAxisAlignment.end,
               ),
               top: 12.0,

@@ -6,12 +6,12 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/game.dart';
 import 'package:flame/position.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/text_config.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:ordered_set/ordered_set.dart';
 
 import 'ads.dart';
+import 'audio.dart';
 import 'components/background.dart';
 import 'components/block.dart';
 import 'components/button.dart';
@@ -26,9 +26,9 @@ import 'components/tutorial.dart';
 import 'constants.dart';
 import 'data.dart';
 import 'mixins/has_game_ref.dart';
-import 'audio.dart';
 import 'options.dart';
 import 'queryable_ordered_set.dart';
+import 'tutorial_status.dart';
 import 'world_gen.dart';
 
 math.Random random = new math.Random();
@@ -124,8 +124,8 @@ class BgugGame extends BaseGame {
     add(Player());
 
     if (options.hasGuns) {
-      add(new Block(nextFreeSlot, true));
-      add(new Block(nextFreeSlot, true));
+      add(Block(nextFreeSlot, true));
+      add(Block(nextFreeSlot, true));
       add(ShooterCane());
       add(Shooter('up'));
       add(Shooter('down'));
@@ -133,7 +133,7 @@ class BgugGame extends BaseGame {
     }
 
     if (this.state == GameState.TUTORIAL) {
-      add(Tutorial());
+      getFirstTutorialStatus().then((state) => add(Tutorial(state)));
     }
 
     Ad.loadAd();
@@ -158,9 +158,7 @@ class BgugGame extends BaseGame {
     if (c is HasGameRef) {
       (c as HasGameRef).gameRef = this;
     }
-    if (size != null) {
-      c.resize(size);
-    }
+    super.preAdd(c);
   }
 
   void startInput(Position p, int dt) {
@@ -208,7 +206,7 @@ class BgugGame extends BaseGame {
       return;
     }
     if (state == GameState.TUTORIAL) {
-      if (tutorial.tap()) {
+      if (tutorial != null && tutorial.tap()) {
         state = GameState.RUNNING;
       }
       return;
