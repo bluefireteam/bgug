@@ -24,4 +24,10 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="achievement_the_collector" translatable="false">CgkIq7T5w4gJEAIQCA</string>
     <!-- achievement The Completionist -->
     <string name="achievement_the_completionist" translatable="false">CgkIq7T5w4gJEAIQCQ</string>
+    <!-- leaderboard BGUG - Max Distances -->
+    <string name="leaderboard_bgug__max_distances" translatable="false">CgkIq7T5w4gJEAIQDQ</string>
+    <!-- leaderboard BGUG - Max Gems -->
+    <string name="leaderboard_bgug__max_gems" translatable="false">CgkIq7T5w4gJEAIQDg</string>
+    <!-- leaderboard BGUG - Max Coins -->
+    <string name="leaderboard_bgug__max_coins" translatable="false">CgkIq7T5w4gJEAIQDw</string>
 </resources>

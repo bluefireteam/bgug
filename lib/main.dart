@@ -10,6 +10,7 @@ import 'audio.dart';
 import 'screens/home_screen.dart';
 import 'screens/options_screen.dart';
 import 'screens/score_screen.dart';
+import 'screens/leaderboards_screen.dart';
 import 'screens/start_game_screen.dart';
 import 'screens/store_screen.dart';
 import 'screens/skins_screen.dart';
@@ -58,6 +59,7 @@ main() async {
       '/start': (BuildContext ctx) => Scaffold(body: StartGameScreen()),
       '/options': (BuildContext ctx) => Scaffold(body: OptionsScreen()),
       '/score': (BuildContext ctx) => Scaffold(body: ScoreScreen()),
+      '/leaderboards': (BuildContext ctx) => Scaffold(body: LeaderboardsScreen()),
       '/store': (BuildContext ctx) => Scaffold(body: StoreScreen()),
       '/skins': (BuildContext ctx) => Scaffold(body: SkinScreen()),
       '/credits': (BuildContext ctx) => Scaffold(body: CreditsScreen()),

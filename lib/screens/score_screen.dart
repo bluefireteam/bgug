@@ -21,6 +21,9 @@ class ScoreScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 pad(Text('sCoRe', style: title), 20.0),
+                btn('Leaderboards', () {
+                  Navigator.pushNamed(context, '/leaderboards');
+                }),
                 btn('Go back', () {
                   Navigator.of(context).pop();
                 }),

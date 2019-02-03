@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:play_games/play_games.dart';
 
 import 'game.dart';
 
@@ -56,6 +57,24 @@ class Stats {
 
   Map<String, dynamic> toJson() => _$StatsToJson(this);
 
+  Future<SubmitScoreResults> _submitScoreDistance() {
+    return PlayGames.submitScoreByName('leaderboard_bgug__max_distances', (10 * maxDistance).round()); // one decimal place
+  }
+
+  Future<SubmitScoreResults> _submitScoreGems() {
+    return PlayGames.submitScoreByName('leaderboard_bgug__max_gems', maxGems);
+  }
+
+  Future<SubmitScoreResults> _submitScoreCoins() {
+    return PlayGames.submitScoreByName('leaderboard_bgug__max_coins', maxCoins);
+  }
+
+  void firstTimeScoreCheck() {
+    _submitScoreDistance();
+    _submitScoreCoins();
+    _submitScoreGems();
+  }
+
   void calculateStats(BgugGame game) {
     double distance = game.hud.maxDistanceInMeters;
     int jumps = game.totalJumps;
@@ -69,6 +88,7 @@ class Stats {
 
     if (distance > maxDistance) {
       maxDistance = distance;
+      _submitScoreDistance();
     }
     totalDistance += distance;
 
@@ -84,11 +104,13 @@ class Stats {
 
     if (gems > maxGems) {
       maxGems = gems;
+      _submitScoreGems();
     }
     totalGems += gems;
 
     if (coins > maxCoins) {
       maxCoins = coins;
+      _submitScoreCoins();
     }
     totalCoins += coins;
   }

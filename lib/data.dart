@@ -168,6 +168,12 @@ class Data {
   }
 
   static Future<SavedData> fetch(bool createNew) async {
+    SavedData loaded = await _doFetch(createNew);
+    loaded?.stats?.firstTimeScoreCheck();
+    return loaded;
+  }
+
+  static Future<SavedData> _doFetch(bool createNew) async {
     if (playGames) {
       return await _fetchFromPlayGames(createNew);
     } else {
