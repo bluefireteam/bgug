@@ -12,8 +12,7 @@ dependencies:
   play_games: 0.4.1
   url_launcher: 4.0.3
   flutter_inapp_purchase: ^0.8.8
-  flame_gamepad:
-    path: ../flame_gamepad
+  flame_gamepad: ^0.0.2
 
 dev_dependencies:
   build_runner: ^1.0.0
