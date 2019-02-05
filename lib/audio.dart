@@ -1,9 +1,17 @@
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flame/flame.dart';
+import 'package:flame/audio_pool.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum Song { GAME, MENU }
+
+Future<AudioPool> loadSfx(String file) async {
+  var audio = new AudioPool(file, prefix: 'audio/', maxPlayers: 4);
+  await audio.init();
+
+  return audio;
+}
 
 class Audio {
   static AudioCache musicPlayer;
@@ -13,6 +21,8 @@ class Audio {
   static bool _enableMusic;
   static bool enableSfx;
   static bool inited = false;
+
+  static Map<String, AudioPool> sfx = Map();
 
   static bool get enableMusic => _enableMusic;
 
@@ -30,6 +40,13 @@ class Audio {
     await musicPlayer.loadAll(['music.mp3', 'menu.mp3']);
     await musicPlayer.fixedPlayer.setReleaseMode(ReleaseMode.LOOP);
 
+    sfx['block.wav'] = await loadSfx('block.wav');
+    sfx['death.wav'] = await loadSfx('death.wav');
+    sfx['gem_collect.wav'] = await loadSfx('gem_collect.wav');
+    sfx['jump.wav'] = await loadSfx('jump.wav');
+    sfx['laser_load.wav'] = await loadSfx('laser_load.wav');
+    sfx['laser_shoot.wav'] = await loadSfx('laser_shoot.wav');
+
     inited = true;
   }
 
@@ -41,7 +58,7 @@ class Audio {
 
   static void playSfx(String file) {
     if (enableSfx && !isPaused) {
-      Flame.audio.play(file);
+      sfx[file].start();
     }
   }
 
