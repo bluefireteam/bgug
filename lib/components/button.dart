@@ -16,8 +16,8 @@ import '../util.dart';
 
 class Button extends PositionComponent with HasGameRef, Resizable {
   static const MARGIN = 4.0;
-  static const SIZE = 68.0;
-  static const ERICK_MARGIN = 14.0;
+  static const SIZE = 84.0;
+  static const CUSTOM_MARGIN = 26.0;
   int cost, incCost;
 
   bool get active => gameRef.gems >= cost;
@@ -64,8 +64,8 @@ class Button extends PositionComponent with HasGameRef, Resizable {
       sprite.paint = ghost ? transparent : white;
       sprite.render(canvas, width, height);
       if (!ghost) {
-        Flame.util.drawWhere(canvas, new Position(ERICK_MARGIN, ERICK_MARGIN - 8.0), (c) {
-          gem.renderRect(c, new Rect.fromLTWH(-14.0, -16.0, 16.0, 16.0));
+        Flame.util.drawWhere(canvas, new Position(CUSTOM_MARGIN - 8, CUSTOM_MARGIN - 8.0), (c) {
+          gem.renderRect(c, new Rect.fromLTWH(-8.0, -16.0, 16.0, 16.0));
           renderText(c);
         });
       }
@@ -80,8 +80,8 @@ class Button extends PositionComponent with HasGameRef, Resizable {
 
   @override
   void resize(Size size) {
-    x = size.width - MARGIN - width - ERICK_MARGIN;
-    y = MARGIN + 24.0 - ERICK_MARGIN;
+    x = size.width - MARGIN - width - CUSTOM_MARGIN;
+    y = MARGIN + 24.0 - CUSTOM_MARGIN;
   }
 
   @override
