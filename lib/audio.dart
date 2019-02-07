@@ -6,9 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum Song { GAME, MENU }
 
 Future<AudioPool> loadSfx(String file) async {
-  var audio = new AudioPool(file, prefix: 'audio/', maxPlayers: 4);
+  AudioPool audio = new AudioPool(file, prefix: 'audio/', minPlayers: 2, maxPlayers: 4);
   await audio.init();
-
   return audio;
 }
 
@@ -39,12 +38,12 @@ class Audio {
     await musicPlayer.loadAll(['music.mp3', 'menu.mp3']);
     await musicPlayer.fixedPlayer.setReleaseMode(ReleaseMode.LOOP);
 
-    sfx['block.wav'] = await loadSfx('block.wav');
-    sfx['death.wav'] = await loadSfx('death.wav');
-    sfx['gem_collect.wav'] = await loadSfx('gem_collect.wav');
-    sfx['jump.wav'] = await loadSfx('jump.wav');
-    sfx['laser_load.wav'] = await loadSfx('laser_load.wav');
-    sfx['laser_shoot.wav'] = await loadSfx('laser_shoot.wav');
+    List<String> sounds = ['block.wav', 'death.wav', 'gem_collect.wav', 'jump.wav', 'laser_load.wav', 'laser_shoot.wav'];
+    Iterable<Future> ps = sounds.map((s) {
+      Future<AudioPool> promise = loadSfx(s);
+      return promise.then((value) => sfx[s] = value);
+    });
+    await Future.wait(ps);
 
     inited = true;
   }
