@@ -90,18 +90,14 @@ main() async {
 
   var gamePadController = new FlameGamepad();
   gamePadController.setListener((String evtType, String key) {
+    int dt;
     if (evtType == GAMEPAD_BUTTON_DOWN && key == GAMEPAD_BUTTON_A) {
       lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
-      Main.game.hud.startGauge();
     } else if (evtType == GAMEPAD_BUTTON_UP && key == GAMEPAD_BUTTON_A) {
-      int dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
-      Main.game.jumpInput(dt);
-      Main.game.hud.clearGauge();
-    } else if (evtType == GAMEPAD_BUTTON_UP && key == GAMEPAD_DPAD_DOWN) {
-      Main.game.diveInput();
-    } else if (evtType == GAMEPAD_BUTTON_UP && key == GAMEPAD_BUTTON_X) {
-      Main.game.blockInput();
+      dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
     }
+
+    Main.game.gamepadInput(evtType, key, dt);
   });
 
   Flame.util.addGestureRecognizer(new ImmediateMultiDragGestureRecognizer()..onStart = (Offset position) => new MyDrag());

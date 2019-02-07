@@ -69,6 +69,7 @@ flutter:
     - assets/images/button.png
     - assets/images/endgame_bg.png
     - assets/images/endgame_buttons.png
+    - assets/images/endgame_buttons_gamepad.png
     - assets/images/tutorial.png
     - assets/images/tutorial-2.png
     - assets/images/tutorial-gamepad.png

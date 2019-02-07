@@ -4,6 +4,7 @@ import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame_gamepad/flame_gamepad.dart';
 
 import '../iap.dart';
 import '../mixins/has_game_ref.dart';
@@ -17,9 +18,19 @@ class EndCard extends SpriteComponent with HasGameRef {
   static final Sprite gem = new Sprite('gem.png');
   static final Sprite coin = new Sprite('coin.png', width: 16.0);
 
-  static final Sprite buttonReplay = new Sprite('endgame_buttons.png', height: 16.0);
-  static final Sprite buttonGoBack = new Sprite('endgame_buttons.png', height: 16.0, y: 32.0);
-  static final Sprite buttonX2Coins = new Sprite('endgame_buttons.png', height: 16.0, y: 16.0);
+  static final Sprite buttonReplayNormal = new Sprite('endgame_buttons.png', height: 16.0);
+  static final Sprite buttonGoBackNormal = new Sprite('endgame_buttons.png', height: 16.0, y: 32.0);
+  static final Sprite buttonX2CoinsNormal = new Sprite('endgame_buttons.png', height: 16.0, y: 16.0);
+
+  static final Sprite buttonReplayGamepad = new Sprite('endgame_buttons_gamepad.png', height: 16.0);
+  static final Sprite buttonGoBackGamepad = new Sprite('endgame_buttons_gamepad.png', height: 16.0, y: 32.0);
+  static final Sprite buttonX2CoinsGamepad = new Sprite('endgame_buttons_gamepad.png', height: 16.0, y: 16.0);
+
+  bool isGamepadConnected = false;
+
+  Sprite get buttonReplay => isGamepadConnected ? buttonReplayGamepad : buttonReplayNormal;
+  Sprite get buttonGoBack => isGamepadConnected ? buttonGoBackGamepad : buttonGoBackNormal;
+  Sprite get buttonX2Coins => isGamepadConnected ? buttonX2CoinsGamepad : buttonX2CoinsNormal;
 
   bool get doubleCoins => seenAd || IAP.pro;
   bool seenAd = false;
@@ -42,6 +53,10 @@ class EndCard extends SpriteComponent with HasGameRef {
 
   EndCard() : super.rectangle(1, 1, 'endgame_bg.png');
 
+  Future<void> init() async {
+    this.isGamepadConnected = await FlameGamepad.isGamepadConnected;
+  }
+
   @override
   void render(Canvas canvas) {
     super.render(canvas);
@@ -62,6 +77,18 @@ class EndCard extends SpriteComponent with HasGameRef {
 
     if (_showAdButton) {
       buttonX2Coins.renderPosition(canvas, _x2Position, _buttonSize);
+    }
+  }
+
+  void gamepadInput(String evtType, String key) {
+    if (evtType == GAMEPAD_BUTTON_UP) {
+      if (key == GAMEPAD_BUTTON_A) {
+        doClickReplay();
+      } else if (key == GAMEPAD_BUTTON_Y) {
+        doClickShowAd();
+      } else if (key == GAMEPAD_BUTTON_B) {
+        doClickBack();
+      }
     }
   }
 

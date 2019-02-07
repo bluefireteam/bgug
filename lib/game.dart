@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/game.dart';
+import 'package:flame_gamepad/flame_gamepad.dart';
 import 'package:flame/position.dart';
 import 'package:flame/text_config.dart';
 import 'package:flutter/material.dart' as material;
@@ -87,7 +88,10 @@ class BgugGame extends BaseGame {
 
   void showEndCard() {
     state = GameState.END_CARD;
-    add(new EndCard());
+    var endCard = new EndCard();
+    endCard.init().then((_) {
+      add(endCard);
+    });
   }
 
   void showAd() {
@@ -194,6 +198,37 @@ class BgugGame extends BaseGame {
     if (dPoint != null) {
       gems -= dPoint;
       add(new BlockTween(button.toPosition(), nextFreeSlot));
+    }
+  }
+
+  void gamepadInput(String evtType, String key, int dt) {
+    if (state == GameState.PAUSED) {
+      return;
+    }
+    if (state == GameState.END_CARD) {
+      endCard?.gamepadInput(evtType, key);
+      return;
+    }
+    if (state == GameState.TUTORIAL) {
+      if (tutorial != null && tutorial.tap()) {
+        state = GameState.RUNNING;
+      }
+      return;
+    }
+
+    if (player.dead()) {
+      showEndCard();
+    } else {
+      if (evtType == GAMEPAD_BUTTON_DOWN && key == GAMEPAD_BUTTON_A) {
+        hud.startGauge();
+      } else if (evtType == GAMEPAD_BUTTON_UP && key == GAMEPAD_BUTTON_A) {
+        jumpInput(dt);
+        hud.clearGauge();
+      } else if (evtType == GAMEPAD_BUTTON_UP && key == GAMEPAD_DPAD_DOWN) {
+        diveInput();
+      } else if (evtType == GAMEPAD_BUTTON_UP && key == GAMEPAD_BUTTON_X) {
+        blockInput();
+      }
     }
   }
 
