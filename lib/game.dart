@@ -285,12 +285,13 @@ class BgugGame extends BaseGame {
     return state == GameState.TUTORIAL || state == GameState.RUNNING || state == GameState.END_CARD;
   }
 
-  Future award() async {
+  void award() {
     if (shouldScore) {
       Data.buy.coins += endCard.coins;
       Data.stats.calculateStats(this);
       Data.checkAchievementsAndSkins();
       Data.saveAsync();
+      print('Saved async');
     }
   }
 

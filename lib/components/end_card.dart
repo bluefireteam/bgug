@@ -25,7 +25,6 @@ class EndCard extends SpriteComponent with HasGameRef {
   bool seenAd = false;
 
   double _tickTimer;
-  bool loading = false;
 
   int get coins => (doubleCoins ? 2 : 1) * gameRef.currentCoins;
 
@@ -46,11 +45,6 @@ class EndCard extends SpriteComponent with HasGameRef {
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-
-    if (loading) {
-      smallText.render(canvas, 'Loading...', Position(width / 2, height / 2), anchor: Anchor.center);
-      return;
-    }
 
     smallText.render(canvas, 'Total Distance:', Position(width / 2, 32.0), anchor: Anchor.topCenter);
     smallText.render(canvas, gameRef.hud.maxDistanceInMeters.toStringAsFixed(2) + ' m', Position(width / 2, 48.0), anchor: Anchor.topCenter);
@@ -77,10 +71,6 @@ class EndCard extends SpriteComponent with HasGameRef {
       return;
     }
 
-    if (loading) {
-      return;
-    }
-
     Rect replay = Position.rectFrom(_replayPosition, _buttonSize);
     Rect doubleCoins = Position.rectFrom(_x2Position, _buttonSize);
     Rect back = Position.rectFrom(_goBackPosition, _buttonSize);
@@ -95,24 +85,24 @@ class EndCard extends SpriteComponent with HasGameRef {
     }
   }
 
-  void doClickReplay() async {
-    loading = true;
-    await gameRef.award();
+  void doClickReplay() {
+    print('Clicked replay');
+    gameRef.award();
     gameRef.restart();
-    loading = false;
+    print('Restarted');
   }
 
   void doClickShowAd() {
-    loading = true;
+    print('Clicked ad');
     gameRef.showAd();
-    loading = false;
+    print('Shown ad');
   }
 
-  Future doClickBack() async {
-    loading = true;
-    await gameRef.award();
+  void doClickBack() {
+    print('Clicked go back');
+    gameRef.award();
     gameRef.stop();
-    loading = false;
+    print('Stopped');
   }
 
   @override
