@@ -97,7 +97,9 @@ main() async {
       dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
     }
 
-    Main.game.gamepadInput(evtType, key, dt);
+    if (Main.game != null) {
+      Main.game.gamepadInput(evtType, key, dt);
+    }
   });
 
   Flame.util.addGestureRecognizer(new ImmediateMultiDragGestureRecognizer()..onStart = (Offset position) => new MyDrag());
