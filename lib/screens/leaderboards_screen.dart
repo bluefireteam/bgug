@@ -133,6 +133,16 @@ class LeaderboardsScreenState extends State<LeaderboardsScreen> {
     return [title]..addAll(items);
   }
 
+  bool isMissingFromAnyList() {
+    if (distances == null || coins == null) {
+      return false;
+    }
+    String loggedUser = Data.user.account.displayName;
+    bool isOnDistances = distances.any((s) => s.scoreHolderDisplayName == loggedUser);
+    bool isOnCoins = coins.any((s) => s.scoreHolderDisplayName == loggedUser);
+    return !isOnDistances || !isOnCoins;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -162,6 +172,7 @@ class LeaderboardsScreenState extends State<LeaderboardsScreen> {
               ],
             ),
           ),
+          isMissingFromAnyList() ? Center(child: Text('Note that you are not listed because you have disabled the option to appear publically in GPGS.')) : Container(),
           btn('Go back', () {
             Navigator.of(context).pop();
           }),
