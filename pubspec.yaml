@@ -5,7 +5,8 @@ version: 0.6.1
 dependencies:
   flutter:
     sdk: flutter
-  flame: 0.10.1
+  flame:
+    path: ../flame
   json_annotation: 2.0.0
   shared_preferences: 0.4.1
   firebase_admob: 0.7.0

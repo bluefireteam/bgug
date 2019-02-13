@@ -19,14 +19,20 @@ class Background extends SpriteComponent {
     this.width = size.width;
     this.height = size.height;
     this.x = this.y = 0.0;
-    this.sprite = new Sprite.fromImage(
-        bg.generate(this.width.toInt() ~/ 4, this.height.toInt() ~/ 4));
-    this.speed =
-        new Position(SPEED, 0.0).rotate(random.nextDouble() * 2 * math.pi);
+    this.speed = new Position(SPEED, 0.0).rotate(random.nextDouble() * 2 * math.pi);
+    this.setImageLater();
+  }
+
+  void setImageLater() async {
+    Image image = await bg.generate(this.width.toInt() ~/ 4, this.height.toInt() ~/ 4);
+    this.sprite = new Sprite.fromImage(image);
   }
 
   @override
   void render(Canvas c) {
+    if (sprite == null) {
+      return;
+    }
     Flame.util.drawWhere(c, new Position(x - width, y - height),
             (c) => sprite.render(c, width, height));
     Flame.util.drawWhere(

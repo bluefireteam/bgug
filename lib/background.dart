@@ -38,7 +38,7 @@ class ImageBuilder {
     return pixels[x][y];
   }
 
-  Image toImage() {
+  Future<Image> toImage() {
     PictureRecorder recorder = new PictureRecorder();
     Rect everything =
         new Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble());
@@ -121,7 +121,7 @@ void drawScrew(ImageBuilder image, int x, int y) {
   image.set(x + 1, y + 1, DARK);
 }
 
-Image generate(int width, int height) {
+Future<Image> generate(int width, int height) async {
   try {
     ImageBuilder image = drawOnBuilder(width, height);
     return image.toImage();
