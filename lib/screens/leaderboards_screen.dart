@@ -88,13 +88,14 @@ class ScoreListWeaver {
       PlayGames.loadPlayerCenteredScoresByName(leaderboardName,
           TimeSpan.TIME_SPAN_ALL_TIME, CollectionType.COLLECTION_PUBLIC, 1),
     ];
+    final isMyScore = (s) => s.scoreHolderDisplayName == this.loggedUser;
     return Future.wait(ps).then((results) {
       List<ScoreResult> scores = results.first.scores;
-      bool isUserOnTop10 =
-          scores.any((s) => s.scoreHolderDisplayName == this.loggedUser);
-      bool userHasOwnScore = results.last.scores.isNotEmpty;
+      List<ScoreResult> userScore = results.last.scores.where(isMyScore).toList();
+      bool isUserOnTop10 = scores.any(isMyScore);
+      bool userHasOwnScore = userScore.isNotEmpty;
       if (!isUserOnTop10 && userHasOwnScore) {
-        scores[scores.length - 1] = results.last.scores.first;
+        scores[scores.length - 1] = userScore.first;
       }
       return scores;
     });
