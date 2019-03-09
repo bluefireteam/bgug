@@ -1,6 +1,11 @@
 {
   "skins": [
     {
+      "name": "Duck",
+      "file": "duck.png",
+      "cost": 200
+    },
+    {
       "name": "Cat",
       "file": "cat.png",
       "cost": 400
