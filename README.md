@@ -4,7 +4,7 @@
 
 It's a fast paced side-scrolling platformer with innovative controls and and a gun-related twist.
 
-Developed by the [Fireslime Team](https://fireslime.xyz/games) using [flame](https://flame-engine.org).
+Developed by the [Fireslime Team](https://fireslime.xyz) using [flame](https://flame-engine.org).
 
 This is also a good, complete example and showcase of all flame has to offer. Please check this source code if you have advanced questions about flame.
 
