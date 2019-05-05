@@ -8,7 +8,7 @@ Developed by the [Fireslime Team](https://fireslime.xyz/games) using [flame](htt
 
 This is also a good, complete example and showcase of all flame has to offer. Please check this source code if you have advanced questions about flame.
 
-# Gameplay
+## Gameplay
 
 BGUG puts you in control of a tiny robot, in his quest to avoid obstacles and collect gems.
 
@@ -46,7 +46,7 @@ To generate an APK to later install on any devices.
 
 Have fun!
 
-### Contributing
+## Contributing
 
 Star, open your issue or PR us, we'd be really, really glad!
 
