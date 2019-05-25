@@ -1,10 +1,11 @@
 import 'dart:math' as math;
 
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:play_games/play_games.dart';
 
+import 'data.dart';
 import 'game.dart';
+import 'play_user.dart';
 
 part 'stats.g.dart';
 
@@ -25,6 +26,7 @@ class Score {
 @JsonSerializable()
 class Stats {
   static const MAX_SCORES = 10;
+  static const MAX_TRIES = 3;
 
   List<Score> scores;
 
@@ -58,15 +60,35 @@ class Stats {
   Map<String, dynamic> toJson() => _$StatsToJson(this);
 
   Future<SubmitScoreResults> _submitScoreDistance() {
-    return PlayGames.submitScoreByName('leaderboard_bgug__max_distances', (10 * maxDistance).round()); // one decimal place
+    final distance = (10 * maxDistance).round(); // one decimal place
+    return _submitScore('leaderboard_bgug__max_distances', distance);
   }
 
   Future<SubmitScoreResults> _submitScoreGems() {
-    return PlayGames.submitScoreByName('leaderboard_bgug__max_gems', maxGems);
+    return _submitScore('leaderboard_bgug__max_gems', maxGems);
   }
 
   Future<SubmitScoreResults> _submitScoreCoins() {
-    return PlayGames.submitScoreByName('leaderboard_bgug__max_coins', maxCoins);
+    return _submitScore('leaderboard_bgug__max_coins', maxCoins);
+  }
+
+  Future<SubmitScoreResults> _submitScore(String name, int value, { int tries = 0 }) async {
+    try {
+      SubmitScoreResults results = await PlayGames.submitScoreByName(name, value);
+      print('[ACHIEVEMENTS] Successfully submited! Name: $name, Value: $value');
+      return results;
+    } catch (ex) {
+      print('[ACHIEVEMENTS] Error while submmiting scoreon try $tries: $ex');
+      if (tries == MAX_TRIES) {
+        print('[ACHIEVEMENTS] Exceed max tries... Giving up.');
+        throw ex;
+      }
+      Data.user = await PlayUser.singIn();
+      if (Data.user == null) {
+        throw ex;
+      }
+      return _submitScore(name, value, tries: tries + 1);
+    }
   }
 
   void firstTimeScoreCheck() {

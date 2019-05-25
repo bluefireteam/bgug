@@ -66,9 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
   TutorialStatus tutorialStatus = TutorialStatus.NOT_SHOWING;
   bool loading = true;
   PlayUser user;
+  String userCallback;
 
   _HomeScreenState() {
-    var ps = <Future>[
+    var ps = [
       Ad.startup(),
       Flame.util.fullScreen(),
       Flame.util.setOrientation(DeviceOrientation.landscapeLeft),
@@ -152,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
         content: new Text(ex.toString()),
       ));
     }
+    userCallback = Data.addUserCallback((user) => this.setState(() => this.user = user));
   }
 
   Widget userCard() {
@@ -316,5 +318,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     result.add(StoreButtonWidget());
     return result;
+  }
+
+  @override
+  void dispose() {
+    if (userCallback != null) {
+      Data.removeUserCallback(userCallback);
+    }
+    super.dispose();
   }
 }

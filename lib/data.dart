@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:uuid/uuid.dart';
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:play_games/play_games.dart';
@@ -57,11 +58,31 @@ class Data {
 
   static Buy get buy => _data.buy ??= new Buy();
 
-  static PlayUser user;
+  static PlayUser _user;
+
+  static PlayUser get user => _user;
+
+  static set user(PlayUser user) {
+    _user = user;
+    userStream.values.forEach((fn) => fn(user));
+  }
+
   static Options currentOptions;
   static bool pristine = true;
   static bool isSaving = false;
   static bool hasOpened = false;
+
+  static Map<String, void Function(PlayUser)> userStream = {};
+
+  static String addUserCallback(void Function(PlayUser) fn) {
+    String key = Uuid().v4();
+    userStream[key] = fn;
+    return key;
+  }
+
+  static void removeUserCallback(String key) {
+    userStream.remove(key);
+  }
 
   static void checkAchievementsAndSkins() {
     if (stats.totalDistance >= 21000) {
