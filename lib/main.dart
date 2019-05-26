@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flame_gamepad/flame_gamepad.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'game.dart';
 import 'audio.dart';
@@ -51,6 +52,14 @@ class MyDrag extends Drag {
 }
 
 main() async {
+  Crashlytics.instance.enableInDevMode = true;
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+    print('Error thrown! Logging $details');
+    FlutterError.dumpErrorToConsole(details);
+    Crashlytics.instance.onError(details);
+  };
+
   Flame.audio.disableLog();
 
   runApp(new MaterialApp(

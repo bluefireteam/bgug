@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:play_games/play_games.dart';
 
@@ -73,12 +76,28 @@ class Stats {
   }
 
   Future<SubmitScoreResults> _submitScore(String name, int value, { int tries = 0 }) async {
+    if (Data.user == null) {
+      print('[ACHIEVEMENTS] Skipping because not logged in. Name $name, value: $value');
+      return null;
+    }
     try {
       SubmitScoreResults results = await PlayGames.submitScoreByName(name, value);
-      print('[ACHIEVEMENTS] Successfully submited! Name: $name, Value: $value');
+      print('[ACHIEVEMENTS] Successfully submited! Name: $name, value: $value. Result: $results');
       return results;
-    } catch (ex) {
-      print('[ACHIEVEMENTS] Error while submmiting scoreon try $tries: $ex');
+    } catch (ex, stacktrace) {
+      String message = '[ACHIEVEMENTS] Error while submmiting scoreon try $tries: $ex';
+      print(message);
+      String data = json.encode({
+        'name': name,
+        'value': value,
+        'message': message,
+        'tries': tries,
+        'ex': ex.toString(),
+        'trace': stacktrace.toString(),
+      });
+      Crashlytics.instance.setBool('achievements', true);
+      Crashlytics.instance.log(data);
+      Crashlytics.instance.onError(FlutterErrorDetails(exception: data, stack: stacktrace));
       if (tries == MAX_TRIES) {
         print('[ACHIEVEMENTS] Exceed max tries... Giving up.');
         throw ex;

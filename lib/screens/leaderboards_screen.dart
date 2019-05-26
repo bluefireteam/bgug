@@ -83,10 +83,8 @@ class ScoreListWeaver {
 
   Future<List<ScoreResult>> fetch() {
     final ps = [
-      PlayGames.loadTopScoresByName(leaderboardName,
-          TimeSpan.TIME_SPAN_ALL_TIME, CollectionType.COLLECTION_PUBLIC, 10),
-      PlayGames.loadPlayerCenteredScoresByName(leaderboardName,
-          TimeSpan.TIME_SPAN_ALL_TIME, CollectionType.COLLECTION_PUBLIC, 1),
+      PlayGames.loadTopScoresByName(leaderboardName, TimeSpan.TIME_SPAN_ALL_TIME, 10),
+      PlayGames.loadPlayerCenteredScoresByName(leaderboardName, TimeSpan.TIME_SPAN_ALL_TIME, 1),
     ];
     final isMyScore = (s) => s.scoreHolderDisplayName == this.loggedUser;
     return Future.wait(ps).then((results) {
