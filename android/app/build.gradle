@@ -30,8 +30,8 @@ android {
         applicationId "xyz.luan.bgug"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 10
-        versionName "7.2"
+        versionCode 11
+        versionName "7.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
