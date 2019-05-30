@@ -22,6 +22,7 @@ dev_dependencies:
   json_serializable: ^3.0.0
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.7.0
 
 flutter:
   assets:
@@ -104,3 +105,13 @@ flutter:
     - family: Blox2
       fonts:
         - asset: assets/fonts/blox2.ttf
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path_android: art/adaptive-icons/launcher-icon-android.png
+  image_path_ios: art/adaptive-icons/launcher-icon-ios.png
+  adaptive_icon_background: art/adaptive-icons/background-only.png
+  adaptive_icon_foreground: art/adaptive-icons/foreground-only.png
+# to regenerate icons type:
+# flutter pub pub run flutter_launcher_icons:main
