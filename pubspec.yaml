@@ -107,8 +107,8 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path_android: art/adaptive-icons/ic_launcher.png
-  image_path_ios: art/adaptive-icons/ic_launcher.png
+  image_path_android: art/adaptive-icons/launcher-icon-android.png
+  image_path_ios: art/adaptive-icons/launcher-icon-ios.png
   adaptive_icon_background: art/adaptive-icons/background-only.png
   adaptive_icon_foreground: art/adaptive-icons/foreground-only.png
 # to regenerate icons type:
