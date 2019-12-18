@@ -1,4 +1,5 @@
-# bgug
+
+# BGUG
 
 [Break Guns Using Gems](https://fireslime.xyz/games/bgug) is an open-source mobile game for Android and iOS.
 
@@ -24,26 +25,18 @@ Also check out the playground with no coin rewards but 100% customizable options
 
 ## Running
 
-You can download from [the store](https://play.google.com/store/apps/details?id=xyz.luan.bgug) or build yourself. After clonning, just run the build script to both fetch dependencies and build the generated files:
+You can download from the [Play Store](https://play.google.com/store/apps/details?id=xyz.luan.bgug) or build yourself. After cloning, just run the build script to both fetch dependencies and build the generated files:
 
 ```bash
 ./cmds/build.sh
 ```
 
-After that, just use
+After that, just use `flutter run` to run on your emulator or connected device
 
-```bash
-flutter run
-```
+## Installation
+Alternatively, you can run `flutter build apk --split-per-abi` to generate an APK to later install on any devices. 
 
-To run on your emulator or connected device, or alternatively run
-
-```bash
-flutter build apk
-```
-
-To generate an APK to later install on any devices.
-
+Installing to your device is as simple as connecting it in debug mode and running`flutter install`
 Have fun!
 
 ## Contributing
