@@ -253,7 +253,7 @@ class Data {
 
   static void validatePro(bool pro) {
     final String goldSkin = 'gold.png';
-    if (pro) {
+    if (pro == true) {
       if (!buy.skinsOwned.contains(goldSkin)) {
         buy.skinsOwned.add(goldSkin);
       }

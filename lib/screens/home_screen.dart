@@ -118,7 +118,9 @@ class _HomeScreenState extends State<HomeScreen> {
       IAP.setup(),
       Audio.init(),
     ];
+    print('awaiting ps');
     Future.wait(ps).then((rs) async {
+      print("foooo");
       if (ENABLE_LOGIN && (await PlayUser.shouldAutoLogin())) {
         _performSignIn();
       } else {
@@ -321,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> topRightButtons() {
     List<Widget> result = [];
-    if (IAP.pro) {
+    if (IAP.pro == true) {
       result.add(ProBadge());
     }
     result.add(StoreButtonWidget());
