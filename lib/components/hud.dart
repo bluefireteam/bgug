@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
-import 'package:flame/components/resizable.dart';
+import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import '../data.dart';
@@ -66,7 +66,7 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
       if (sprite.loaded()) {
         canvas.save();
         prepareCanvas(canvas);
-        sprite.render(canvas, width, height);
+        sprite.render(canvas, width: width, height: height);
         renderGems(canvas);
         renderCoins(canvas);
         renderDistance(canvas);

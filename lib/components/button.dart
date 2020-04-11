@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flame/anchor.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
-import 'package:flame/components/resizable.dart';
+import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/palette.dart';
 import 'package:flame/position.dart';
@@ -33,7 +33,7 @@ class Button extends PositionComponent with HasGameRef, Resizable {
     cost = Data.currentOptions.buttonCost;
     incCost = Data.currentOptions.buttonIncCost;
 
-    activeAnimation = new Animation.sequenced('button.png', 7, textureX: 68.0, textureWidth: 68.0);
+    activeAnimation = new Animation.sequenced('button.png', 7, textureX: 68.0, textureWidth: 68.0, textureHeight: 68.0);
     inactiveSprite = new Sprite('button.png', width: 68.0);
   }
 
@@ -62,7 +62,7 @@ class Button extends PositionComponent with HasGameRef, Resizable {
     if (sprite != null && sprite.loaded() && x != null && y != null) {
       prepareCanvas(canvas);
       sprite.paint = ghost ? transparent : white;
-      sprite.render(canvas, width, height);
+      sprite.render(canvas, width: width, height: height);
       if (!ghost) {
         Flame.util.drawWhere(canvas, new Position(CUSTOM_MARGIN - 8, CUSTOM_MARGIN - 8.0), (c) {
           gem.renderRect(c, new Rect.fromLTWH(-8.0, -16.0, 16.0, 16.0));

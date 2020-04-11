@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,8 +45,11 @@ class _TutorialOverlay extends StatelessWidget {
           children: [
             main,
             Positioned(
-              child: Image.asset('assets/images/$image.png',
-                  fit: BoxFit.cover, filterQuality: FilterQuality.none),
+              child: Image.asset(
+                'assets/images/$image.png',
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.none,
+              ),
               left: (size.maxWidth - width) / 2,
               top: (size.maxHeight - height) / 2,
               width: width,
@@ -83,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'laser_shoot.wav',
         'music.mp3',
       ]).then((audios) =>
-          print('Done loading ' + audios.length.toString() + ' audios.')),
+          print('Done loading ${audios.length.toString()} audios.')),
       Flame.images.loadAll([
         'skins/asimov.png',
         'hud_bg.png',
@@ -163,11 +165,14 @@ class _HomeScreenState extends State<HomeScreen> {
       return GestureDetector(
         child: Container(
             margin: const EdgeInsets.only(left: 12),
-            child: Image.asset('assets/images/google-play-button.png',
-                filterQuality: FilterQuality.none,
-                fit: BoxFit.cover,
-                width: 89 * S,
-                height: 17 * S)),
+            child: Image.asset(
+              'assets/images/google-play-button.png',
+              filterQuality: FilterQuality.none,
+              fit: BoxFit.cover,
+              width: 89 * S,
+              height: 17 * S,
+            ),
+          ),
         onTap: () => _performSignIn(),
       );
     }
@@ -180,8 +185,10 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 88 * S,
               height: 18 * S),
           Positioned(
-              child: Text(user.account.displayName,
-                  style: TextStyle(fontFamily: '5x5', fontSize: 14.0)),
+              child: Text(
+                user.account.displayName,
+                style: TextStyle(fontFamily: '5x5', fontSize: 14.0),
+              ),
               right: (S * 20),
               top: 10),
           Positioned(

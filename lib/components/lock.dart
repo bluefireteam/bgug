@@ -41,7 +41,7 @@ class Lock extends Component {
     if (!isVisible() || animation.done()) {
       return;
     }
-    _current.renderCentered(c, p, mySize);
+    _current.renderCentered(c, p, size: mySize);
   }
 
   @override

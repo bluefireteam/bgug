@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flame/animation.dart';
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
-import 'package:flame/components/resizable.dart';
+import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
@@ -88,7 +88,7 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
   bool down = true;
   bool _hide = false;
 
-  Animation shooting = new Animation.sequenced('shooter.png', 2, textureWidth: 32.0, textureX: 32.0);
+  Animation shooting = new Animation.sequenced('shooter.png', 2, textureWidth: 32.0, textureX: 32.0, textureHeight: 46.0);
 
   Shooter(this.kind) : super.fromSprite(32.0, 46.0, new Sprite('shooter.png', width: 32.0));
 
@@ -100,7 +100,7 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
     if (action == 'shooting') {
       if (shooting.loaded() && x != null && y != null) {
         prepareCanvas(c);
-        shooting.getSprite().render(c, width, height);
+        shooting.getSprite().render(c, width: width, height: height);
       }
     } else {
       super.render(c);

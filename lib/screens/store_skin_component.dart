@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flame/animation.dart' as animation;
 import 'package:flame/components/animation_component.dart';
-import 'package:flame/components/resizable.dart';
+import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/sprite.dart';
 
 import '../constants.dart';
@@ -91,7 +91,7 @@ class StoreSkinComponent extends AnimationComponent with Resizable {
       Sprite sprite = this.animation.getSprite();
       int alpha = locked ? 50 : 255;
       sprite.paint = Paint()..color = Color(0xFFFFFFFF).withAlpha(alpha);
-      sprite.render(canvas, width, height);
+      sprite.render(canvas, width: width, height: height);
     }
   }
 

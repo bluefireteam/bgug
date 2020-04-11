@@ -78,21 +78,37 @@ main() async {
   int lastTimestamp;
   Position lastPost;
 
+  int getDt() {
+    return new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
+  }
+
+  bool handlingInput() {
+    return Main.game != null && Main.game.handlingClick();
+  }
+
   Flame.util.addGestureRecognizer(new TapGestureRecognizer()
     ..onTapDown = (TapDownDetails details) {
       lastPost = new Position.fromOffset(details.globalPosition);
       lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
-      if (Main.game != null && Main.game.handlingClick()) {
+      if (handlingInput()) {
         Main.game.startInput(lastPost, lastTimestamp);
+      }
+    }
+    ..onTapCancel = () {
+      if (lastTimestamp == null || lastPost == null) {
+        return;
+      }
+      if (handlingInput()) {
+        Main.game.input(lastPost, getDt());
+        lastTimestamp = lastPost = null;
       }
     }
     ..onTapUp = (TapUpDetails details) {
       if (lastTimestamp == null || lastPost == null) {
         return;
       }
-      int dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
-      if (Main.game != null && Main.game.handlingClick()) {
-        Main.game.input(lastPost, dt);
+      if (handlingInput()) {
+        Main.game.input(lastPost, getDt());
         lastTimestamp = lastPost = null;
       }
     });
@@ -111,7 +127,7 @@ main() async {
     }
   });
 
-  Flame.util.addGestureRecognizer(new ImmediateMultiDragGestureRecognizer()..onStart = (Offset position) => new MyDrag());
+  // Flame.util.addGestureRecognizer(new ImmediateMultiDragGestureRecognizer()..onStart = (Offset position) => new MyDrag());
 
   WidgetsBinding.instance.addObserver(new _Handler());
 }

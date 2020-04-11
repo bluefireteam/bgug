@@ -24,8 +24,8 @@ class Player extends PositionComponent {
 
     String skinSpritePath = 'skins/' + Data.buy.selectedSkin;
     animations = new Map<String, Animation>();
-    animations['running'] = new Animation.sequenced(skinSpritePath, 8, textureWidth: 16.0)..stepTime = 0.0375;
-    animations['dead'] = new Animation.sequenced(skinSpritePath, 3, textureWidth: 16.0, textureX: 16.0 * 8)..stepTime = 0.075;
+    animations['running'] = new Animation.sequenced(skinSpritePath, 8, textureWidth: 16.0, textureHeight: 18.0)..stepTime = 0.0375;
+    animations['dead'] = new Animation.sequenced(skinSpritePath, 3, textureWidth: 16.0, textureX: 16.0 * 8, textureHeight: 18.0)..stepTime = 0.075;
     state = 'running';
   }
 
@@ -39,7 +39,7 @@ class Player extends PositionComponent {
     canvas.rotate(angle);
     canvas.translate(-width / 2, -height / 2);
 
-    animations[state].getSprite().render(canvas, width, height);
+    animations[state].getSprite().render(canvas, width: width, height: height);
   }
 
   @override

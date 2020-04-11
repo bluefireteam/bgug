@@ -162,12 +162,11 @@ class LeaderboardsScreenState extends State<LeaderboardsScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                    child: pad(
-                        Column(children: _toWidget('Distances', distances)),
-                        16.0)),
+                  child: pad(Column(children: _toWidget('Distances', distances)), 16.0),
+                ),
                 Expanded(
-                    child:
-                        pad(Column(children: _toWidget('Coins', coins)), 16.0)),
+                  child: pad(Column(children: _toWidget('Coins', coins)), 16.0),
+                ),
               ],
             ),
           ),

@@ -380,4 +380,12 @@ class BgugGame extends BaseGame {
   void endDrag(Position lastDragPos) {
     hud.clearGauge();
   }
+
+  @override
+  void onTapDown(material.TapDownDetails details) {
+  }
+
+  @override
+  void onTapUp(material.TapUpDetails details) {
+  }
 }

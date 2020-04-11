@@ -18,3 +18,5 @@ pubspec.lock
 .classpath
 
 ios/Podfile
+flutter_export_environment.sh
+.flutter-plugins-dependencies
