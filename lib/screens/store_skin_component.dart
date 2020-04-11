@@ -123,6 +123,6 @@ class StoreSkinComponent extends AnimationComponent with Resizable {
   bool destroy() => _tween.isOut;
 
   static animation.Animation makeAnimation(String skin) {
-    return animation.Animation.sequenced('skins/$skin', 8, textureWidth: 16.0);
+    return animation.Animation.sequenced('skins/$skin', 8, textureWidth: 16.0, textureHeight: 18.0);
   }
 }
