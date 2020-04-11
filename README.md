@@ -33,7 +33,18 @@ You can download from the [Play Store](https://play.google.com/store/apps/detail
 
 After that, just use `flutter run` to run on your emulator or connected device
 
+Remember to set the constants:
+
+```dart
+const bool ENABLE_LOGIN = true;
+const bool ENABLE_ADS = true;
+const bool ENABLE_IAP = false;
+```
+
+To your liking.
+
 ## Installation
+
 Alternatively, you can run `flutter build apk --split-per-abi` to generate an APK to later install on any devices. 
 
 Installing to your device is as simple as connecting it in debug mode and running`flutter install`

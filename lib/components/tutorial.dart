@@ -52,7 +52,7 @@ class Tutorial extends PositionComponent {
   @override
   void render(Canvas c) {
     prepareCanvas(c);
-    _sprite()?.render(c, width, height);
+    _sprite()?.render(c, width: width, height: height);
   }
 
   @override

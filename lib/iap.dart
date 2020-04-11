@@ -1,5 +1,6 @@
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 
+import 'constants.dart';
 import 'data.dart';
 
 class IAP {
@@ -9,6 +10,12 @@ class IAP {
   static bool pro;
 
   static Future setup() async {
+    if (!ENABLE_IAP) {
+      iap = null;
+      pro = false;
+      return;
+    }
+
     try {
       await FlutterInappPurchase.initConnection;
       List<IAPItem> items = await FlutterInappPurchase.getProducts([PRODUCT_ID]);

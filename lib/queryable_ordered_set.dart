@@ -38,7 +38,7 @@ class QueryableOrderedSet<T, E> extends OrderedSet<T> {
   }
 
   @override
-  int removeWhere(bool test(T element)) {
+  List<T> removeWhere(bool test(T element)) {
     _cache.values.forEach((v) => v.removeWhere(test));
     return super.removeWhere(test);
   }

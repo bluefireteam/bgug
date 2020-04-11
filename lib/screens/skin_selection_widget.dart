@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
-import 'package:flame/components/resizable.dart';
+import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/game.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
@@ -41,7 +41,7 @@ class _SkinCardComponent extends Component with Resizable {
 
     config.render(c, skin.name, Position(size.width / 2, 32.0), anchor: Anchor.topCenter);
 
-    (_btnOn ? btnOn : btnOff).renderPosition(c, Position((size.width - 200) / 2, 64.0), Position(200.0, 72.0));
+    (_btnOn ? btnOn : btnOff).renderPosition(c, Position((size.width - 200) / 2, 64.0), size: Position(200.0, 72.0));
     config.render(c, _btnText, Position(size.width / 2, 64.0 + 72.0 / 2), anchor: Anchor.center);
   }
 

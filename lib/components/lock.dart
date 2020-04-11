@@ -10,7 +10,7 @@ import '../constants.dart';
 class Lock extends Component {
   static final Sprite lock = new Sprite('lock.png', width: 40, height: 27);
   static final Sprite lockOpen = new Sprite('lock.png', width: 40, height: 27, x: 400.0 - 40);
-  static final Animation lockAnimation = new Animation.sequenced('lock.png', 9, textureWidth: 40, textureX: 40, stepTime: 0.1);
+  static final Animation lockAnimation = new Animation.sequenced('lock.png', 9, textureWidth: 40, textureX: 40, textureHeight: 27.0, stepTime: 0.1);
 
   static const S = 1.2;
   static final Position mySize = Position(S * 40, S * 27);
@@ -41,7 +41,7 @@ class Lock extends Component {
     if (!isVisible() || animation.done()) {
       return;
     }
-    _current.renderCentered(c, p, mySize);
+    _current.renderCentered(c, p, size: mySize);
   }
 
   @override

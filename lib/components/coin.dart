@@ -86,7 +86,7 @@ class CoinTrace extends Component {
   @override
   void render(Canvas c) {
     coins.forEach((p) {
-      _coin.renderCentered(c, p.clone().add(_current), _size);
+      _coin.renderCentered(c, p.clone().add(_current), size: _size);
     });
   }
 

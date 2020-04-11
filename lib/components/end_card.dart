@@ -64,19 +64,19 @@ class EndCard extends SpriteComponent with HasGameRef {
     smallText.render(canvas, 'Total Distance:', Position(width / 2, 32.0), anchor: Anchor.topCenter);
     smallText.render(canvas, gameRef.hud.maxDistanceInMeters.toStringAsFixed(2) + ' m', Position(width / 2, 48.0), anchor: Anchor.topCenter);
 
-    gem.renderCentered(canvas, Position(width / 2 - 16.0, 96.0), Position(32.0, 32.0));
+    gem.renderCentered(canvas, Position(width / 2 - 16.0, 96.0), size: Position(32.0, 32.0));
     defaultText.render(canvas, '${gameRef.gems}', Position(width / 2 + 16.0, 96.0 - 8.0));
 
-    coin.renderCentered(canvas, Position(width / 2 - 16.0, 142.0), Position(32.0, 32.0));
+    coin.renderCentered(canvas, Position(width / 2 - 16.0, 142.0), size: Position(32.0, 32.0));
     bool lastTicks = _tickTimer != null && _tickTimer < CLOCK_SPEED / 3;
     Color color = doubleCoins || lastTicks ? const Color(0xFF10D594) : const Color(0xFF404040);
     defaultText.withColor(color).render(canvas, '$coins', Position(width / 2 + 16.0, 142.0 - 8.0));
 
-    buttonReplay.renderPosition(canvas, _replayPosition, _buttonSize);
-    buttonGoBack.renderPosition(canvas, _goBackPosition, _buttonSize);
+    buttonReplay.renderPosition(canvas, _replayPosition, size: _buttonSize);
+    buttonGoBack.renderPosition(canvas, _goBackPosition, size: _buttonSize);
 
     if (_showAdButton) {
-      buttonX2Coins.renderPosition(canvas, _x2Position, _buttonSize);
+      buttonX2Coins.renderPosition(canvas, _x2Position, size: _buttonSize);
     }
   }
 

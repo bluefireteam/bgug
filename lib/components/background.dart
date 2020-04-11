@@ -34,11 +34,11 @@ class Background extends SpriteComponent {
       return;
     }
     Flame.util.drawWhere(c, new Position(x - width, y - height),
-            (c) => sprite.render(c, width, height));
+            (c) => sprite.render(c, width: width, height: height));
     Flame.util.drawWhere(
-        c, new Position(x, y - height), (c) => sprite.render(c, width, height));
+        c, new Position(x, y - height), (c) => sprite.render(c, width: width, height: height));
     Flame.util.drawWhere(
-        c, new Position(x - width, y), (c) => sprite.render(c, width, height));
+        c, new Position(x - width, y), (c) => sprite.render(c, width: width, height: height));
     super.render(c);
   }
 

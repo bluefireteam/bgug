@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flame/animation.dart';
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
-import 'package:flame/components/resizable.dart';
+import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
@@ -141,7 +141,7 @@ class Block extends AnimationComponent with BaseBlock, HasGameRef {
 
   static Animation _nameAnimation() {
     double stepTime = Data.currentOptions.blockLifespan / 12.0;
-    Animation animation = Animation.sequenced('block.png', 16, stepTime: stepTime, textureWidth: 32.0);
+    Animation animation = Animation.sequenced('block.png', 16, stepTime: stepTime, textureWidth: 32.0, textureHeight: 32.0);
     animation.loop = false;
     for (int i = 11; i < 16; i++) {
       animation.frames[i].stepTime = 0.2;

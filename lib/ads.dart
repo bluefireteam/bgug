@@ -4,7 +4,7 @@ import 'constants.dart';
 import 'iap.dart';
 
 class Ad {
-  static bool get enableAds => ENABLE_ADS && !IAP.pro;
+  static bool get enableAds => ENABLE_ADS && IAP.pro != true;
 
   static Function(RewardedVideoAdEvent) listener;
   static bool loaded;
