@@ -41,8 +41,7 @@ class _ExcitedCoin extends _BaseCoin {
 class Coin extends _BaseCoin with HasGameRef {
   bool collected = false;
 
-  Coin(double x, double y) : super(x, y) {
-  }
+  Coin(double x, double y) : super(x, y);
 
   @override
   void update(double t) {
@@ -97,8 +96,8 @@ class CoinTrace extends Component {
       clock = MAX_TIME;
       doAfter();
     }
-    double dx = end.x - start.x;
-    double dy = end.y - start.y;
+    final dx = end.x - start.x;
+    final dy = end.y - start.y;
     _current.x = start.x + dx * clock / MAX_TIME;
     _current.y = start.y + dy * clock / MAX_TIME;
 

@@ -19,19 +19,13 @@ class _StoreState extends State<StoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/bg.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: Column(
+    return rootContainer(
+      Column(
         children: [
           Stack(children: [
-            Center(child: pad(Text('StOrE', style: TextStyle(fontSize: 64.0, fontFamily: 'Blox2')), 20.0)),
+            Center(child: pad(const Text('StOrE', style: title), 20.0)),
             Positioned(child: CoinWidget(), top: 20.0, left: 20.0),
-            Positioned(child: btn('go back', () => this.back()), top: 20.0, right: 20.0),
+            Positioned(child: btn('go back', () => back()), top: 20.0, right: 20.0),
           ]),
           Expanded(
               child: Row(
@@ -57,10 +51,10 @@ class _StoreState extends State<StoreScreen> {
 
   Widget cardBuyIAP() {
     if (IAP.pro) {
-      return Center(child: Text('You have the full version, thanks!', style: text));
+      return const Center(child: const Text('You have the full version, thanks!', style: text));
     }
     if (IAP.iap == null) {
-      return Center(child: Text('You must have Google Play Services to buy the game.', style: text));
+      return const Center(child: const Text('You must have Google Play Services to buy the game.', style: text));
     }
     return LayoutBuilder(builder: (ctx, constraints) {
       return Stack(
@@ -73,7 +67,7 @@ class _StoreState extends State<StoreScreen> {
           ),
           Positioned(
             child: GestureDetector(
-              child: Center(child: Text(IAP.iap.localizedPrice, style: TextStyle(fontSize: 20.0, fontFamily: '5x5'))),
+              child: Center(child: Text(IAP.iap.localizedPrice, style: const TextStyle(fontSize: 20.0, fontFamily: '5x5'))),
               onTap: () async {
                 if (IAP.pro) {
                   return;
@@ -103,8 +97,8 @@ class _StoreState extends State<StoreScreen> {
   }
 
   void showToast(String str) {
-    Scaffold.of(context).showSnackBar(new SnackBar(
-      content: new Text(str),
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(str),
     ));
   }
 }

@@ -10,9 +10,9 @@ class _SkinComponent extends AnimationComponent {
 
   @override
   void resize(Size size) {
-    double fracByWidth = size.width / 16.0;
-    double fracByHeight = size.height / 18.0;
-    double frac = math.min(fracByWidth, fracByHeight);
+    final fracByWidth = size.width / 16.0;
+    final fracByHeight = size.height / 18.0;
+    final frac = math.min(fracByWidth, fracByHeight);
 
     width = frac * 16.0;
     height = frac * 18.0;
@@ -24,7 +24,7 @@ class _SkinComponent extends AnimationComponent {
 
 class _SkinWidgetGame extends BaseGame {
   _SkinWidgetGame(String skin) {
-    add(new _SkinComponent(skin));
+    add(_SkinComponent(skin));
   }
 }
 
@@ -40,7 +40,7 @@ class SkinWidget extends StatefulWidget {
 class _SkinWidgetState extends State<SkinWidget> {
   final _SkinWidgetGame game;
 
-  _SkinWidgetState(String skin) : this.game = new _SkinWidgetGame(skin);
+  _SkinWidgetState(String skin) : game = _SkinWidgetGame(skin);
 
   @override
   void initState() {
@@ -55,14 +55,14 @@ class _SkinWidgetState extends State<SkinWidget> {
   }
 
   void _afterLayout(_) {
-    RenderBox box = context.findRenderObject();
-    Offset pos = box.localToGlobal(Offset.zero);
+    final RenderBox box = context.findRenderObject();
+    final pos = box.localToGlobal(Offset.zero);
     game.camera.x = -pos.dx;
     game.camera.y = -pos.dy;
   }
 
   @override
   Widget build(BuildContext context) {
-    return this.game.widget;
+    return game.widget;
   }
 }

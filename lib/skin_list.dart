@@ -29,7 +29,7 @@ class SkinList {
   Map<String, dynamic> toJson() => _$SkinListToJson(this);
 
   static Future<SkinList> fetch() async {
-    String jsonStr = await rootBundle.loadString('assets/store-skins.json');
+    final jsonStr = await rootBundle.loadString('assets/store-skins.json');
     return SkinList.fromJson(json.decode(jsonStr));
   }
 }

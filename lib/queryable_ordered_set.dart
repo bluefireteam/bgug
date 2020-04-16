@@ -10,8 +10,8 @@ import 'components/shooter.dart';
 import 'components/tutorial.dart';
 
 class QueryableOrderedSet<T, E> extends OrderedSet<T> {
-  Map<E, bool Function(T)> _fns = {};
-  Map<E, List<T>> _cache = {};
+  final Map<E, bool Function(T)> _fns = {};
+  final Map<E, List<T>> _cache = {};
 
   QueryableOrderedSet([int compare(T e1, T e2)]) : super(compare);
 
@@ -55,7 +55,7 @@ class QueryableOrderedSet<T, E> extends OrderedSet<T> {
     super.clear();
   }
 
-  List<T> _filter(bool Function(T) query) => this.where(query).toList();
+  List<T> _filter(bool Function(T) query) => where(query).toList();
 }
 
 enum Queries {
@@ -69,12 +69,12 @@ enum Queries {
 
 class QueryableOrderedSetImpl extends QueryableOrderedSet<Component, Queries> {
   QueryableOrderedSetImpl() : super(Comparing.on((c) => c.priority())) {
-    this.register(Queries.BaseBlock, (e) => e is BaseBlock);
-    this.register(Queries.Player, (e) => e is Player);
-    this.register(Queries.Shooter, (e) => e is Shooter);
-    this.register(Queries.Hud, (e) => e is Hud);
-    this.register(Queries.EndCard, (e) => e is EndCard);
-    this.register(Queries.Tutorial, (e) => e is Tutorial);
+    register(Queries.BaseBlock, (e) => e is BaseBlock);
+    register(Queries.Player, (e) => e is Player);
+    register(Queries.Shooter, (e) => e is Shooter);
+    register(Queries.Hud, (e) => e is Hud);
+    register(Queries.EndCard, (e) => e is EndCard);
+    register(Queries.Tutorial, (e) => e is Tutorial);
   }
 
   Iterable<Shooter> shooters() {

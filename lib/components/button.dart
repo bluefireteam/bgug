@@ -66,7 +66,7 @@ class Button extends PositionComponent with HasGameRef, Resizable {
       sprite.render(canvas, width: width, height: height);
       if (!ghost) {
         Flame.util.drawWhere(canvas, Position(CUSTOM_MARGIN - 8, CUSTOM_MARGIN - 8.0), (c) {
-          gem.renderRect(c, Rect.fromLTWH(-8.0, -16.0, 16.0, 16.0));
+          gem.renderRect(c, const Rect.fromLTWH(-8.0, -16.0, 16.0, 16.0));
           renderText(c);
         });
       }

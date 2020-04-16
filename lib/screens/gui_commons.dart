@@ -8,16 +8,15 @@ const small_text = const TextStyle(fontSize: 12.0, fontFamily: '5x5');
 const black_medium_text = const TextStyle(fontSize: 16.0, fontFamily: '5x5', color: Colors.black);
 const medium_link = const TextStyle(fontSize: 16.0, fontFamily: '5x5', color: Colors.blue);
 
-final rootContainer = (Widget child) =>
-    Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/bg.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: child,
-    );
+final rootContainer = (Widget child) => Container(
+  decoration: const BoxDecoration(
+    image: const DecorationImage(
+      image: const AssetImage('assets/images/bg.png'),
+      fit: BoxFit.fill,
+    ),
+  ),
+  child: child,
+);
 
 final pad = (Widget w, double p) =>
     Container(child: w, padding: EdgeInsets.all(p));
@@ -29,7 +28,7 @@ final TextFormField Function(
     String, FormFieldValidator<String>, String, Function(String))
 textField = (String label, FormFieldValidator<String> validator,
     String initialValue, Function(String) setter) {
-  TextEditingController controller = TextEditingController(text: initialValue);
+  final controller = TextEditingController(text: initialValue);
   controller.addListener(() {
     if (validator(controller.text) == null) {
       setter(controller.text);
@@ -51,7 +50,7 @@ class StatefulCheckbox extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _StatefulCheckboxState(this.value, this.onChanged);
+    return _StatefulCheckboxState(value, onChanged);
   }
 }
 

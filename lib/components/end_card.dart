@@ -15,16 +15,16 @@ class EndCard extends SpriteComponent with HasGameRef {
   static const FRAC = 112 / 144;
   static const CLOCK_SPEED = 0.25;
 
-  static final Sprite gem = new Sprite('gem.png');
-  static final Sprite coin = new Sprite('coin.png', width: 16.0);
+  static final Sprite gem = Sprite('gem.png');
+  static final Sprite coin = Sprite('coin.png', width: 16.0);
 
-  static final Sprite buttonReplayNormal = new Sprite('endgame_buttons.png', height: 16.0);
-  static final Sprite buttonGoBackNormal = new Sprite('endgame_buttons.png', height: 16.0, y: 32.0);
-  static final Sprite buttonX2CoinsNormal = new Sprite('endgame_buttons.png', height: 16.0, y: 16.0);
+  static final Sprite buttonReplayNormal = Sprite('endgame_buttons.png', height: 16.0);
+  static final Sprite buttonGoBackNormal = Sprite('endgame_buttons.png', height: 16.0, y: 32.0);
+  static final Sprite buttonX2CoinsNormal = Sprite('endgame_buttons.png', height: 16.0, y: 16.0);
 
-  static final Sprite buttonReplayGamepad = new Sprite('endgame_buttons_gamepad.png', height: 16.0);
-  static final Sprite buttonGoBackGamepad = new Sprite('endgame_buttons_gamepad.png', height: 16.0, y: 32.0);
-  static final Sprite buttonX2CoinsGamepad = new Sprite('endgame_buttons_gamepad.png', height: 16.0, y: 16.0);
+  static final Sprite buttonReplayGamepad = Sprite('endgame_buttons_gamepad.png', height: 16.0);
+  static final Sprite buttonGoBackGamepad = Sprite('endgame_buttons_gamepad.png', height: 16.0, y: 32.0);
+  static final Sprite buttonX2CoinsGamepad = Sprite('endgame_buttons_gamepad.png', height: 16.0, y: 16.0);
 
   bool isGamepadConnected = false;
 
@@ -43,18 +43,18 @@ class EndCard extends SpriteComponent with HasGameRef {
 
   bool get _showAdButton => !doubleCoins && gameRef.hasAd();
 
-  Position get _buttonSize => new Position(_scaleFactor * 64.0, _scaleFactor * 16.0);
+  Position get _buttonSize => Position(_scaleFactor * 64.0, _scaleFactor * 16.0);
 
-  Position get _replayPosition => new Position((width - _buttonSize.x) / 2, _scaleFactor * 80);
+  Position get _replayPosition => Position((width - _buttonSize.x) / 2, _scaleFactor * 80);
 
-  Position get _goBackPosition => new Position((width - _buttonSize.x) / 2, _scaleFactor * 100);
+  Position get _goBackPosition => Position((width - _buttonSize.x) / 2, _scaleFactor * 100);
 
-  Position get _x2Position => new Position((width - _buttonSize.x) / 2, _scaleFactor * 120);
+  Position get _x2Position => Position((width - _buttonSize.x) / 2, _scaleFactor * 120);
 
   EndCard() : super.rectangle(1, 1, 'endgame_bg.png');
 
   Future<void> init() async {
-    this.isGamepadConnected = await FlameGamepad.isGamepadConnected;
+    isGamepadConnected = await FlameGamepad.isGamepadConnected;
   }
 
   @override
@@ -98,11 +98,11 @@ class EndCard extends SpriteComponent with HasGameRef {
       return;
     }
 
-    Rect replay = Position.rectFrom(_replayPosition, _buttonSize);
-    Rect doubleCoins = Position.rectFrom(_x2Position, _buttonSize);
-    Rect back = Position.rectFrom(_goBackPosition, _buttonSize);
+    final replay = Position.rectFrom(_replayPosition, _buttonSize);
+    final doubleCoins = Position.rectFrom(_x2Position, _buttonSize);
+    final back = Position.rectFrom(_goBackPosition, _buttonSize);
 
-    Offset relativeTap = tap.minus(new Position(x, y)).toOffset();
+    final relativeTap = tap.minus(Position(x, y)).toOffset();
     if (replay.contains(relativeTap)) {
       doClickReplay();
     } else if (_showAdButton && doubleCoins.contains(relativeTap)) {

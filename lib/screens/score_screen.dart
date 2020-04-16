@@ -7,20 +7,14 @@ import 'gui_commons.dart';
 class ScoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/bg.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: Row(
+    return rootContainer(
+      Row(
         children: [
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                pad(Text('sCoRe', style: title), 20.0),
+                pad(const Text('sCoRe', style: title), 20.0),
                 Data.user != null ? btn('Leaderboards', () {
                   Navigator.pushNamed(context, '/leaderboards');
                 }) : Container(),
@@ -36,7 +30,7 @@ class ScoreScreen extends StatelessWidget {
                 Expanded(
                     child: pad(
                       ListView(
-                        children: [Text('Scores (last 10 games)', style: small_text)]..addAll(Data.stats.scores.map((s) => Text(s.toText()))),
+                        children: [const Text('Scores (last 10 games)', style: small_text)]..addAll(Data.stats.scores.map((s) => Text(s.toText()))),
                       ),
                       16.0,
                     ),
@@ -44,7 +38,7 @@ class ScoreScreen extends StatelessWidget {
                 Expanded(
                     child: pad(
                         ListView(
-                          children: [Text('Stats', style: small_text)]..addAll(Data.stats.statsList().map((s) => Text(s))),
+                          children: [const Text('Stats', style: small_text)]..addAll(Data.stats.statsList().map((s) => Text(s))),
                         ),
                         16.0),
                     flex: 1),

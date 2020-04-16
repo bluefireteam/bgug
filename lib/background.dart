@@ -6,7 +6,7 @@ import 'package:flame/flame.dart';
 
 const MIN_SIZE = 45;
 const MAX_SIZE = 100;
-final Random random = new Random();
+final Random random = Random();
 
 const FILL = const Color(0xFFBABFC3);
 const LIGHT = const Color(0xFFC1C1C1);
@@ -15,12 +15,12 @@ const DARK = const Color(0xFF9DA2A6);
 class ImageBuilder {
   int width, height;
   List<List<Color>> pixels;
-  Map<Color, List<Offset>> pixelMap = new Map();
+  Map<Color, List<Offset>> pixelMap = {};
 
   ImageBuilder(this.width, this.height) {
-    this.pixels = new List(this.width);
+    pixels = List(width);
     for (int i = 0; i < width; i++) {
-      this.pixels[i] = new List(this.height);
+      pixels[i] = List(height);
     }
   }
 
@@ -30,8 +30,8 @@ class ImageBuilder {
       return;
     }
     pixels[x][y] = c;
-    pixelMap.putIfAbsent(c, () => new List());
-    pixelMap[c].add(new Offset(x.toDouble(), y.toDouble()));
+    pixelMap.putIfAbsent(c, () => []);
+    pixelMap[c].add(Offset(x.toDouble(), y.toDouble()));
   }
 
   Color get(int x, int y) {
@@ -39,18 +39,18 @@ class ImageBuilder {
   }
 
   Future<Image> toImage() {
-    PictureRecorder recorder = new PictureRecorder();
-    Rect everything =
-        new Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble());
-    Canvas c = new Canvas(recorder, everything);
-    c.drawRect(everything, new Paint()..color = FILL);
+    final recorder = PictureRecorder();
+    final everything = Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble());
+    final c = Canvas(recorder, everything);
+    c.drawRect(everything, Paint()..color = FILL);
     pixelMap.forEach((color, points) => c.drawPoints(
         PointMode.points,
         points,
-        new Paint()
+        Paint()
           ..color = color
           ..strokeWidth = 1.0
-          ..strokeCap = StrokeCap.square));
+          ..strokeCap = StrokeCap.square,
+    ));
     return recorder.endRecording().toImage(width, height);
   }
 }
@@ -59,7 +59,7 @@ Point findFirstEmpty(ImageBuilder b) {
   for (int i = 0; i < b.width; i++) {
     for (int j = 0; j < b.height; j++) {
       if (b.get(i, j) == null) {
-        return new Point(i, j);
+        return Point(i, j);
       }
     }
   }
@@ -123,30 +123,30 @@ void drawScrew(ImageBuilder image, int x, int y) {
 
 Future<Image> generate(int width, int height) async {
   try {
-    ImageBuilder image = drawOnBuilder(width, height);
+    final image = drawOnBuilder(width, height);
     return image.toImage();
   } on Error {
     Image image;
     Flame.images.load('bg.png').then((img) => image = img);
     while (image == null) {
-      sleep(new Duration(milliseconds: 50));
+      sleep(const Duration(milliseconds: 50));
     }
     return image;
   }
 }
 
 ImageBuilder drawOnBuilder(int width, int height) {
-  ImageBuilder image = new ImageBuilder(width, height);
+  final image = ImageBuilder(width, height);
 
   int count = 0;
   while (count < 40) {
-    Point next = findFirstEmpty(image);
+    final next = findFirstEmpty(image);
     if (next == null) {
       break;
     }
 
     int nextWidth = randomInt(MIN_SIZE, MAX_SIZE);
-    int nextX = nextInWidth(image, next);
+    final nextX = nextInWidth(image, next);
     if (next.x + nextWidth > nextX) {
       nextWidth = nextX - next.x;
     } else if (nextX - (next.x + nextWidth) < MIN_SIZE) {
@@ -157,7 +157,7 @@ ImageBuilder drawOnBuilder(int width, int height) {
     }
 
     int nextHeight = randomInt(MIN_SIZE, MAX_SIZE);
-    int nextY = nextInHeight(image, next);
+    final nextY = nextInHeight(image, next);
     if (next.y + nextHeight > nextY) {
       nextHeight = nextY - next.y;
     } else if (nextY - (next.y + nextHeight) < MIN_SIZE) {

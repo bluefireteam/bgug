@@ -32,7 +32,7 @@ import 'queryable_ordered_set.dart';
 import 'tutorial_status.dart';
 import 'world_gen.dart';
 
-math.Random random = new math.Random();
+math.Random random = math.Random();
 
 enum GameState { TUTORIAL, PAUSED, RUNNING, DEAD, END_CARD, STOPPED, AD }
 
@@ -50,7 +50,7 @@ class BgugGame extends BaseGame {
   int lastGeneratedSector;
   GameState state;
 
-  QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
+  QueryableOrderedSetImpl queryComponents = QueryableOrderedSetImpl();
 
   Player get player => queryComponents.player();
 
@@ -88,7 +88,7 @@ class BgugGame extends BaseGame {
 
   void showEndCard() {
     state = GameState.END_CARD;
-    var endCard = new EndCard();
+    final endCard = EndCard();
     endCard.init().then((_) {
       add(endCard);
     });
@@ -194,10 +194,10 @@ class BgugGame extends BaseGame {
   }
 
   void blockInput() {
-    int dPoint = button.click();
+    final dPoint = button.click();
     if (dPoint != null) {
       gems -= dPoint;
-      add(new BlockTween(button.toPosition(), nextFreeSlot));
+      add(BlockTween(button.toPosition(), nextFreeSlot));
     }
   }
 
@@ -268,7 +268,7 @@ class BgugGame extends BaseGame {
     if (state == GameState.TUTORIAL || state == GameState.RUNNING || state == GameState.DEAD || state == GameState.END_CARD || state == GameState.PAUSED) {
       super.render(c);
     } else {
-      c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height), new Paint()..color = material.Colors.black);
+      c.drawRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height), Paint()..color = material.Colors.black);
     }
 
     if (debugMode()) {
@@ -359,10 +359,10 @@ class BgugGame extends BaseGame {
     print('Called WILL POP, state: $state');
     if (state == GameState.TUTORIAL) {
       state = GameState.RUNNING;
-    } else if (this.state == GameState.RUNNING) {
+    } else if (state == GameState.RUNNING) {
       player.die();
       showEndCard();
-    } else if (this.state == GameState.END_CARD) {
+    } else if (state == GameState.END_CARD) {
       endCard.doClickBack();
       return true;
     }

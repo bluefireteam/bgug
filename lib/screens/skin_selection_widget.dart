@@ -65,7 +65,7 @@ class _ArrowButton extends SpriteComponent {
 
   @override
   void resize(Size size) {
-    double frac = 2;
+    const frac = 2;
 
     width = frac * 15.0;
     height = frac * 64.0;
@@ -186,7 +186,7 @@ class _SkinSelectionGame extends BaseGame {
   }
 
   void tap(TapDownDetails evt) {
-    double x = evt.globalPosition.dx;
+    final x = evt.globalPosition.dx;
     if (hideGui) {
       return;
     }

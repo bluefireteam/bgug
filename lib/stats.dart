@@ -84,16 +84,13 @@ class Stats {
       return null;
     }
     try {
-      SubmitScoreResults results =
-          await PlayGames.submitScoreByName(name, value);
-      print(
-          '[ACHIEVEMENTS] Successfully submited! Name: $name, value: $value. Result: $results');
+      final results = await PlayGames.submitScoreByName(name, value);
+      print('[ACHIEVEMENTS] Successfully submited! Name: $name, value: $value. Result: $results');
       return results;
     } catch (ex, stacktrace) {
-      String message =
-          '[ACHIEVEMENTS] Error while submmiting scoreon try $tries: $ex';
+      final message = '[ACHIEVEMENTS] Error while submmiting scoreon try $tries: $ex';
       print(message);
-      String data = json.encode({
+      final data = json.encode({
         'name': name,
         'value': value,
         'message': message,
@@ -107,11 +104,11 @@ class Stats {
           .onError(FlutterErrorDetails(exception: data, stack: stacktrace));
       if (tries == MAX_TRIES) {
         print('[ACHIEVEMENTS] Exceed max tries... Giving up.');
-        throw ex;
+        rethrow;
       }
       Data.user = await PlayUser.singIn();
       if (Data.user == null) {
-        throw ex;
+        rethrow;
       }
       return _submitScore(name, value, tries: tries + 1);
     }
@@ -124,13 +121,13 @@ class Stats {
   }
 
   void calculateStats(BgugGame game) {
-    double distance = game.hud.maxDistanceInMeters;
-    int jumps = game.totalJumps;
-    int dives = game.totalDives;
-    int gems = game.totalGems;
-    int coins = game.currentCoins;
+    final distance = game.hud.maxDistanceInMeters;
+    final jumps = game.totalJumps;
+    final dives = game.totalDives;
+    final gems = game.totalGems;
+    final coins = game.currentCoins;
 
-    Score score = Score(distance, coins);
+    final score = Score(distance, coins);
     scores.insert(0, score);
     scores = normalize(scores);
 
@@ -167,8 +164,8 @@ class Stats {
       scores.sublist(0, MAX_SCORES.clamp(0, scores.length));
 
   static Stats merge(Stats stats1, Stats stats2) {
-    return new Stats()
-      ..scores = normalize((new Set()
+    return Stats()
+      ..scores = normalize((<Score>{}
             ..addAll(stats1.scores)
             ..addAll(stats2.scores))
           .toList()

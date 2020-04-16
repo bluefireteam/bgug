@@ -42,7 +42,7 @@ class Ad {
     if (!enableAds || loaded) {
       return;
     }
-    final targetingInfo = MobileAdTargetingInfo(
+    const targetingInfo = MobileAdTargetingInfo(
       keywords: ['game', 'blocks', 'guns', 'platformer', 'action', 'fast'],
     );
     loaded = false;

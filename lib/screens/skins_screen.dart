@@ -17,19 +17,13 @@ class _SkinScreenState extends State<SkinScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/bg.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: Column(
+    return rootContainer(
+      Column(
         children: [
           Stack(children: [
-            Center(child: pad(Text('sKiNs', style: TextStyle(fontSize: 64.0, fontFamily: 'Blox2')), 20.0)),
+            Center(child: pad(const Text('sKiNs', style: title), 20.0)),
             Positioned(child: CoinWidget(), top: 20.0, left: 20.0),
-            Positioned(child: btn('go back', () => this.back()), top: 20.0, right: 20.0),
+            Positioned(child: btn('go back', () => back()), top: 20.0, right: 20.0),
           ]),
           Expanded(
             child: SkinSelectionWidget(),

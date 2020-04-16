@@ -13,30 +13,29 @@ import '../data.dart';
 import '../mixins/has_game_ref.dart';
 import '../audio.dart';
 import 'block.dart';
-import 'player.dart';
 
-math.Random random = new math.Random();
+math.Random random = math.Random();
 
 class Bullet extends AnimationComponent with HasGameRef {
   static const double FRAC = 8.0 / 46.0;
   double speed;
 
   Bullet(this.speed, Size size, Position p)
-      : super(16.0, 16.0, new Animation.sequenced('bullet.png', 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
-    this.width = this.height = (1.0 - 2 * FRAC) * sizeTenth(size);
-    this.x = p.x - this.width + 7.0;
-    this.y = p.y + FRAC * sizeTenth(size);
+      : super(16.0, 16.0, Animation.sequenced('bullet.png', 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
+    width = height = (1.0 - 2 * FRAC) * sizeTenth(size);
+    x = p.x - width + 7.0;
+    y = p.y + FRAC * sizeTenth(size);
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    this.x -= speed * dt;
+    x -= speed * dt;
 
-    Player player = gameRef.player;
-    if (this.toRect().overlaps(player.toRect())) {
+    final player = gameRef.player;
+    if (toRect().overlaps(player.toRect())) {
       player.x = x - player.width;
-      player.velocity = new Position(0.0, 0.0);
+      player.velocity = Position(0.0, 0.0);
       player.die();
     }
   }
@@ -46,21 +45,21 @@ class Bullet extends AnimationComponent with HasGameRef {
 
   @override
   void resize(Size size) {
-    this.width = this.height = (1.0 - 2 * FRAC) * sizeTenth(size);
+    width = height = (1.0 - 2 * FRAC) * sizeTenth(size);
   }
 }
 
 class ShooterCane extends PositionComponent {
-  static final Paint paint = new Paint()..color = const Color(0xFF626262);
+  static final Paint paint = Paint()..color = const Color(0xFF626262);
 
   ShooterCane() {
-    this.width = 2.0;
+    width = 2.0;
   }
 
   @override
   void render(Canvas c) {
     prepareCanvas(c);
-    c.drawRect(new Rect.fromLTWH(0.0, 0.0, width, height), paint);
+    c.drawRect(Rect.fromLTWH(0.0, 0.0, width, height), paint);
   }
 
   @override
@@ -68,9 +67,9 @@ class ShooterCane extends PositionComponent {
 
   @override
   void resize(Size size) {
-    this.x = size.width - 8.0;
-    this.y = sizeTop(size);
-    this.height = sizeTenth(size) * 10;
+    x = size.width - 8.0;
+    y = sizeTop(size);
+    height = sizeTenth(size) * 10;
   }
 
   @override
@@ -88,9 +87,9 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
   bool down = true;
   bool _hide = false;
 
-  Animation shooting = new Animation.sequenced('shooter.png', 2, textureWidth: 32.0, textureX: 32.0, textureHeight: 46.0);
+  Animation shooting = Animation.sequenced('shooter.png', 2, textureWidth: 32.0, textureX: 32.0, textureHeight: 46.0);
 
-  Shooter(this.kind) : super.fromSprite(32.0, 46.0, new Sprite('shooter.png', width: 32.0));
+  Shooter(this.kind) : super.fromSprite(32.0, 46.0, Sprite('shooter.png', width: 32.0));
 
   @override
   void render(Canvas c) {
@@ -129,8 +128,8 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
       y = yf;
     }
 
-    if (this.shoot()) {
-      gameRef.add(new Bullet(Data.currentOptions.bulletSpeed, size, toPosition().add(gameRef.camera)));
+    if (shoot()) {
+      gameRef.add(Bullet(Data.currentOptions.bulletSpeed, size, toPosition().add(gameRef.camera)));
     }
   }
 
@@ -143,7 +142,7 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
   }
 
   void moveDown(double dt, double speed) {
-    double currentBit = (y - yi) % step;
+    final currentBit = (y - yi) % step;
     var dy = dt * speed;
     if (currentBit + dy >= step) {
       dy = step - currentBit;
@@ -206,8 +205,8 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
 
   void updateBoundaries() {
     if (kind == 'up') {
-      int currentSlot = gameRef.uppermostOccupiedSlot;
-      var minUp = Block.minUp(currentSlot);
+      final currentSlot = gameRef.uppermostOccupiedSlot;
+      final minUp = Block.minUp(currentSlot);
       if (minUp == null) {
         _hide = true;
       } else {
@@ -217,8 +216,8 @@ class Shooter extends SpriteComponent with HasGameRef, Resizable {
         y = y.clamp(yi, yf);
       }
     } else {
-      int currentSlot = gameRef.lowermostOccupiedSlot;
-      var maxDown = Block.maxDown(currentSlot);
+      final currentSlot = gameRef.lowermostOccupiedSlot;
+      final maxDown = Block.maxDown(currentSlot);
       if (maxDown == null) {
         _hide = true;
       } else {

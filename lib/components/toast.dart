@@ -6,7 +6,7 @@ import 'package:flame/text_config.dart';
 
 import '../palette.dart';
 
-TextBoxConfig boxConfig = TextBoxConfig(
+TextBoxConfig boxConfig = const TextBoxConfig(
   maxWidth: 400.0,
   margin: 8.0,
   timePerChar: 0.0,
@@ -26,11 +26,12 @@ class Toast extends TextBoxComponent {
 
   @override
   void drawBackground(Canvas c) {
-    c.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0.0, 0.0, width, height), Radius.circular(20.0)), Palette.bg.paint);
+    final rect = RRect.fromRectAndRadius(Rect.fromLTWH(0.0, 0.0, width, height), const Radius.circular(20.0));
+    c.drawRRect(rect, Palette.bg.paint);
   }
 
   @override
-  resize(Size size) {
+  void resize(Size size) {
     x = size.width / 2;
     y = 8.0;
   }

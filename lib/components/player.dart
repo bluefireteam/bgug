@@ -11,7 +11,7 @@ import '../util.dart';
 
 class Player extends PositionComponent {
   Map<String, Animation> animations;
-  Position velocity = new Position(320.0, 0.0);
+  Position velocity = Position(320.0, 0.0);
   double y0, yf;
   String state;
 
@@ -19,19 +19,19 @@ class Player extends PositionComponent {
   Impulse diveImpulse;
 
   Player() {
-    jumpImpulse = new Impulse(-1 * Data.currentOptions.jumpImpulse);
-    diveImpulse = new Impulse(Data.currentOptions.diveImpulse);
+    jumpImpulse = Impulse(-1 * Data.currentOptions.jumpImpulse);
+    diveImpulse = Impulse(Data.currentOptions.diveImpulse);
 
-    String skinSpritePath = 'skins/' + Data.buy.selectedSkin;
-    animations = new Map<String, Animation>();
-    animations['running'] = new Animation.sequenced(skinSpritePath, 8, textureWidth: 16.0, textureHeight: 18.0)..stepTime = 0.0375;
-    animations['dead'] = new Animation.sequenced(skinSpritePath, 3, textureWidth: 16.0, textureX: 16.0 * 8, textureHeight: 18.0)..stepTime = 0.075;
+    final skinSpritePath = 'skins/' + Data.buy.selectedSkin;
+    animations = <String, Animation>{};
+    animations['running'] = Animation.sequenced(skinSpritePath, 8, textureWidth: 16.0, textureHeight: 18.0)..stepTime = 0.0375;
+    animations['dead'] = Animation.sequenced(skinSpritePath, 3, textureWidth: 16.0, textureX: 16.0 * 8, textureHeight: 18.0)..stepTime = 0.075;
     state = 'running';
   }
 
   @override
   void render(Canvas canvas) {
-    // prepareCanvas(canvas); TODO use this with the new anchor = center
+    // prepareCanvas(canvas); TODO use this with the anchor = center
 
     canvas.translate(x, y);
 

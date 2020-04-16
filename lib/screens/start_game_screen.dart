@@ -10,7 +10,7 @@ import 'gui_commons.dart';
 
 class StartGameScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new _StartGameScreenState();
+  State<StatefulWidget> createState() => _StartGameScreenState();
 }
 
 class MyGameBinder extends BgugGame {
@@ -22,13 +22,13 @@ class MyGameBinder extends BgugGame {
   void stop() {
     super.stop();
     Audio.play(Song.MENU);
-    this.screen?.redraw();
+    screen?.redraw();
   }
 }
 
 class _StartGameScreenState extends State<StartGameScreen> {
-  redraw() {
-    this.setState(() => {});
+  void redraw() {
+    setState(() => {});
   }
 
   @override
@@ -47,21 +47,15 @@ class _StartGameScreenState extends State<StartGameScreen> {
       }
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/bg.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: Center(
+    return rootContainer(
+      Center(
         child: LayoutBuilder(builder: (_, size) {
           return Stack(children: [
             Row(
               children: [
                 Column(
                   children: [
-                    pad(Text('pLaY', style: title), 20.0),
+                    pad(const Text('pLaY', style: title), 20.0),
                     btn('Go back', () {
                       Navigator.of(context).pop();
                     }),
@@ -70,7 +64,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
                 ),
                 Column(
                   children: [
-                    btn('Endless', () => startGame(true, new Options())),
+                    btn('Endless', () => startGame(true, Options())),
                     btn('Playground', () => startGame(false, Data.options)),
                     btn('Config Playground', () => Navigator.of(context).pushNamed('/options')),
                   ],
@@ -80,7 +74,7 @@ class _StartGameScreenState extends State<StartGameScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             ),
             Positioned(
-              child: Center(child: Text('Playground can be configured as you wish, but will NOT award coins nor scoreboard entries.')),
+              child: const Center(child: const Text('Playground can be configured as you wish, but will NOT award coins nor scoreboard entries.')),
               bottom: 4.0,
               width: size.maxWidth,
             )
@@ -90,10 +84,10 @@ class _StartGameScreenState extends State<StartGameScreen> {
     );
   }
 
-  startGame(bool shouldSore, Options options) async {
-    bool showTutorial = await Data.getAndToggleShowTutorial();
+  void startGame(bool shouldSore, Options options) async {
+    final showTutorial = await Data.getAndToggleShowTutorial();
     Data.currentOptions = options;
-    Main.game = new MyGameBinder(this, shouldSore, showTutorial);
+    Main.game = MyGameBinder(this, shouldSore, showTutorial);
     setState(() {});
   }
 }

@@ -48,13 +48,13 @@ class _LeaderboardEntry extends StatelessWidget {
   }
 
   Widget _left() {
-    Widget trophy = _trophy();
-    Widget text = Text(this.name, style: small_text);
+    final trophy = _trophy();
+    final text = Text(name, style: small_text);
     return Row(children: [trophy, text]);
   }
 
   Widget _right() {
-    return Text(this.value, style: small_text);
+    return Text(value, style: small_text);
   }
 
   @override
@@ -72,7 +72,7 @@ class _LeaderboardEntry extends StatelessWidget {
 class LeaderboardsScreen extends StatefulWidget {
   @override
   LeaderboardsScreenState createState() {
-    return new LeaderboardsScreenState();
+    return LeaderboardsScreenState();
   }
 }
 
@@ -86,12 +86,12 @@ class ScoreListWeaver {
       PlayGames.loadTopScoresByName(leaderboardName, TimeSpan.TIME_SPAN_ALL_TIME, 10),
       PlayGames.loadPlayerCenteredScoresByName(leaderboardName, TimeSpan.TIME_SPAN_ALL_TIME, 1),
     ];
-    final isMyScore = (s) => s.scoreHolderDisplayName == this.loggedUser;
+    final isMyScore = (s) => s.scoreHolderDisplayName == loggedUser;
     return Future.wait(ps).then((results) {
-      List<ScoreResult> scores = results.first.scores;
-      List<ScoreResult> userScore = results.last.scores.where(isMyScore).toList();
-      bool isUserOnTop10 = scores.any(isMyScore);
-      bool userHasOwnScore = userScore.isNotEmpty;
+      final scores = results.first.scores;
+      final userScore = results.last.scores.where(isMyScore).toList();
+      final isUserOnTop10 = scores.any(isMyScore);
+      final userHasOwnScore = userScore.isNotEmpty;
       if (!isUserOnTop10 && userHasOwnScore) {
         scores[scores.length - 1] = userScore.first;
       }
@@ -109,21 +109,21 @@ class LeaderboardsScreenState extends State<LeaderboardsScreen> {
   @override
   void initState() {
     super.initState();
-    String loggedUser = Data.user.account.displayName;
+    final loggedUser = Data.user.account.displayName;
     ScoreListWeaver(DISTANCE, loggedUser)
         .fetch()
-        .then((list) => this.setState(() => distances = list));
+        .then((list) => setState(() => distances = list));
     ScoreListWeaver(COINS, loggedUser)
         .fetch()
-        .then((list) => this.setState(() => coins = list));
+        .then((list) => setState(() => coins = list));
   }
 
   List<Widget> _toWidget(String titleStr, List<ScoreResult> list) {
-    Widget title = pad(Text(titleStr, style: text), 12.0);
+    final title = pad(Text(titleStr, style: text), 12.0);
     if (list == null) {
-      return [title, Text('Loading...', style: small_text)];
+      return [title, const Text('Loading...', style: small_text)];
     }
-    List<Widget> items = list
+    final items = list
         .asMap()
         .entries
         .map((e) => _LeaderboardEntry(
@@ -136,26 +136,20 @@ class LeaderboardsScreenState extends State<LeaderboardsScreen> {
     if (distances == null || coins == null) {
       return false;
     }
-    String loggedUser = Data.user.account.displayName;
-    bool isOnDistances = distances.any((s) => s.scoreHolderDisplayName == loggedUser);
-    bool isOnCoins = coins.any((s) => s.scoreHolderDisplayName == loggedUser);
+    final loggedUser = Data.user.account.displayName;
+    final isOnDistances = distances.any((s) => s.scoreHolderDisplayName == loggedUser);
+    final isOnCoins = coins.any((s) => s.scoreHolderDisplayName == loggedUser);
     return !isOnDistances || !isOnCoins;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/bg.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: Column(
+    return rootContainer(
+      Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(child: pad(Text('LeAdErBoArD', style: title), 20.0)),
+          Center(child: pad(const Text('LeAdErBoArD', style: title), 20.0)),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -170,7 +164,7 @@ class LeaderboardsScreenState extends State<LeaderboardsScreen> {
               ],
             ),
           ),
-          isMissingFromAnyList() ? Center(child: Text('Note that you are not listed because you have disabled the option to appear publically in GPGS.')) : Container(),
+          isMissingFromAnyList() ? const Center(child: const Text('Note that you are not listed because you have disabled the option to appear publically in GPGS.')) : Container(),
           btn('Go back', () {
             Navigator.of(context).pop();
           }),

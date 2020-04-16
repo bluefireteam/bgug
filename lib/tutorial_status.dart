@@ -8,7 +8,7 @@ enum TutorialStatus {
 }
 
 Future<TutorialStatus> getFirstTutorialStatus() async {
-  bool gamepad = await FlameGamepad.isGamepadConnected;
+  final gamepad = await FlameGamepad.isGamepadConnected;
   return gamepad ? TutorialStatus.PAGE_0_GAMEPAD : TutorialStatus.PAGE_0_REGULAR;
 }
 
