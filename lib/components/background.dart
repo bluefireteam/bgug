@@ -1,5 +1,5 @@
-import 'dart:ui';
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flame/components/component.dart';
 import 'package:flame/flame.dart';
@@ -44,7 +44,7 @@ class Background extends SpriteComponent {
     x += dt * speed.x;
     y += dt * speed.y;
 
-    x %=  width;
+    x %= width;
     y %= height;
   }
 

@@ -84,8 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'laser_load.wav',
         'laser_shoot.wav',
         'music.mp3',
-      ]).then((audios) =>
-          print('Done loading ${audios.length.toString()} audios.')),
+      ]).then((audios) => print('Done loading ${audios.length.toString()} audios.')),
       Flame.images.loadAll([
         'skins/asimov.png',
         'hud_bg.png',
@@ -112,8 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'store/store-ui.png',
         'store/times_2_panel.png',
         'store/x2coins-certificate.png',
-      ]).then((images) =>
-          print('Done loading ' + images.length.toString() + ' images.')),
+      ]).then((images) => print('Done loading ' + images.length.toString() + ' images.')),
       Data.loadHardData(),
       IAP.setup(),
       Audio.init(),
@@ -164,15 +162,15 @@ class _HomeScreenState extends State<HomeScreen> {
     if (user == null) {
       return GestureDetector(
         child: Container(
-            margin: const EdgeInsets.only(left: 12),
-            child: Image.asset(
-              'assets/images/google-play-button.png',
-              filterQuality: FilterQuality.none,
-              fit: BoxFit.cover,
-              width: 89 * S,
-              height: 17 * S,
-            ),
+          margin: const EdgeInsets.only(left: 12),
+          child: Image.asset(
+            'assets/images/google-play-button.png',
+            filterQuality: FilterQuality.none,
+            fit: BoxFit.cover,
+            width: 89 * S,
+            height: 17 * S,
           ),
+        ),
         onTap: () => _performSignIn(),
       );
     }

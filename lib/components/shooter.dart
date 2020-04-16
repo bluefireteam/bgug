@@ -1,22 +1,23 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:bgug/game.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
 import '../constants.dart';
 import '../data.dart';
-import '../mixins/has_game_ref.dart';
 import '../audio.dart';
 import 'block.dart';
 
 math.Random random = math.Random();
 
-class Bullet extends AnimationComponent with HasGameRef {
+class Bullet extends AnimationComponent with HasGameRef<BgugGame> {
   static const double FRAC = 8.0 / 46.0;
   double speed;
 
@@ -76,7 +77,7 @@ class ShooterCane extends PositionComponent {
   bool isHud() => true;
 }
 
-class Shooter extends SpriteComponent with HasGameRef, Resizable {
+class Shooter extends SpriteComponent with HasGameRef<BgugGame>, Resizable {
   static const double SPEED = 120.0;
 
   String kind;

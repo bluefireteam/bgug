@@ -44,13 +44,13 @@ class ImageBuilder {
     final c = Canvas(recorder, everything);
     c.drawRect(everything, Paint()..color = FILL);
     pixelMap.forEach((color, points) => c.drawPoints(
-        PointMode.points,
-        points,
-        Paint()
-          ..color = color
-          ..strokeWidth = 1.0
-          ..strokeCap = StrokeCap.square,
-    ));
+          PointMode.points,
+          points,
+          Paint()
+            ..color = color
+            ..strokeWidth = 1.0
+            ..strokeCap = StrokeCap.square,
+        ));
     return recorder.endRecording().toImage(width, height);
   }
 }

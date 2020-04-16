@@ -15,9 +15,11 @@ class ScoreScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 pad(const Text('sCoRe', style: title), 20.0),
-                Data.user != null ? btn('Leaderboards', () {
-                  Navigator.pushNamed(context, '/leaderboards');
-                }) : Container(),
+                Data.user != null
+                    ? btn('Leaderboards', () {
+                        Navigator.pushNamed(context, '/leaderboards');
+                      })
+                    : Container(),
                 btn('Go back', () {
                   Navigator.of(context).pop();
                 }),

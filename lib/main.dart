@@ -33,7 +33,6 @@ class _Handler extends WidgetsBindingObserver {
 }
 
 class MyDrag extends Drag {
-
   Position lastDragPos;
 
   @override

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flame/animation.dart';
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
@@ -11,7 +12,7 @@ import '../audio.dart';
 import '../components/coin.dart';
 import '../constants.dart';
 import '../data.dart';
-import '../mixins/has_game_ref.dart';
+import '../game.dart';
 import '../palette.dart';
 
 Sprite _staticBlockSprite = Sprite('block.png', x: 0, y: 0, width: 32.0, height: 32.0);
@@ -28,7 +29,7 @@ class BaseBlock {
   }
 }
 
-class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
+class BlockTween extends SpriteComponent with BaseBlock, HasGameRef<BgugGame>, Resizable {
   static const TIME_TWEEN = 0.5;
   static const TIME_UP = 0.5;
   static const TIME_DOWN = 0.1;

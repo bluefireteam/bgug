@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flame/anchor.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/palette.dart';
@@ -11,10 +12,10 @@ import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart' as material;
 
 import '../data.dart';
-import '../mixins/has_game_ref.dart';
+import '../game.dart';
 import '../util.dart';
 
-class Button extends PositionComponent with HasGameRef, Resizable {
+class Button extends PositionComponent with HasGameRef<BgugGame>, Resizable {
   static const MARGIN = 4.0;
   static const SIZE = 84.0;
   static const CUSTOM_MARGIN = 26.0;

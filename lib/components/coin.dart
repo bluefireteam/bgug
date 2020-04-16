@@ -1,15 +1,16 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:bgug/game.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
 import '../audio.dart';
 import '../constants.dart';
-import '../mixins/has_game_ref.dart';
 
 class _BaseCoin extends AnimationComponent {
   _BaseCoin(double x, double y) : super.sequenced(1.0, 1.0, 'coin.png', 10, textureWidth: 16.0, textureHeight: 16.0) {
@@ -38,7 +39,7 @@ class _ExcitedCoin extends _BaseCoin {
   bool destroy() => animation.done();
 }
 
-class Coin extends _BaseCoin with HasGameRef {
+class Coin extends _BaseCoin with HasGameRef<BgugGame> {
   bool collected = false;
 
   Coin(double x, double y) : super(x, y);

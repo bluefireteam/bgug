@@ -48,14 +48,16 @@ class CreditsScreen extends StatelessWidget {
                               text: TextSpan(
                                 children: [
                                   TextSpan(text: credit[0], style: black_medium_text),
-                                  credit.length == 3 ? TextSpan(
-                                    text: credit[1],
-                                    style: medium_link,
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        _launchURL(credit[2]);
-                                      },
-                                  ) : const TextSpan(text: ""),
+                                  credit.length == 3
+                                      ? TextSpan(
+                                          text: credit[1],
+                                          style: medium_link,
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              _launchURL(credit[2]);
+                                            },
+                                        )
+                                      : const TextSpan(text: ""),
                                 ],
                               ),
                             ),

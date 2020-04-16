@@ -17,14 +17,11 @@ class _Trophy extends StatelessWidget {
 
   _Trophy(this.type);
 
-  Sprite get _sprite => Sprite('trophies.png',
-      height: 16.0, width: 16.0, y: 0, x: type.index * 16.0);
+  Sprite get _sprite => Sprite('trophies.png', height: 16.0, width: 16.0, y: 0, x: type.index * 16.0);
 
   @override
   Widget build(BuildContext context) {
-    return EmbeddedGameWidget(
-        SimpleGame(SpriteComponent.fromSprite(size.x, size.y, _sprite)),
-        size: size);
+    return EmbeddedGameWidget(SimpleGame(SpriteComponent.fromSprite(size.x, size.y, _sprite)), size: size);
   }
 }
 
@@ -42,9 +39,7 @@ class _LeaderboardEntry extends StatelessWidget {
     } else if (position == 2) {
       return _Trophy(_TrophyType.BRONZE);
     }
-    return Container(
-        constraints: BoxConstraints.expand(
-            width: _Trophy.size.x, height: _Trophy.size.y));
+    return Container(constraints: BoxConstraints.expand(width: _Trophy.size.x, height: _Trophy.size.y));
   }
 
   Widget _left() {
@@ -110,12 +105,8 @@ class LeaderboardsScreenState extends State<LeaderboardsScreen> {
   void initState() {
     super.initState();
     final loggedUser = Data.user.account.displayName;
-    ScoreListWeaver(DISTANCE, loggedUser)
-        .fetch()
-        .then((list) => setState(() => distances = list));
-    ScoreListWeaver(COINS, loggedUser)
-        .fetch()
-        .then((list) => setState(() => coins = list));
+    ScoreListWeaver(DISTANCE, loggedUser).fetch().then((list) => setState(() => distances = list));
+    ScoreListWeaver(COINS, loggedUser).fetch().then((list) => setState(() => coins = list));
   }
 
   List<Widget> _toWidget(String titleStr, List<ScoreResult> list) {
@@ -123,12 +114,7 @@ class LeaderboardsScreenState extends State<LeaderboardsScreen> {
     if (list == null) {
       return [title, const Text('Loading...', style: small_text)];
     }
-    final items = list
-        .asMap()
-        .entries
-        .map((e) => _LeaderboardEntry(
-            e.key, e.value.scoreHolderDisplayName, e.value.displayScore))
-        .toList();
+    final items = list.asMap().entries.map((e) => _LeaderboardEntry(e.key, e.value.scoreHolderDisplayName, e.value.displayScore)).toList();
     return [title]..addAll(items);
   }
 
@@ -164,7 +150,9 @@ class LeaderboardsScreenState extends State<LeaderboardsScreen> {
               ],
             ),
           ),
-          isMissingFromAnyList() ? const Center(child: const Text('Note that you are not listed because you have disabled the option to appear publically in GPGS.')) : Container(),
+          isMissingFromAnyList()
+              ? const Center(child: const Text('Note that you are not listed because you have disabled the option to appear publically in GPGS.'))
+              : Container(),
           btn('Go back', () {
             Navigator.of(context).pop();
           }),

@@ -1,13 +1,14 @@
 import 'dart:ui';
 import 'dart:math' as math;
 
+import 'package:bgug/game.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
 import '../audio.dart';
 import '../constants.dart';
-import '../mixins/has_game_ref.dart';
 
 class GemJuiceEngine {
   static const MAX_TIME = 1;
@@ -45,7 +46,7 @@ class GemJuiceEngine {
   bool get isComplete => r >= rEnd;
 }
 
-class GemMoving extends SpriteComponent with HasGameRef {
+class GemMoving extends SpriteComponent with HasGameRef<BgugGame> {
   GemJuiceEngine juice;
   bool done = false;
 
@@ -85,7 +86,7 @@ class GemMoving extends SpriteComponent with HasGameRef {
   bool destroy() => done;
 }
 
-class Gem extends SpriteComponent with HasGameRef {
+class Gem extends SpriteComponent with HasGameRef<BgugGame> {
   bool complete = false;
 
   Gem(double x, double y) : super.fromSprite(1.0, 1.0, Sprite('gem.png')) {

@@ -3,13 +3,14 @@ import 'dart:math' as math;
 
 import 'package:flame/animation.dart';
 import 'package:flame/components/animation_component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/position.dart';
 
 import '../constants.dart';
-import '../mixins/has_game_ref.dart';
+import '../game.dart';
 
-abstract class Obstacle extends AnimationComponent with HasGameRef, Resizable {
+abstract class Obstacle extends AnimationComponent with HasGameRef<BgugGame>, Resizable {
   Obstacle(double x, String texture) : super(16.0, 16.0, Animation.sequenced(texture, 3, textureWidth: 16.0, textureHeight: 16.0)..stepTime = 0.075) {
     this.x = x;
   }

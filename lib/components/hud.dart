@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'dart:math' as math;
 
+import 'package:bgug/game.dart';
 import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
@@ -10,9 +12,8 @@ import '../data.dart';
 
 import '../util.dart';
 import '../constants.dart';
-import '../mixins/has_game_ref.dart';
 
-class Hud extends SpriteComponent with HasGameRef, Resizable {
+class Hud extends SpriteComponent with HasGameRef<BgugGame>, Resizable {
   static const SRC_WIDTH = 220.0;
   static const SRC_HEIGHT = 32.0;
 

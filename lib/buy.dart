@@ -23,8 +23,8 @@ class Buy {
 
   static Buy merge(Buy buy1, Buy buy2) {
     return Buy()
-        ..skinsOwned = (<String>{}..addAll(buy1.skinsOwned)..addAll(buy2.skinsOwned)).toList().cast<String>()
-        ..selectedSkin = buy1.selectedSkin ?? buy2.selectedSkin
-        ..coins = math.max(buy1.coins, buy2.coins);
+      ..skinsOwned = (<String>{}..addAll(buy1.skinsOwned)..addAll(buy2.skinsOwned)).toList().cast<String>()
+      ..selectedSkin = buy1.selectedSkin ?? buy2.selectedSkin
+      ..coins = math.max(buy1.coins, buy2.coins);
   }
 }

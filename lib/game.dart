@@ -5,9 +5,9 @@ import 'dart:ui';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/game.dart';
-import 'package:flame_gamepad/flame_gamepad.dart';
 import 'package:flame/position.dart';
 import 'package:flame/text_config.dart';
+import 'package:flame_gamepad/flame_gamepad.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:ordered_set/ordered_set.dart';
 
@@ -26,7 +26,6 @@ import 'components/top.dart';
 import 'components/tutorial.dart';
 import 'constants.dart';
 import 'data.dart';
-import 'mixins/has_game_ref.dart';
 import 'options.dart';
 import 'queryable_ordered_set.dart';
 import 'tutorial_status.dart';
@@ -157,14 +156,6 @@ class BgugGame extends BaseGame {
     lastGeneratedSector = -1;
   }
 
-  @override
-  void preAdd(Component c) {
-    if (c is HasGameRef) {
-      (c as HasGameRef).gameRef = this;
-    }
-    super.preAdd(c);
-  }
-
   void startInput(Position p, int dt) {
     if (state == GameState.END_CARD || state == GameState.TUTORIAL || state == GameState.PAUSED) {
       return;
@@ -217,8 +208,7 @@ class BgugGame extends BaseGame {
     }
 
     if (player.dead()) {
-      if (evtType == GAMEPAD_BUTTON_UP)
-        showEndCard();
+      if (evtType == GAMEPAD_BUTTON_UP) showEndCard();
     } else {
       if (evtType == GAMEPAD_BUTTON_DOWN && key == GAMEPAD_BUTTON_A) {
         hud.startGauge();

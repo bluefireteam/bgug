@@ -2,15 +2,16 @@ import 'dart:ui';
 
 import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_gamepad/flame_gamepad.dart';
 
+import '../game.dart';
 import '../iap.dart';
-import '../mixins/has_game_ref.dart';
 import '../util.dart';
 
-class EndCard extends SpriteComponent with HasGameRef {
+class EndCard extends SpriteComponent with HasGameRef<BgugGame> {
   static const COIN_TO_GEM_RATIO = 4;
   static const FRAC = 112 / 144;
   static const CLOCK_SPEED = 0.25;
