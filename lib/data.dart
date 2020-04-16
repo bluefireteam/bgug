@@ -26,9 +26,9 @@ class SavedData {
 
   SavedData() {
     showTutorial = true;
-    options = new Options();
-    stats = new Stats();
-    buy = new Buy();
+    options = Options();
+    stats = Stats();
+    buy = Buy();
   }
 
   factory SavedData.fromJson(Map<String, dynamic> json) => _$SavedDataFromJson(json);
@@ -36,7 +36,7 @@ class SavedData {
   Map<String, dynamic> toJson() => _$SavedDataToJson(this);
 
   static SavedData merge(SavedData s1, SavedData s2) {
-    return new SavedData()
+    return SavedData()
       ..showTutorial = s1.showTutorial || s2.showTutorial
       ..options = s1.options ?? s2.options
       ..stats = Stats.merge(s1.stats, s2.stats)
@@ -50,13 +50,13 @@ class Data {
   static SkinList skinList;
   static SavedData _data;
 
-  static Options get options => _data.options ??= new Options();
+  static Options get options => _data.options ??= Options();
 
-  static set options(Options options) => _data.options = options ?? new Options();
+  static set options(Options options) => _data.options = options ?? Options();
 
-  static Stats get stats => _data.stats ??= new Stats();
+  static Stats get stats => _data.stats ??= Stats();
 
-  static Buy get buy => _data.buy ??= new Buy();
+  static Buy get buy => _data.buy ??= Buy();
 
   static PlayUser _user;
 
@@ -75,7 +75,7 @@ class Data {
   static Map<String, void Function(PlayUser)> userStream = {};
 
   static String addUserCallback(void Function(PlayUser) fn) {
-    String key = Uuid().v4();
+    final key = Uuid().v4();
     userStream[key] = fn;
     return key;
   }
@@ -149,12 +149,12 @@ class Data {
   static Future save() async {
     if (isSaving) {
       print('will save in a while!');
-      return Future.delayed(Duration(seconds: 3)).then((_) => save());
+      return Future.delayed(const Duration(seconds: 3)).then((_) => save());
     }
     isSaving = true;
     pristine = false;
-    String data = json.encode(_data.toJson());
-    Object result = await _saveInternal(data);
+    final data = json.encode(_data.toJson());
+    final result = await _saveInternal(data);
     print('Saved data! playGames: $playGames');
     isSaving = false;
     return result;
@@ -167,7 +167,7 @@ class Data {
         hasOpened = true;
       }
       print('Saving $data');
-      bool status = await PlayGames.saveSnapshot(SAVE_NAME, data);
+      final status = await PlayGames.saveSnapshot(SAVE_NAME, data);
       print('Saved $status');
       return await _openInternal();
     } else {
@@ -181,15 +181,15 @@ class Data {
       return await PlayGames.openSnapshot(SAVE_NAME);
     } catch (ex) {
       if (ex is CloudSaveConflictError) {
-        String result = _mergeInternal(ex.local, ex.server);
+        final result = _mergeInternal(ex.local, ex.server);
         return await PlayGames.resolveSnapshotConflict(SAVE_NAME, ex.conflictId, result);
       }
-      throw ex;
+      rethrow;
     }
   }
 
   static Future<SavedData> fetch(bool createNew) async {
-    SavedData loaded = await _doFetch(createNew);
+    final loaded = await _doFetch(createNew);
     loaded?.stats?.firstTimeScoreCheck();
     return loaded;
   }
@@ -203,9 +203,9 @@ class Data {
   }
 
   static Future<SavedData> _fetchFromPlayGames(bool createNew) async {
-    Snapshot snap = await _openInternal();
+    final snap = await _openInternal();
     if (snap.content == null || snap.content.trim().isEmpty) {
-      return createNew ? new SavedData() : null;
+      return createNew ? SavedData() : null;
     }
     hasOpened = true;
     return SavedData.fromJson(json.decode(snap.content));
@@ -213,11 +213,11 @@ class Data {
 
   static Future<SavedData> _fetchFromSharedPreferences(bool createNew) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonStr = prefs.getString(SAVE_NAME);
+    final jsonStr = prefs.getString(SAVE_NAME);
     if (jsonStr == null) {
-      return createNew ? new SavedData() : null;
+      return createNew ? SavedData() : null;
     }
-    return new SavedData.fromJson(json.decode(jsonStr));
+    return SavedData.fromJson(json.decode(jsonStr));
   }
 
   static void forceData(SavedData data) {
@@ -240,19 +240,19 @@ class Data {
   }
 
   static String _mergeInternal(Snapshot local, Snapshot server) {
-    SavedData s1 = SavedData.fromJson(json.decode(local.content));
-    SavedData s2 = SavedData.fromJson(json.decode(server.content));
+    final s1 = SavedData.fromJson(json.decode(local.content));
+    final s2 = SavedData.fromJson(json.decode(server.content));
     return json.encode(SavedData.merge(s1, s2).toJson());
   }
 
   static void saveAsync() async {
-    AsyncSaver saver = AsyncSaver.start();
+    final saver = AsyncSaver.start();
     await Data.save();
     saver.stop();
   }
 
   static void validatePro(bool pro) {
-    final String goldSkin = 'gold.png';
+    const goldSkin = 'gold.png';
     if (pro == true) {
       if (!buy.skinsOwned.contains(goldSkin)) {
         buy.skinsOwned.add(goldSkin);

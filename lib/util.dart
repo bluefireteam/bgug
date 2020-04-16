@@ -7,11 +7,11 @@ class Impulse {
   double time;
 
   Impulse(this.force) {
-    this.time = 0.0;
+    time = 0.0;
   }
 
   void impulse(double dt) {
-    this.time += dt;
+    time += dt;
   }
 
   double tick(double dt) {
@@ -23,11 +23,11 @@ class Impulse {
   }
 
   void clear() {
-    this.time = 0.0;
+    time = 0.0;
   }
 }
 
-TextConfig defaultText = TextConfig(
+const TextConfig defaultText = const TextConfig(
   fontFamily: '5x5',
   fontSize: 28.0,
   color: const Color(0xFF404040),

@@ -36,11 +36,11 @@ class _TutorialOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: LayoutBuilder(builder: (_, BoxConstraints size) {
-        double potWidth = 3 * size.maxWidth / 4;
-        double potHeight = 4 * size.maxHeight / 5;
-        double frac = math.min(potWidth / 192, potHeight / 162);
-        double width = 192 * frac;
-        double height = 162 * frac;
+        final potWidth = 3 * size.maxWidth / 4;
+        final potHeight = 4 * size.maxHeight / 5;
+        final frac = math.min(potWidth / 192, potHeight / 162);
+        final width = 192 * frac;
+        final height = 162 * frac;
         return Stack(
           children: [
             main,
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String userCallback;
 
   _HomeScreenState() {
-    var ps = [
+    final ps = [
       Ad.startup(),
       Flame.util.fullScreen(),
       Flame.util.setOrientation(DeviceOrientation.landscapeLeft),
@@ -84,8 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'laser_load.wav',
         'laser_shoot.wav',
         'music.mp3',
-      ]).then((audios) =>
-          print('Done loading ${audios.length.toString()} audios.')),
+      ]).then((audios) => print('Done loading ${audios.length.toString()} audios.')),
       Flame.images.loadAll([
         'skins/asimov.png',
         'hud_bg.png',
@@ -112,8 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'store/store-ui.png',
         'store/times_2_panel.png',
         'store/x2coins-certificate.png',
-      ]).then((images) =>
-          print('Done loading ' + images.length.toString() + ' images.')),
+      ]).then((images) => print('Done loading ' + images.length.toString() + ' images.')),
       Data.loadHardData(),
       IAP.setup(),
       Audio.init(),
@@ -123,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _performSignIn();
       } else {
         await Data.loadLocalSoftData();
-        this.setState(() => loading = false);
+        setState(() => loading = false);
       }
       Audio.play(Song.MENU);
     });
@@ -132,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _performSignIn() async {
     try {
       Data.user = await PlayUser.singIn();
-      SavedData data = await Data.fetch(false);
+      final data = await Data.fetch(false);
       if (data != null) {
         Data.setData(data);
       } else {
@@ -140,23 +138,23 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       await PlayUser.setDisableAutoLogin(false);
       setState(() {
-        this.user = Data.user;
-        this.loading = false;
+        user = Data.user;
+        loading = false;
       });
     } catch (ex) {
       await PlayUser.setDisableAutoLogin(true);
       Data.user = null;
       await Data.loadLocalSoftData();
       setState(() {
-        this.user = null;
-        this.loading = false;
+        user = null;
+        loading = false;
       });
       print('Error: $ex');
-      Scaffold.of(context).showSnackBar(new SnackBar(
-        content: new Text(ex.toString()),
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(ex.toString()),
       ));
     }
-    userCallback = Data.addUserCallback((user) => this.setState(() => this.user = user));
+    userCallback = Data.addUserCallback((user) => setState(() => this.user = user));
   }
 
   Widget userCard() {
@@ -164,39 +162,43 @@ class _HomeScreenState extends State<HomeScreen> {
     if (user == null) {
       return GestureDetector(
         child: Container(
-            margin: const EdgeInsets.only(left: 12),
-            child: Image.asset(
-              'assets/images/google-play-button.png',
-              filterQuality: FilterQuality.none,
-              fit: BoxFit.cover,
-              width: 89 * S,
-              height: 17 * S,
-            ),
+          margin: const EdgeInsets.only(left: 12),
+          child: Image.asset(
+            'assets/images/google-play-button.png',
+            filterQuality: FilterQuality.none,
+            fit: BoxFit.cover,
+            width: 89 * S,
+            height: 17 * S,
           ),
+        ),
         onTap: () => _performSignIn(),
       );
     }
     return GestureDetector(
       child: Stack(
         children: [
-          Image.asset('assets/images/username-panel.png',
-              filterQuality: FilterQuality.none,
-              fit: BoxFit.cover,
-              width: 88 * S,
-              height: 18 * S),
+          Image.asset(
+            'assets/images/username-panel.png',
+            filterQuality: FilterQuality.none,
+            fit: BoxFit.cover,
+            width: 88 * S,
+            height: 18 * S,
+          ),
           Positioned(
-              child: Text(
-                user.account.displayName,
-                style: TextStyle(fontFamily: '5x5', fontSize: 14.0),
-              ),
-              right: (S * 20),
-              top: 10),
+            child: Text(
+              user.account.displayName,
+              style: const TextStyle(fontFamily: '5x5', fontSize: 14.0),
+            ),
+            right: S * 20,
+            top: 10,
+          ),
           Positioned(
-              child: RawImage(image: user.avatar, width: S * 9, height: S * 9),
-              right: S * 7,
-              top: S * 2,
-              width: S * 9,
-              height: S * 9),
+            child: RawImage(image: user.avatar, width: S * 9, height: S * 9),
+            right: S * 7,
+            top: S * 2,
+            width: S * 9,
+            height: S * 9,
+          ),
         ],
       ),
       onTap: () async {
@@ -224,8 +226,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (loading) {
       return Container(
-        decoration: BoxDecoration(
-          color: Color(0xFF000000),
+        decoration: const BoxDecoration(
+          color: const Color(0xFF000000),
         ),
         child: Image.asset(
           "assets/images/splash_screen.png",
@@ -238,10 +240,10 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    Widget main = renderContent(context);
+    final main = renderContent(context);
 
     if (tutorialStatus != TutorialStatus.NOT_SHOWING) {
-      return _TutorialOverlay(main, _tutorialImage(), () => this.setState(() => tutorialStatus = getNextStatus(tutorialStatus)));
+      return _TutorialOverlay(main, _tutorialImage(), () => setState(() => tutorialStatus = getNextStatus(tutorialStatus)));
     }
 
     if (showingAchievements) {
@@ -255,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void displayTutorial() async {
-    TutorialStatus nxtStatus = await getFirstTutorialStatus();
+    final nxtStatus = await getFirstTutorialStatus();
     setState(() => tutorialStatus = nxtStatus);
   }
 
@@ -265,10 +267,10 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Column(
             children: [
-              pad(Text('BREAK', style: title), 2.0),
-              pad(Text('guns', style: title), 2.0),
-              pad(Text('USING', style: title), 2.0),
-              pad(Text('gems', style: title), 2.0),
+              pad(const Text('BREAK', style: title), 2.0),
+              pad(const Text('guns', style: title), 2.0),
+              pad(const Text('USING', style: title), 2.0),
+              pad(const Text('gems', style: title), 2.0),
             ],
             mainAxisAlignment: MainAxisAlignment.center,
           ),
@@ -287,14 +289,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/bg.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: Stack(
+    return rootContainer(
+      Stack(
         children: [
           child,
           Positioned(
@@ -305,7 +301,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Positioned(
               child: Column(
                 children: [
-                  Row(children: this.topRightButtons()),
+                  Row(children: topRightButtons()),
                   pad(CoinWidget(), 4.0),
                 ],
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -320,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Widget> topRightButtons() {
-    List<Widget> result = [];
+    final result = <Widget>[];
     if (IAP.pro == true) {
       result.add(ProBadge());
     }

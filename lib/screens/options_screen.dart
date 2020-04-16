@@ -22,7 +22,7 @@ final optionLine = (String label, String value, VoidCallback onTap) => pad(
 
 class OptionsScreen extends StatefulWidget {
   @override
-  State<OptionsScreen> createState() => new _OptionsState();
+  State<OptionsScreen> createState() => _OptionsState();
 }
 
 class _OptionsState extends State<OptionsScreen> {
@@ -30,7 +30,7 @@ class _OptionsState extends State<OptionsScreen> {
   Options options;
 
   _OptionsState() {
-    this.options = Data.options.clone();
+    options = Data.options.clone();
   }
 
   @override
@@ -50,10 +50,10 @@ class _OptionsState extends State<OptionsScreen> {
     }
 
     final boolItemBuilder = (String title, bool value, void Function(bool) setter) => optionLine(title, '$value', () {
-          this.setState(() => currentEditor = StatefulCheckbox(value: value, onChanged: setter));
+          setState(() => currentEditor = StatefulCheckbox(value: value, onChanged: setter));
         });
     final stringItemBuilder = (String title, String value, Validator validator, void Function(String) setter) => optionLine(title, value, () {
-          this.setState(() => currentEditor = textField(title, validator, value, setter));
+          setState(() => currentEditor = textField(title, validator, value, setter));
         });
     final intItemBuilder = (String title, int value, void Function(int) setter) {
       return stringItemBuilder(title, value.toString(), intValidator, (str) => setter(int.parse(str)));
@@ -68,7 +68,7 @@ class _OptionsState extends State<OptionsScreen> {
               child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              pad(Text('OpTiOnS', style: title), 20.0),
+              pad(const Text('OpTiOnS', style: title), 20.0),
               btn('Save', () {
                 Data.options = options;
                 Data.save().then((a) {
@@ -79,9 +79,9 @@ class _OptionsState extends State<OptionsScreen> {
                 Navigator.of(context).pop();
               }),
               Container(
-                padding: EdgeInsets.fromLTRB(0.0, 24.0, 0.0, 0.0),
+                padding: const EdgeInsets.fromLTRB(0.0, 24.0, 0.0, 0.0),
                 child: btn('Reset Defaults', () {
-                  Data.options = new Options();
+                  Data.options = Options();
                   Data.save().then((a) {
                     Navigator.of(context).pop();
                   });

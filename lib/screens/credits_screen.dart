@@ -14,7 +14,7 @@ const CREDITS = [
   ["- Base graphic assets by ", "0x72", "https://0x72.itch.io/16x16-robot-tileset"],
 ];
 
-_launchURL(String url) async {
+void _launchURL(String url) async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
@@ -25,21 +25,15 @@ _launchURL(String url) async {
 class CreditsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/bg.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: Center(
+    return rootContainer(
+      Center(
         child: LayoutBuilder(builder: (_, size) {
           return Stack(children: [
             Column(
               children: [
                 Row(
                   children: [
-                    pad(Text('cReDiTs', style: title), 20.0),
+                    pad(const Text('cReDiTs', style: title), 20.0),
                     btn('Go back', () {
                       Navigator.of(context).pop();
                     }),
@@ -54,14 +48,16 @@ class CreditsScreen extends StatelessWidget {
                               text: TextSpan(
                                 children: [
                                   TextSpan(text: credit[0], style: black_medium_text),
-                                  credit.length == 3 ? TextSpan(
-                                    text: credit[1],
-                                    style: medium_link,
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        _launchURL(credit[2]);
-                                      },
-                                  ) : TextSpan(text: ""),
+                                  credit.length == 3
+                                      ? TextSpan(
+                                          text: credit[1],
+                                          style: medium_link,
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              _launchURL(credit[2]);
+                                            },
+                                        )
+                                      : const TextSpan(text: ""),
                                 ],
                               ),
                             ),

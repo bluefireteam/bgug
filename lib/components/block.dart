@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flame/animation.dart';
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
@@ -11,7 +12,7 @@ import '../audio.dart';
 import '../components/coin.dart';
 import '../constants.dart';
 import '../data.dart';
-import '../mixins/has_game_ref.dart';
+import '../game.dart';
 import '../palette.dart';
 
 Sprite _staticBlockSprite = Sprite('block.png', x: 0, y: 0, width: 32.0, height: 32.0);
@@ -28,7 +29,7 @@ class BaseBlock {
   }
 }
 
-class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
+class BlockTween extends SpriteComponent with BaseBlock, HasGameRef<BgugGame>, Resizable {
   static const TIME_TWEEN = 0.5;
   static const TIME_UP = 0.5;
   static const TIME_DOWN = 0.1;
@@ -36,7 +37,7 @@ class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
   static const MAX_SCALE = 1.25;
 
   bool done = false;
-  Position src, dest = new Position.empty();
+  Position src, dest = Position.empty();
   double clock = 0.0;
   bool _played = false;
 
@@ -52,28 +53,34 @@ class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
 
     clock += t;
 
-    double tweenProgress = clock.clamp(0, TIME_TWEEN) / TIME_TWEEN;
+    final tweenProgress = clock.clamp(0, TIME_TWEEN) / TIME_TWEEN;
     x = src.x + (dest.x - src.x) * tweenProgress;
     y = src.y + (dest.y - src.y) * tweenProgress;
 
     if (clock >= TIME_TWEEN && clock < TIME_TWEEN + TIME_UP) {
-      double animationProgress = (clock - TIME_TWEEN).clamp(0, TIME_UP) / TIME_UP;
-      double currentScale = 1 + (MAX_SCALE - 1) * animationProgress;
+      final animationProgress = (clock - TIME_TWEEN).clamp(0, TIME_UP) / TIME_UP;
+      final currentScale = 1 + (MAX_SCALE - 1) * animationProgress;
       setScale(currentScale);
     } else if (clock >= TIME_TWEEN + TIME_UP) {
       if (!_played) {
         _played = true;
         Audio.playSfx('block.wav');
       }
-      double animationProgress = (clock - TIME_TWEEN - TIME_UP).clamp(0, TIME_DOWN) / TIME_DOWN;
-      double currentScale = MAX_SCALE - (MAX_SCALE - 1) * animationProgress;
+      final animationProgress = (clock - TIME_TWEEN - TIME_UP).clamp(0, TIME_DOWN) / TIME_DOWN;
+      final currentScale = MAX_SCALE - (MAX_SCALE - 1) * animationProgress;
       setScale(currentScale);
     }
 
     if (clock >= TOTAL_TIME) {
       gameRef.addLater(Block(slot, false));
       gameRef.addLater(
-          CoinTrace(true, dest, gameRef.hud.getActualCoinPosition(), doAfter: () => gameRef.currentCoins += Data.currentOptions.coinsAwardedPerBlock));
+        CoinTrace(
+          true,
+          dest,
+          gameRef.hud.getActualCoinPosition(),
+          doAfter: () => gameRef.currentCoins += Data.currentOptions.coinsAwardedPerBlock,
+        ),
+      );
       done = true;
     }
   }
@@ -88,9 +95,9 @@ class BlockTween extends SpriteComponent with BaseBlock, HasGameRef, Resizable {
   @override
   void resize(Size size) {
     super.resize(size);
-    this.width = this.height = 2 * sizeTenth(size);
-    this.dest.x = size.width - this.width + 0.25 * this.width;
-    this.dest.y = sizeTop(size) + this.slot * sizeTenth(size) - 0.25 * this.height;
+    width = height = 2 * sizeTenth(size);
+    dest.x = size.width - width + 0.25 * width;
+    dest.y = sizeTop(size) + slot * sizeTenth(size) - 0.25 * height;
   }
 
   @override
@@ -140,8 +147,8 @@ class Block extends AnimationComponent with BaseBlock, HasGameRef {
   }
 
   static Animation _nameAnimation() {
-    double stepTime = Data.currentOptions.blockLifespan / 12.0;
-    Animation animation = Animation.sequenced('block.png', 16, stepTime: stepTime, textureWidth: 32.0, textureHeight: 32.0);
+    final stepTime = Data.currentOptions.blockLifespan / 12.0;
+    final animation = Animation.sequenced('block.png', 16, stepTime: stepTime, textureWidth: 32.0, textureHeight: 32.0);
     animation.loop = false;
     for (int i = 11; i < 16; i++) {
       animation.frames[i].stepTime = 0.2;
@@ -151,12 +158,12 @@ class Block extends AnimationComponent with BaseBlock, HasGameRef {
 
   @override
   void render(Canvas canvas) {
-    if (this.animation.done()) {
+    if (animation.done()) {
       return;
     }
     super.render(canvas);
     if (!eternal && Data.currentOptions.blockLifespan != -1) {
-      double frac = clock / Data.currentOptions.blockLifespan;
+      final frac = clock / Data.currentOptions.blockLifespan;
       if (clock < Data.currentOptions.blockLifespan) {
         canvas.drawRect(Rect.fromLTWH(width / 4, 3 * height / 4 - 6.0, width / 2, 6.0), Palette.grey.paint);
         canvas.drawRect(Rect.fromLTWH(width / 4 + 1.0, 3 * height / 4 - 5.0, (width / 2 - 2.0) * (1 - frac), 4.0), Palette.green.paint);
@@ -181,9 +188,9 @@ class Block extends AnimationComponent with BaseBlock, HasGameRef {
 
   @override
   void resize(Size size) {
-    this.width = this.height = 2 * sizeTenth(size);
-    this.x = size.width - this.width + 0.25 * this.width;
-    this.y = sizeTop(size) + this.slot * sizeTenth(size) - 0.25 * this.height;
+    width = height = 2 * sizeTenth(size);
+    x = size.width - width + 0.25 * width;
+    y = sizeTop(size) + slot * sizeTenth(size) - 0.25 * height;
   }
 
   @override

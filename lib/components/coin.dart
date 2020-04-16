@@ -1,15 +1,16 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:bgug/game.dart';
 import 'package:flame/animation.dart';
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
 import '../audio.dart';
 import '../constants.dart';
-import '../mixins/has_game_ref.dart';
 
 class _BaseCoin extends AnimationComponent {
   _BaseCoin(double x, double y) : super.sequenced(1.0, 1.0, 'coin.png', 10, textureWidth: 16.0, textureHeight: 16.0) {
@@ -26,7 +27,7 @@ class _BaseCoin extends AnimationComponent {
 class _ExcitedCoin extends _BaseCoin {
   _ExcitedCoin(double x, double y) : super(x, y) {
     animation.stepTime = .005;
-    List<Frame> newFrames = [];
+    final List<Frame> newFrames = [];
     for (int i = 0; i < 5; i++) {
       newFrames.addAll(animation.frames);
     }
@@ -38,19 +39,17 @@ class _ExcitedCoin extends _BaseCoin {
   bool destroy() => animation.done();
 }
 
-class Coin extends _BaseCoin with HasGameRef {
+class Coin extends _BaseCoin with HasGameRef<BgugGame> {
   bool collected = false;
 
-  Coin(double x, double y) : super(x, y) {
-    this.animation.stepTime = .15;
-  }
+  Coin(double x, double y) : super(x, y);
 
   @override
   void update(double t) {
     super.update(t);
 
-    if (gameRef != null && this.toRect().overlaps(gameRef.player.toRect())) {
-      this.collected = true;
+    if (gameRef != null && toRect().overlaps(gameRef.player.toRect())) {
+      collected = true;
       gameRef.currentCoins++;
       Audio.playSfx('gem_collect.wav');
       gameRef.addLater(_ExcitedCoin(x, y));
@@ -62,16 +61,17 @@ class Coin extends _BaseCoin with HasGameRef {
 }
 
 class CoinTrace extends Component {
-  static final Sprite _coin = new Sprite('coin.png', width: 16.0, height: 16.0);
-  static final Position _size = new Position(32.0, 32.0);
+  static final Sprite _coin = Sprite('coin.png', width: 16.0, height: 16.0);
+  static final Position _size = Position(32.0, 32.0);
 
-  static final math.Random rand = new math.Random();
+  static final math.Random rand = math.Random();
 
   static const MAX_TIME = 0.8;
   static const STDEV = 40.0;
 
   double clock = 0.0;
-  Position start, end, _current;
+  Position start, end;
+  final Position _current;
   List<Position> coins = [];
   bool hud;
 
@@ -97,14 +97,14 @@ class CoinTrace extends Component {
       clock = MAX_TIME;
       doAfter();
     }
-    double dx = end.x - start.x;
-    double dy = end.y - start.y;
+    final dx = end.x - start.x;
+    final dy = end.y - start.y;
     _current.x = start.x + dx * clock / MAX_TIME;
     _current.y = start.y + dy * clock / MAX_TIME;
 
     if (clock <= MAX_TIME / 4) {
       if (rand.nextDouble() < 0.25) {
-        coins.add(new Position(STDEV * rand.nextDouble() - STDEV / 2, STDEV * rand.nextDouble() - STDEV / 2));
+        coins.add(Position(STDEV * rand.nextDouble() - STDEV / 2, STDEV * rand.nextDouble() - STDEV / 2));
       }
     }
   }

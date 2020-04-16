@@ -18,8 +18,8 @@ class IAP {
 
     try {
       await FlutterInappPurchase.initConnection;
-      List<IAPItem> items = await FlutterInappPurchase.getProducts([PRODUCT_ID]);
-      List<PurchasedItem> purchases = await FlutterInappPurchase.getPurchaseHistory();
+      final items = await FlutterInappPurchase.getProducts([PRODUCT_ID]);
+      final purchases = await FlutterInappPurchase.getPurchaseHistory();
       iap = items.first;
       pro = purchases.isNotEmpty && purchases.first.productId == PRODUCT_ID;
     } catch (ex) {
@@ -30,7 +30,7 @@ class IAP {
   }
 
   static Future purchase() async {
-    PurchasedItem purchased = await FlutterInappPurchase.buyProduct(PRODUCT_ID);
+    final purchased = await FlutterInappPurchase.buyProduct(PRODUCT_ID);
     print('Purchace: $purchased');
 
     pro = true;

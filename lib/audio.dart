@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum Song { GAME, MENU }
 
 Future<AudioPool> loadSfx(String file) async {
-  AudioPool audio = new AudioPool(file, prefix: 'audio/', minPlayers: 2, maxPlayers: 4);
+  final audio = AudioPool(file, prefix: 'audio/', minPlayers: 2, maxPlayers: 4);
   await audio.init();
   return audio;
 }
@@ -20,7 +20,7 @@ class Audio {
   static bool enableSfx;
   static bool inited = false;
 
-  static Map<String, AudioPool> sfx = Map();
+  static Map<String, AudioPool> sfx = {};
 
   static bool get enableMusic => _enableMusic;
 
@@ -34,13 +34,13 @@ class Audio {
     _enableMusic = prefs.getString('bgug.enable_music') != 'false';
     enableSfx = prefs.getString('bgug.enable_sfx') != 'false';
 
-    musicPlayer = new AudioCache(prefix: 'audio/', fixedPlayer: new AudioPlayer());
+    musicPlayer = AudioCache(prefix: 'audio/', fixedPlayer: AudioPlayer());
     await musicPlayer.loadAll(['music.mp3', 'menu.mp3']);
     await musicPlayer.fixedPlayer.setReleaseMode(ReleaseMode.LOOP);
 
-    List<String> sounds = ['block.wav', 'death.wav', 'gem_collect.wav', 'jump.wav', 'laser_load.wav', 'laser_shoot.wav'];
-    Iterable<Future> ps = sounds.map((s) {
-      Future<AudioPool> promise = loadSfx(s);
+    final sounds = ['block.wav', 'death.wav', 'gem_collect.wav', 'jump.wav', 'laser_load.wav', 'laser_shoot.wav'];
+    final ps = sounds.map((s) {
+      final promise = loadSfx(s);
       return promise.then((value) => sfx[s] = value);
     });
     await Future.wait(ps);
@@ -84,7 +84,7 @@ class Audio {
     if (!inited) {
       return;
     }
-    bool should = !isPaused && enableMusic;
+    final should = !isPaused && enableMusic;
     if (song != null) {
       if (should) {
         await musicPlayer.fixedPlayer.resume();

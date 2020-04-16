@@ -6,10 +6,12 @@ class StoreButtonWidget extends StatelessWidget {
   static const S = 1.5;
   @override
   Widget build(BuildContext context) {
-    return pad(GestureDetector(
-      child: Image.asset('assets/images/store/store_button.png', width: S * 72, height: S * 28, fit: BoxFit.contain, filterQuality: FilterQuality.none),
-      onTap: () => Navigator.of(context).pushNamed('/store'),
-    ), 4.0);
+    return pad(
+        GestureDetector(
+          child: Image.asset('assets/images/store/store_button.png', width: S * 72, height: S * 28, fit: BoxFit.contain, filterQuality: FilterQuality.none),
+          onTap: () => Navigator.of(context).pushNamed('/store'),
+        ),
+        4.0);
   }
 }
 
@@ -17,6 +19,7 @@ class ProBadge extends StatelessWidget {
   static const S = 1.5;
   @override
   Widget build(BuildContext context) {
-    return pad(Image.asset('assets/images/store/x2coins-certificate.png', width: S * 68, height: S * 21, fit: BoxFit.contain, filterQuality: FilterQuality.none), 4.0);
+    return pad(
+        Image.asset('assets/images/store/x2coins-certificate.png', width: S * 68, height: S * 21, fit: BoxFit.contain, filterQuality: FilterQuality.none), 4.0);
   }
 }

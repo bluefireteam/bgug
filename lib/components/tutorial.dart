@@ -8,9 +8,9 @@ import '../tutorial_status.dart';
 class Tutorial extends PositionComponent {
   static const FRAC = 192.0 / 162.0;
 
-  static final Sprite p1 = new Sprite('tutorial.png');
-  static final Sprite p1gp = new Sprite('tutorial-gamepad.png');
-  static final Sprite p2 = new Sprite('tutorial-2.png');
+  static final Sprite p1 = Sprite('tutorial.png');
+  static final Sprite p1gp = Sprite('tutorial-gamepad.png');
+  static final Sprite p2 = Sprite('tutorial-2.png');
 
   TutorialStatus status;
 

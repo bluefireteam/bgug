@@ -1,13 +1,14 @@
 import 'dart:ui';
 import 'dart:math' as math;
 
+import 'package:bgug/game.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 
 import '../audio.dart';
 import '../constants.dart';
-import '../mixins/has_game_ref.dart';
 
 class GemJuiceEngine {
   static const MAX_TIME = 1;
@@ -18,7 +19,7 @@ class GemJuiceEngine {
   double theta, thetaEnd;
 
   GemJuiceEngine({this.start, this.end}) {
-    Position diff = end.minus(start);
+    final diff = end.minus(start);
     r = 0;
     rEnd = diff.length();
     theta = 0;
@@ -45,13 +46,13 @@ class GemJuiceEngine {
   bool get isComplete => r >= rEnd;
 }
 
-class GemMoving extends SpriteComponent with HasGameRef {
+class GemMoving extends SpriteComponent with HasGameRef<BgugGame> {
   GemJuiceEngine juice;
   bool done = false;
 
-  GemMoving(this.juice) : super.fromSprite(1.0, 1.0, new Sprite('gem.png')) {
-    this.x = juice.x;
-    this.y = juice.y;
+  GemMoving(this.juice) : super.fromSprite(1.0, 1.0, Sprite('gem.png')) {
+    x = juice.x;
+    y = juice.y;
   }
 
   @override
@@ -85,10 +86,10 @@ class GemMoving extends SpriteComponent with HasGameRef {
   bool destroy() => done;
 }
 
-class Gem extends SpriteComponent with HasGameRef {
+class Gem extends SpriteComponent with HasGameRef<BgugGame> {
   bool complete = false;
 
-  Gem(double x, double y) : super.fromSprite(1.0, 1.0, new Sprite('gem.png')) {
+  Gem(double x, double y) : super.fromSprite(1.0, 1.0, Sprite('gem.png')) {
     this.x = x;
     this.y = y;
   }
@@ -97,11 +98,11 @@ class Gem extends SpriteComponent with HasGameRef {
   void update(double t) {
     super.update(t);
 
-    if (this.toRect().overlaps(gameRef.player.toRect())) {
-      Position start = this.toPosition().minus(gameRef.camera);
-      Position end = gameRef.hud.gemPosition;
-      GemJuiceEngine juice = new GemJuiceEngine(start: start, end: end);
-      gameRef.addLater(new GemMoving(juice));
+    if (toRect().overlaps(gameRef.player.toRect())) {
+      final start = toPosition().minus(gameRef.camera);
+      final end = gameRef.hud.gemPosition;
+      final juice = GemJuiceEngine(start: start, end: end);
+      gameRef.addLater(GemMoving(juice));
       complete = true;
     }
   }

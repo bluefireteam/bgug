@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'dart:math' as math;
 
+import 'package:bgug/game.dart';
 import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
+import 'package:flame/components/mixins/has_game_ref.dart';
 import 'package:flame/components/mixins/resizable.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
@@ -10,9 +12,8 @@ import '../data.dart';
 
 import '../util.dart';
 import '../constants.dart';
-import '../mixins/has_game_ref.dart';
 
-class Hud extends SpriteComponent with HasGameRef, Resizable {
+class Hud extends SpriteComponent with HasGameRef<BgugGame>, Resizable {
   static const SRC_WIDTH = 220.0;
   static const SRC_HEIGHT = 32.0;
 
@@ -24,26 +25,26 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
   static final Position _coinPosition = Position(SCALE * 200.0, SCALE * 10.0);
   static final Position _gemPosition = Position(SCALE * 161.0, SCALE * 10.0);
 
-  static final bgPaint = new Paint()..color = const Color(0xFF626262);
+  static final bgPaint = Paint()..color = const Color(0xFF626262);
 
   Rect bgRect;
   double gaugeStrength, clock;
   double meterPerPixel = 1.0;
   double maxDistance = 0.0;
 
-  double get maxDistanceInMeters => maxDistance * this.meterPerPixel;
+  double get maxDistanceInMeters => maxDistance * meterPerPixel;
 
-  Hud() : super.fromSprite(WIDTH, HEIGHT, new Sprite('hud_bg.png', width: SRC_WIDTH, height: SRC_HEIGHT));
+  Hud() : super.fromSprite(WIDTH, HEIGHT, Sprite('hud_bg.png', width: SRC_WIDTH, height: SRC_HEIGHT));
 
-  Position get gemPosition => new Position(x + SCALE * 141, y + SCALE * 7);
+  Position get gemPosition => Position(x + SCALE * 141, y + SCALE * 7);
 
   @override
   void update(double t) {
     super.update(t);
     if (clock != null) {
       clock += t;
-      double diff = clock;
-      double max = Data.currentOptions.maxHoldJumpMillis.toDouble() / 1000.0;
+      final diff = clock;
+      final max = Data.currentOptions.maxHoldJumpMillis.toDouble() / 1000.0;
       gaugeStrength = math.min(diff, max) / max;
     } else {
       gaugeStrength = null;
@@ -52,10 +53,10 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
 
   @override
   void resize(Size size) {
-    this.x = (size.width - WIDTH) / 2;
-    this.y = 4.0;
-    this.bgRect = new Rect.fromLTWH(0.0, 0.0, size.width, HEIGHT);
-    this.meterPerPixel = .75 / sizeTenth(size);
+    x = (size.width - WIDTH) / 2;
+    y = 4.0;
+    bgRect = Rect.fromLTWH(0.0, 0.0, size.width, HEIGHT);
+    meterPerPixel = .75 / sizeTenth(size);
   }
 
   @override
@@ -83,11 +84,11 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
   int priority() => 1;
 
   void startGauge() {
-    this.clock = 0;
+    clock = 0;
   }
 
   void clearGauge() {
-    this.clock = null;
+    clock = null;
   }
 
   void renderDistance(Canvas canvas) {
@@ -100,7 +101,7 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
     if (gameRef.player.x > maxDistance) {
       maxDistance = gameRef.player.x;
     }
-    String dist = maxDistanceInMeters.toStringAsFixed(1);
+    final dist = maxDistanceInMeters.toStringAsFixed(1);
     defaultText.render(canvas, '$dist m', where, anchor: Anchor.topCenter);
   }
 
@@ -126,11 +127,11 @@ class Hud extends SpriteComponent with HasGameRef, Resizable {
     const GAUGE_Y = 17;
     const GAUGE_HEIGHT = 7;
     const STEP = 2;
-    double s = SCALE.toDouble();
-    int sizePxs = (gaugeStrength * MAX).round();
+    final s = SCALE.toDouble();
+    final sizePxs = (gaugeStrength * MAX).round();
     for (int i = GAUGE_X, j = 0; i < sizePxs; i += STEP, j++) {
-      Color color = COLORS[j % 2];
-      canvas.drawRect(Rect.fromLTWH(s * i, s * GAUGE_Y, s * STEP, s * GAUGE_HEIGHT), new Paint()..color = color);
+      final color = COLORS[j % 2];
+      canvas.drawRect(Rect.fromLTWH(s * i, s * GAUGE_Y, s * STEP, s * GAUGE_HEIGHT), Paint()..color = color);
     }
   }
 }

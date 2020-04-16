@@ -5,9 +5,9 @@ import 'dart:ui';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/game.dart';
-import 'package:flame_gamepad/flame_gamepad.dart';
 import 'package:flame/position.dart';
 import 'package:flame/text_config.dart';
+import 'package:flame_gamepad/flame_gamepad.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:ordered_set/ordered_set.dart';
 
@@ -26,13 +26,12 @@ import 'components/top.dart';
 import 'components/tutorial.dart';
 import 'constants.dart';
 import 'data.dart';
-import 'mixins/has_game_ref.dart';
 import 'options.dart';
 import 'queryable_ordered_set.dart';
 import 'tutorial_status.dart';
 import 'world_gen.dart';
 
-math.Random random = new math.Random();
+math.Random random = math.Random();
 
 enum GameState { TUTORIAL, PAUSED, RUNNING, DEAD, END_CARD, STOPPED, AD }
 
@@ -50,7 +49,7 @@ class BgugGame extends BaseGame {
   int lastGeneratedSector;
   GameState state;
 
-  QueryableOrderedSetImpl queryComponents = new QueryableOrderedSetImpl();
+  QueryableOrderedSetImpl queryComponents = QueryableOrderedSetImpl();
 
   Player get player => queryComponents.player();
 
@@ -88,7 +87,7 @@ class BgugGame extends BaseGame {
 
   void showEndCard() {
     state = GameState.END_CARD;
-    var endCard = new EndCard();
+    final endCard = EndCard();
     endCard.init().then((_) {
       add(endCard);
     });
@@ -157,14 +156,6 @@ class BgugGame extends BaseGame {
     lastGeneratedSector = -1;
   }
 
-  @override
-  void preAdd(Component c) {
-    if (c is HasGameRef) {
-      (c as HasGameRef).gameRef = this;
-    }
-    super.preAdd(c);
-  }
-
   void startInput(Position p, int dt) {
     if (state == GameState.END_CARD || state == GameState.TUTORIAL || state == GameState.PAUSED) {
       return;
@@ -194,10 +185,10 @@ class BgugGame extends BaseGame {
   }
 
   void blockInput() {
-    int dPoint = button.click();
+    final dPoint = button.click();
     if (dPoint != null) {
       gems -= dPoint;
-      add(new BlockTween(button.toPosition(), nextFreeSlot));
+      add(BlockTween(button.toPosition(), nextFreeSlot));
     }
   }
 
@@ -217,8 +208,7 @@ class BgugGame extends BaseGame {
     }
 
     if (player.dead()) {
-      if (evtType == GAMEPAD_BUTTON_UP)
-        showEndCard();
+      if (evtType == GAMEPAD_BUTTON_UP) showEndCard();
     } else {
       if (evtType == GAMEPAD_BUTTON_DOWN && key == GAMEPAD_BUTTON_A) {
         hud.startGauge();
@@ -268,7 +258,7 @@ class BgugGame extends BaseGame {
     if (state == GameState.TUTORIAL || state == GameState.RUNNING || state == GameState.DEAD || state == GameState.END_CARD || state == GameState.PAUSED) {
       super.render(c);
     } else {
-      c.drawRect(new Rect.fromLTWH(0.0, 0.0, size.width, size.height), new Paint()..color = material.Colors.black);
+      c.drawRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height), Paint()..color = material.Colors.black);
     }
 
     if (debugMode()) {
@@ -359,10 +349,10 @@ class BgugGame extends BaseGame {
     print('Called WILL POP, state: $state');
     if (state == GameState.TUTORIAL) {
       state = GameState.RUNNING;
-    } else if (this.state == GameState.RUNNING) {
+    } else if (state == GameState.RUNNING) {
       player.die();
       showEndCard();
-    } else if (this.state == GameState.END_CARD) {
+    } else if (state == GameState.END_CARD) {
       endCard.doClickBack();
       return true;
     }

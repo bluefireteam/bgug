@@ -6,7 +6,7 @@ import 'gui_commons.dart';
 class AudioControlWidget extends StatefulWidget {
   @override
   AudioControlWidgetState createState() {
-    return new AudioControlWidgetState();
+    return AudioControlWidgetState();
   }
 }
 

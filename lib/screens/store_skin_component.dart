@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flame/animation.dart' as animation;
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/components/mixins/resizable.dart';
-import 'package:flame/sprite.dart';
 
 import '../constants.dart';
 
@@ -24,12 +23,12 @@ class Place {
   const Place._(this.x, this.scale, {this.out = false});
 
   Place get prev {
-    int idx = places.indexOf(this) - 1;
+    final idx = places.indexOf(this) - 1;
     return _get(idx);
   }
 
   Place get next {
-    int idx = places.indexOf(this) + 1;
+    final idx = places.indexOf(this) + 1;
     return _get(idx);
   }
 
@@ -44,9 +43,9 @@ class Place {
 class PlaceTween {
   static const SPEED = 2.5;
 
-  static PlaceTween get left => new PlaceTween(Place.places.first, Place.places.first.next);
+  static PlaceTween get left => PlaceTween(Place.places.first, Place.places.first.next);
 
-  static PlaceTween get right => new PlaceTween(Place.places.last, Place.places.last.prev);
+  static PlaceTween get right => PlaceTween(Place.places.last, Place.places.last.prev);
 
   Place start, end;
   double progress;
@@ -81,16 +80,16 @@ class StoreSkinComponent extends AnimationComponent with Resizable {
   }
 
   StoreSkinComponent.startAt(Place place, this.skin, this.locked) : super(1.0, 1.0, makeAnimation(skin)) {
-    _tween = new PlaceTween(place.prev, place)..progress = 1.0;
+    _tween = PlaceTween(place.prev, place)..progress = 1.0;
   }
 
   @override
   void render(Canvas canvas) {
     if (loaded()) {
       prepareCanvas(canvas);
-      Sprite sprite = this.animation.getSprite();
-      int alpha = locked ? 50 : 255;
-      sprite.paint = Paint()..color = Color(0xFFFFFFFF).withAlpha(alpha);
+      final sprite = this.animation.getSprite();
+      final alpha = locked ? 50 : 255;
+      sprite.paint = Paint()..color = const Color(0xFFFFFFFF).withAlpha(alpha);
       sprite.render(canvas, width: width, height: height);
     }
   }
@@ -101,22 +100,26 @@ class StoreSkinComponent extends AnimationComponent with Resizable {
     _tween.update(t);
   }
 
+  @override
   double get height => FRAC * 18.0 * _tween.scale;
 
+  @override
   double get width => FRAC * 16.0 * _tween.scale;
 
+  @override
   double get x => size.width * _tween.x - width / 2;
 
+  @override
   double get y => sizeBottom(size) - height;
 
   bool get isMoving => _tween.isMoving;
 
   void next() {
-    _tween = new PlaceTween(_tween.end, _tween.end.next);
+    _tween = PlaceTween(_tween.end, _tween.end.next);
   }
 
   void prev() {
-    _tween = new PlaceTween(_tween.end, _tween.end.prev);
+    _tween = PlaceTween(_tween.end, _tween.end.prev);
   }
 
   @override

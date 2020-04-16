@@ -33,12 +33,11 @@ class _Handler extends WidgetsBindingObserver {
 }
 
 class MyDrag extends Drag {
-
   Position lastDragPos;
 
   @override
   void update(DragUpdateDetails details) {
-    lastDragPos = new Position.fromOffset(details.globalPosition);
+    lastDragPos = Position.fromOffset(details.globalPosition);
     Main.game?.dragTo(lastDragPos);
   }
 
@@ -51,7 +50,7 @@ class MyDrag extends Drag {
   }
 }
 
-main() async {
+void main() async {
   Crashlytics.instance.enableInDevMode = true;
 
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -62,8 +61,8 @@ main() async {
 
   Flame.audio.disableLog();
 
-  runApp(new MaterialApp(
-    home: new Scaffold(body: HomeScreen()),
+  runApp(MaterialApp(
+    home: Scaffold(body: HomeScreen()),
     routes: {
       '/start': (BuildContext ctx) => Scaffold(body: StartGameScreen()),
       '/options': (BuildContext ctx) => Scaffold(body: OptionsScreen()),
@@ -79,17 +78,17 @@ main() async {
   Position lastPost;
 
   int getDt() {
-    return new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
+    return DateTime.now().millisecondsSinceEpoch - lastTimestamp;
   }
 
   bool handlingInput() {
     return Main.game != null && Main.game.handlingClick();
   }
 
-  Flame.util.addGestureRecognizer(new TapGestureRecognizer()
+  Flame.util.addGestureRecognizer(TapGestureRecognizer()
     ..onTapDown = (TapDownDetails details) {
-      lastPost = new Position.fromOffset(details.globalPosition);
-      lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
+      lastPost = Position.fromOffset(details.globalPosition);
+      lastTimestamp = DateTime.now().millisecondsSinceEpoch;
       if (handlingInput()) {
         Main.game.startInput(lastPost, lastTimestamp);
       }
@@ -113,13 +112,13 @@ main() async {
       }
     });
 
-  var gamePadController = new FlameGamepad();
+  final gamePadController = FlameGamepad();
   gamePadController.setListener((String evtType, String key) {
     int dt;
     if (evtType == GAMEPAD_BUTTON_DOWN && key == GAMEPAD_BUTTON_A) {
-      lastTimestamp = new DateTime.now().millisecondsSinceEpoch;
+      lastTimestamp = DateTime.now().millisecondsSinceEpoch;
     } else if (evtType == GAMEPAD_BUTTON_UP && key == GAMEPAD_BUTTON_A) {
-      dt = new DateTime.now().millisecondsSinceEpoch - lastTimestamp;
+      dt = DateTime.now().millisecondsSinceEpoch - lastTimestamp;
     }
 
     if (Main.game != null) {
@@ -127,7 +126,7 @@ main() async {
     }
   });
 
-  // Flame.util.addGestureRecognizer(new ImmediateMultiDragGestureRecognizer()..onStart = (Offset position) => new MyDrag());
+  // Flame.util.addGestureRecognizer(ImmediateMultiDragGestureRecognizer()..onStart = (Offset position) => MyDrag());
 
-  WidgetsBinding.instance.addObserver(new _Handler());
+  WidgetsBinding.instance.addObserver(_Handler());
 }

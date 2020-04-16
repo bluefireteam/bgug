@@ -22,9 +22,9 @@ class Buy {
   Map<String, dynamic> toJson() => _$BuyToJson(this);
 
   static Buy merge(Buy buy1, Buy buy2) {
-    return new Buy()
-        ..skinsOwned = (new Set()..addAll(buy1.skinsOwned)..addAll(buy2.skinsOwned)).toList().cast<String>()
-        ..selectedSkin = buy1.selectedSkin ?? buy2.selectedSkin
-        ..coins = math.max(buy1.coins, buy2.coins);
+    return Buy()
+      ..skinsOwned = (<String>{}..addAll(buy1.skinsOwned)..addAll(buy2.skinsOwned)).toList().cast<String>()
+      ..selectedSkin = buy1.selectedSkin ?? buy2.selectedSkin
+      ..coins = math.max(buy1.coins, buy2.coins);
   }
 }

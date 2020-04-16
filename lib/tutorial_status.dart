@@ -1,14 +1,9 @@
 import 'package:flame_gamepad/flame_gamepad.dart';
 
-enum TutorialStatus {
-  NOT_SHOWING,
-  PAGE_0_REGULAR,
-  PAGE_0_GAMEPAD,
-  PAGE_1
-}
+enum TutorialStatus { NOT_SHOWING, PAGE_0_REGULAR, PAGE_0_GAMEPAD, PAGE_1 }
 
 Future<TutorialStatus> getFirstTutorialStatus() async {
-  bool gamepad = await FlameGamepad.isGamepadConnected;
+  final gamepad = await FlameGamepad.isGamepadConnected;
   return gamepad ? TutorialStatus.PAGE_0_GAMEPAD : TutorialStatus.PAGE_0_REGULAR;
 }
 

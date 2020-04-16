@@ -23,8 +23,7 @@ class Score {
 
   Map<String, dynamic> toJson() => _$ScoreToJson(this);
 
-  String toText() =>
-      'Scored ${distance.toStringAsFixed(2)} meters earning $coins coins.';
+  String toText() => 'Scored ${distance.toStringAsFixed(2)} meters earning $coins coins.';
 }
 
 @JsonSerializable()
@@ -76,24 +75,19 @@ class Stats {
     return _submitScore('leaderboard_bgug__max_coins', maxCoins);
   }
 
-  Future<SubmitScoreResults> _submitScore(String name, int value,
-      {int tries = 0}) async {
+  Future<SubmitScoreResults> _submitScore(String name, int value, {int tries = 0}) async {
     if (Data.user == null) {
-      print(
-          '[ACHIEVEMENTS] Skipping because not logged in. Name $name, value: $value');
+      print('[ACHIEVEMENTS] Skipping because not logged in. Name $name, value: $value');
       return null;
     }
     try {
-      SubmitScoreResults results =
-          await PlayGames.submitScoreByName(name, value);
-      print(
-          '[ACHIEVEMENTS] Successfully submited! Name: $name, value: $value. Result: $results');
+      final results = await PlayGames.submitScoreByName(name, value);
+      print('[ACHIEVEMENTS] Successfully submited! Name: $name, value: $value. Result: $results');
       return results;
     } catch (ex, stacktrace) {
-      String message =
-          '[ACHIEVEMENTS] Error while submmiting scoreon try $tries: $ex';
+      final message = '[ACHIEVEMENTS] Error while submmiting scoreon try $tries: $ex';
       print(message);
-      String data = json.encode({
+      final data = json.encode({
         'name': name,
         'value': value,
         'message': message,
@@ -103,15 +97,14 @@ class Stats {
       });
       Crashlytics.instance.setBool('achievements', true);
       Crashlytics.instance.log(data);
-      Crashlytics.instance
-          .onError(FlutterErrorDetails(exception: data, stack: stacktrace));
+      Crashlytics.instance.onError(FlutterErrorDetails(exception: data, stack: stacktrace));
       if (tries == MAX_TRIES) {
         print('[ACHIEVEMENTS] Exceed max tries... Giving up.');
-        throw ex;
+        rethrow;
       }
       Data.user = await PlayUser.singIn();
       if (Data.user == null) {
-        throw ex;
+        rethrow;
       }
       return _submitScore(name, value, tries: tries + 1);
     }
@@ -124,13 +117,13 @@ class Stats {
   }
 
   void calculateStats(BgugGame game) {
-    double distance = game.hud.maxDistanceInMeters;
-    int jumps = game.totalJumps;
-    int dives = game.totalDives;
-    int gems = game.totalGems;
-    int coins = game.currentCoins;
+    final distance = game.hud.maxDistanceInMeters;
+    final jumps = game.totalJumps;
+    final dives = game.totalDives;
+    final gems = game.totalGems;
+    final coins = game.currentCoins;
 
-    Score score = Score(distance, coins);
+    final score = Score(distance, coins);
     scores.insert(0, score);
     scores = normalize(scores);
 
@@ -163,16 +156,11 @@ class Stats {
     totalCoins += coins;
   }
 
-  static List<T> normalize<T>(List<T> scores) =>
-      scores.sublist(0, MAX_SCORES.clamp(0, scores.length));
+  static List<T> normalize<T>(List<T> scores) => scores.sublist(0, MAX_SCORES.clamp(0, scores.length));
 
   static Stats merge(Stats stats1, Stats stats2) {
-    return new Stats()
-      ..scores = normalize((new Set()
-            ..addAll(stats1.scores)
-            ..addAll(stats2.scores))
-          .toList()
-          .cast<Score>())
+    return Stats()
+      ..scores = normalize((<Score>{}..addAll(stats1.scores)..addAll(stats2.scores)).toList().cast<Score>())
       ..maxDistance = math.max(stats1.maxDistance, stats2.maxDistance)
       ..totalDistance = math.max(stats1.totalDistance, stats2.totalDistance)
       ..maxJumps = math.max(stats1.maxJumps, stats2.maxJumps)
