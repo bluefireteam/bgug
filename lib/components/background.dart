@@ -8,7 +8,7 @@ import 'package:flame/sprite.dart';
 
 import '../background.dart' as bg;
 
-math.Random random = new math.Random();
+math.Random random = math.Random();
 
 class Background extends SpriteComponent {
   static const SPEED = 50.0;
@@ -16,16 +16,16 @@ class Background extends SpriteComponent {
 
   @override
   void resize(Size size) {
-    this.width = size.width;
-    this.height = size.height;
-    this.x = this.y = 0.0;
-    this.speed = new Position(SPEED, 0.0).rotate(random.nextDouble() * 2 * math.pi);
-    this.setImageLater();
+    width = size.width;
+    height = size.height;
+    x = y = 0.0;
+    speed = Position(SPEED, 0.0).rotate(random.nextDouble() * 2 * math.pi);
+    setImageLater();
   }
 
   void setImageLater() async {
-    Image image = await bg.generate(this.width.toInt() ~/ 4, this.height.toInt() ~/ 4);
-    this.sprite = new Sprite.fromImage(image);
+    final image = await bg.generate(width.toInt() ~/ 4, height.toInt() ~/ 4);
+    sprite = Sprite.fromImage(image);
   }
 
   @override
@@ -33,22 +33,19 @@ class Background extends SpriteComponent {
     if (sprite == null) {
       return;
     }
-    Flame.util.drawWhere(c, new Position(x - width, y - height),
-            (c) => sprite.render(c, width: width, height: height));
-    Flame.util.drawWhere(
-        c, new Position(x, y - height), (c) => sprite.render(c, width: width, height: height));
-    Flame.util.drawWhere(
-        c, new Position(x - width, y), (c) => sprite.render(c, width: width, height: height));
+    Flame.util.drawWhere(c, Position(x - width, y - height), (c) => sprite.render(c, width: width, height: height));
+    Flame.util.drawWhere(c, Position(x, y - height), (c) => sprite.render(c, width: width, height: height));
+    Flame.util.drawWhere(c, Position(x - width, y), (c) => sprite.render(c, width: width, height: height));
     super.render(c);
   }
 
   @override
   void update(double dt) {
-    this.x += dt * speed.x;
-    this.y += dt * speed.y;
+    x += dt * speed.x;
+    y += dt * speed.y;
 
-    this.x = this.x % width;
-    this.y = this.y % height;
+    x %=  width;
+    y %= height;
   }
 
   @override

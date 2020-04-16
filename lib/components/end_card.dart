@@ -68,8 +68,8 @@ class EndCard extends SpriteComponent with HasGameRef {
     defaultText.render(canvas, '${gameRef.gems}', Position(width / 2 + 16.0, 96.0 - 8.0));
 
     coin.renderCentered(canvas, Position(width / 2 - 16.0, 142.0), size: Position(32.0, 32.0));
-    bool lastTicks = _tickTimer != null && _tickTimer < CLOCK_SPEED / 3;
-    Color color = doubleCoins || lastTicks ? const Color(0xFF10D594) : const Color(0xFF404040);
+    final lastTicks = _tickTimer != null && _tickTimer < CLOCK_SPEED / 3;
+    final color = doubleCoins || lastTicks ? const Color(0xFF10D594) : const Color(0xFF404040);
     defaultText.withColor(color).render(canvas, '$coins', Position(width / 2 + 16.0, 142.0 - 8.0));
 
     buttonReplay.renderPosition(canvas, _replayPosition, size: _buttonSize);

@@ -21,8 +21,8 @@ math.Random rand = math.Random();
 TextConfig config = defaultText.withFontSize(24.0);
 
 class _SkinCardComponent extends Component with Resizable {
-  static Sprite btnOn = new Sprite('store/store-ui.png', y: 36, width: 100, height: 36);
-  static Sprite btnOff = new Sprite('store/store-ui.png', width: 100, height: 36);
+  static Sprite btnOn = Sprite('store/store-ui.png', y: 36, width: 100, height: 36);
+  static Sprite btnOff = Sprite('store/store-ui.png', width: 100, height: 36);
 
   _SkinSelectionGame gameRef;
   Skin skin;
@@ -53,7 +53,7 @@ class _ArrowButton extends SpriteComponent {
   _SkinSelectionGame gameRef;
   bool left;
 
-  _ArrowButton(this.gameRef, this.left) : super.fromSprite(1.0, 1.0, new Sprite('store/store-ui.png', x: left ? 0 : 16, y: 72, width: 16, height: 64));
+  _ArrowButton(this.gameRef, this.left) : super.fromSprite(1.0, 1.0, Sprite('store/store-ui.png', x: left ? 0 : 16, y: 72, width: 16, height: 64));
 
   @override
   void render(Canvas canvas) {
@@ -86,7 +86,7 @@ class _SkinSelectionGame extends BaseGame {
   List<Skin> skins;
 
   void _updateSkinList() {
-    skins = new List.from(Data.skinList.skins);
+    skins = List.from(Data.skinList.skins);
     skins.sort((s1, s2) {
       if (Data.buy.selectedSkin == s1.file) {
         return -1;
@@ -94,16 +94,16 @@ class _SkinSelectionGame extends BaseGame {
         return 1;
       }
 
-      bool has1 = Data.buy.skinsOwned.contains(s1.file);
-      bool has2 = Data.buy.skinsOwned.contains(s2.file);
+      final bool has1 = Data.buy.skinsOwned.contains(s1.file);
+      final bool has2 = Data.buy.skinsOwned.contains(s2.file);
       if (has1 && !has2) {
         return 1;
       } else if (!has1 && has2) {
         return -1;
       }
 
-      bool hasPrice1 = s1.cost > 0;
-      bool hasPrice2 = s2.cost > 0;
+      final bool hasPrice1 = s1.cost > 0;
+      final bool hasPrice2 = s2.cost > 0;
 
       if (hasPrice1 && !hasPrice2) {
         return 1;
@@ -136,7 +136,7 @@ class _SkinSelectionGame extends BaseGame {
     add(_ArrowButton(this, true));
     add(_ArrowButton(this, false));
     add(card = _SkinCardComponent(this));
-    add(this.lock = Lock(() => lockVisible));
+    add(lock = Lock(() => lockVisible));
 
     _updateSkinList();
   }
@@ -163,18 +163,18 @@ class _SkinSelectionGame extends BaseGame {
 
   void hitPrev() {
     skinComponents.forEach((s) => s.next());
-    int nextIdx = _fixIdx(selected - 2);
+    final int nextIdx = _fixIdx(selected - 2);
     _addLaterSkin(StartingPlace.LEFT, nextIdx);
   }
 
   void hitNext() {
     skinComponents.forEach((s) => s.prev());
-    int prevIdx = _fixIdx(selected + 2);
+    final int prevIdx = _fixIdx(selected + 2);
     _addLaterSkin(StartingPlace.RIGHT, prevIdx);
   }
 
   void _addLaterSkin(StartingPlace place, int nextIdx) {
-    add(new StoreSkinComponent(place, skins[nextIdx].file, !doOwnSkin(nextIdx)));
+    add(StoreSkinComponent(place, skins[nextIdx].file, !doOwnSkin(nextIdx)));
     _updateSelectedSkin();
   }
 
@@ -213,11 +213,11 @@ class _SkinSelectionGame extends BaseGame {
         });
       } else if (skins[selected].cost > 0 && Data.buy.coins >= skins[selected].cost) {
         buying = true;
-        Position start = Position(camera.x + 20 + 32.0 / 2, camera.y + 20 + 32.0 / 2);
-        Position end = Position((size.width - 200) / 2 + 200 / 2, 64.0 + 72 / 2);
-        CoinTrace trace = CoinTrace(false, start, end);
+        final Position start = Position(camera.x + 20 + 32.0 / 2, camera.y + 20 + 32.0 / 2);
+        final Position end = Position((size.width - 200) / 2 + 200 / 2, 64.0 + 72 / 2);
+        final CoinTrace trace = CoinTrace(false, start, end);
         addLater(trace);
-        this.lock.closed = false;
+        lock.closed = false;
         trace.after.then((_) {
           Data.buy.coins -= skins[selected].cost;
           Data.buy.skinsOwned.add(skins[selected].file);
@@ -236,6 +236,7 @@ class _SkinSelectionGame extends BaseGame {
     }
   }
 
+  @override
   void renderComponent(Canvas canvas, Component c) {
     canvas.translate(-camera.x, -camera.y);
     c.render(canvas);
@@ -252,14 +253,14 @@ class SkinSelectionWidget extends StatefulWidget {
 class _SkinSelectionWidgetState extends State<SkinSelectionWidget> {
   final _SkinSelectionGame game;
 
-  _SkinSelectionWidgetState() : this.game = new _SkinSelectionGame();
+  _SkinSelectionWidgetState() : game = _SkinSelectionGame();
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      child: EmbeddedGameWidget(this.game),
-      onTapDown: (evt) => this.game.tap(evt),
+      child: EmbeddedGameWidget(game),
+      onTapDown: (evt) => game.tap(evt),
     );
   }
 }

@@ -33,7 +33,7 @@ class Ad {
     if (!ENABLE_ADS) {
       return false;
     }
-    bool result = await FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-1451557002406313~7960207117');
+    final bool result = await FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-1451557002406313~7960207117');
     loaded = false;
     return result;
   }
@@ -42,7 +42,7 @@ class Ad {
     if (!enableAds || loaded) {
       return;
     }
-    MobileAdTargetingInfo targetingInfo = new MobileAdTargetingInfo(
+    final targetingInfo = MobileAdTargetingInfo(
       keywords: ['game', 'blocks', 'guns', 'platformer', 'action', 'fast'],
     );
     loaded = false;
