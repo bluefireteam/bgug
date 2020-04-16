@@ -118,9 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
       IAP.setup(),
       Audio.init(),
     ];
-    print('awaiting ps');
     Future.wait(ps).then((rs) async {
-      print("foooo");
       if (ENABLE_LOGIN && (await PlayUser.shouldAutoLogin())) {
         _performSignIn();
       } else {
@@ -308,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   Row(children: this.topRightButtons()),
-                  pad(CoinWidget(), 4.0)
+                  pad(CoinWidget(), 4.0),
                 ],
                 crossAxisAlignment: CrossAxisAlignment.end,
               ),
