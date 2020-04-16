@@ -185,11 +185,6 @@ class _SkinSelectionGame extends BaseGame {
     card.skin = skins[selected];
   }
 
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-  }
-
   void tap(TapDownDetails evt) {
     double x = evt.globalPosition.dx;
     if (hideGui) {
@@ -263,7 +258,7 @@ class _SkinSelectionWidgetState extends State<SkinSelectionWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      child: this.game.widget,
+      child: EmbeddedGameWidget(this.game),
       onTapDown: (evt) => this.game.tap(evt),
     );
   }
