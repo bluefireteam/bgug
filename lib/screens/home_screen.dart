@@ -306,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   Row(children: this.topRightButtons()),
-                  pad(CoinWidget(), 4.0)
+                  pad(CoinWidget(), 4.0),
                 ],
                 crossAxisAlignment: CrossAxisAlignment.end,
               ),
