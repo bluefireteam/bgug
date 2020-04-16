@@ -33,7 +33,7 @@ class WorldGen {
       double x = start + random.nextInt(length);
       Obstacle obstacle = random.nextBool() ? new DownObstacle(x) : new UpObstacle(x);
       obstacle.resize(size);
-      if (list.any((box) => box.toRect().overlaps(obstacle.toRect()) || (box.x - obstacle.x).abs() < 8.0)) {
+      if (list.any((box) => box.toRect().overlaps(obstacle.toRect()) || (box.x - obstacle.x).abs() < 12.0)) {
         if (random.nextBool()) {
           i++;
         }

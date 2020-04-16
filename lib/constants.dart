@@ -4,7 +4,7 @@ import 'components/hud.dart';
 
 const bool ENABLE_LOGIN = true;
 const bool ENABLE_ADS = true;
-const bool ENABLE_IAP = false;
+const bool ENABLE_IAP = true;
 
 const double BAR_SIZE = 16.0;
 const double SECTOR_LENGTH = 1000.0;

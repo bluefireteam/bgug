@@ -260,25 +260,6 @@ class _SkinSelectionWidgetState extends State<SkinSelectionWidget> {
   _SkinSelectionWidgetState() : this.game = new _SkinSelectionGame();
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
-  }
-
-  @override
-  void didUpdateWidget(SkinSelectionWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
-  }
-
-  void _afterLayout(_) {
-    RenderBox box = context.findRenderObject();
-    Offset pos = box.localToGlobal(Offset.zero);
-    game.camera.x = -pos.dx;
-    game.camera.y = -pos.dy;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
