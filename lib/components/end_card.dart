@@ -135,6 +135,8 @@ class EndCard extends SpriteComponent with HasGameRef<BgugGame> {
 
   @override
   void update(double dt) {
+    super.update(dt);
+
     if (_tickTimer != null) {
       _tickTimer -= dt;
       while (_tickTimer != null && _tickTimer <= 0) {
