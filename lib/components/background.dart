@@ -41,6 +41,8 @@ class Background extends SpriteComponent {
 
   @override
   void update(double dt) {
+    super.update(dt);
+
     x += dt * speed.x;
     y += dt * speed.y;
 

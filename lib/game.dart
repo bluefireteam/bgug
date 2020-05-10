@@ -208,7 +208,9 @@ class BgugGame extends BaseGame {
     }
 
     if (player.dead()) {
-      if (evtType == GAMEPAD_BUTTON_UP) showEndCard();
+      if (evtType == GAMEPAD_BUTTON_UP) {
+        showEndCard();
+      }
     } else {
       if (evtType == GAMEPAD_BUTTON_DOWN && key == GAMEPAD_BUTTON_A) {
         hud.startGauge();

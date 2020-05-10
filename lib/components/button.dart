@@ -40,6 +40,8 @@ class Button extends PositionComponent with HasGameRef<BgugGame>, Resizable {
 
   @override
   void update(double dt) {
+    super.update(dt);
+
     activeAnimation.update(dt);
   }
 

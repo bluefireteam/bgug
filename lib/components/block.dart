@@ -47,6 +47,8 @@ class BlockTween extends SpriteComponent with BaseBlock, HasGameRef<BgugGame>, R
 
   @override
   void update(double t) {
+    super.update(t);
+
     if (done) {
       return;
     }

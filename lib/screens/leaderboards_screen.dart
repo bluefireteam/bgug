@@ -1,13 +1,14 @@
 import 'package:flame/components/component.dart';
-import 'package:flame/game.dart';
+import 'package:flame/game/base_game.dart';
+import 'package:flame/game/embedded_game_widget.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:play_games/play_games.dart';
 
-import 'gui_commons.dart';
 import '../data.dart';
+import 'gui_commons.dart';
 
 enum _TrophyType { GOLD, SILVER, BRONZE }
 
@@ -21,7 +22,7 @@ class _Trophy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EmbeddedGameWidget(SimpleGame(SpriteComponent.fromSprite(size.x, size.y, _sprite)), size: size);
+    return EmbeddedGameWidget(BaseGame()..add(SpriteComponent.fromSprite(size.x, size.y, _sprite)), size: size);
   }
 }
 

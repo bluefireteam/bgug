@@ -44,6 +44,8 @@ class Player extends PositionComponent {
 
   @override
   void update(double t) {
+    super.update(t);
+
     animations[state].update(t);
 
     if (dead()) {

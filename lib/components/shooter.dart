@@ -64,9 +64,6 @@ class ShooterCane extends PositionComponent {
   }
 
   @override
-  void update(double t) {}
-
-  @override
   void resize(Size size) {
     x = size.width - 8.0;
     y = sizeTop(size);
@@ -109,6 +106,8 @@ class Shooter extends SpriteComponent with HasGameRef<BgugGame>, Resizable {
 
   @override
   void update(double dt) {
+    super.update(dt);
+
     updateBoundaries();
 
     clock += dt;

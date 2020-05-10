@@ -54,7 +54,4 @@ class Tutorial extends PositionComponent {
     prepareCanvas(c);
     _sprite()?.render(c, width: width, height: height);
   }
-
-  @override
-  void update(double t) {}
 }
