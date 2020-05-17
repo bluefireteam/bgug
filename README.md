@@ -3,7 +3,7 @@
 
 [Break Guns Using Gems](https://fireslime.xyz/games/bgug) is an open-source mobile game for Android and iOS.
 
-It's a fast paced side-scrolling platformer with innovative controls and and a gun-related twist.
+It's a fast paced side-scrolling platformer with innovative controls and a gun-related twist.
 
 Developed by the [Fireslime Team](https://fireslime.xyz) using [flame](https://flame-engine.org).
 

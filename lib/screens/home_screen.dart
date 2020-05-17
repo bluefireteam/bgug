@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flame/flame.dart';
@@ -308,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               top: 12.0,
               right: 12.0),
-          Positioned(child: userCard(), bottom: 5, left: 0),
+          Positioned(child: Platform.isAndroid ? userCard() : Container(), bottom: 5, left: 0),
           Positioned(child: AsyncSaver.widget, bottom: 4.0, right: 4.0),
         ],
       ),

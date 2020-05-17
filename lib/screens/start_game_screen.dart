@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flame/palette.dart';
 
 import '../data.dart';
 import '../game.dart';
@@ -39,7 +40,10 @@ class _StartGameScreenState extends State<StartGameScreen> {
           onWillPop: () async {
             return await Main.game.willPop();
           },
-          child: Main.game.widget,
+          child: Container(
+            color: BasicPalette.black.color,
+            child: SafeArea(child:ClipRect(child: Main.game.widget))
+          ),
         );
       } else {
         Main.game = null;
