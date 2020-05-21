@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:io';
 
 import 'package:flame/anchor.dart';
 import 'package:flame/components/component.dart';
@@ -55,7 +56,9 @@ class EndCard extends SpriteComponent with HasGameRef<BgugGame> {
   EndCard() : super.rectangle(1, 1, 'endgame_bg.png');
 
   Future<void> init() async {
-    isGamepadConnected = await FlameGamepad.isGamepadConnected;
+    if (Platform.isAndroid) {
+      isGamepadConnected = await FlameGamepad.isGamepadConnected;
+    }
   }
 
   @override

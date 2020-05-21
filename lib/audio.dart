@@ -61,13 +61,15 @@ class Audio {
   }
 
   static void play(Song song) async {
-    Audio.song = song;
-    if (song == Song.GAME) {
-      await musicPlayer.loop('music.mp3');
-    } else {
-      await musicPlayer.loop('menu.mp3');
+    if (enableMusic) {
+      Audio.song = song;
+      if (song == Song.GAME) {
+        await musicPlayer.loop('music.mp3');
+      } else {
+        await musicPlayer.loop('menu.mp3');
+      }
+      await _updatePlayer();
     }
-    await _updatePlayer();
   }
 
   static void resume() {

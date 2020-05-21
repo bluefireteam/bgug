@@ -1,8 +1,9 @@
 import 'dart:ui';
+import 'dart:io';
 
 import 'components/hud.dart';
 
-const bool ENABLE_LOGIN = true;
+bool ENABLE_LOGIN = Platform.isAndroid;
 const bool ENABLE_ADS = true;
 const bool ENABLE_IAP = true;
 

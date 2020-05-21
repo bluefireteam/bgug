@@ -6,7 +6,10 @@ import 'package:flame/game.dart';
 import 'package:flutter/widgets.dart';
 
 class _SkinComponent extends AnimationComponent {
-  _SkinComponent(String skin) : super(1.0, 1.0, animation.Animation.sequenced('skins/$skin', 8, textureWidth: 16.0));
+  _SkinComponent(String skin) : super(
+      1.0,
+      1.0,
+      animation.Animation.sequenced('skins/$skin', 8, textureWidth: 16.0, textureHeight: 16.0));
 
   @override
   void resize(Size size) {
@@ -26,6 +29,9 @@ class _SkinWidgetGame extends BaseGame {
   _SkinWidgetGame(String skin) {
     add(_SkinComponent(skin));
   }
+
+  @override
+  Color backgroundColor() => const Color(0x00FFFFFF);
 }
 
 class SkinWidget extends StatefulWidget {
@@ -41,25 +47,6 @@ class _SkinWidgetState extends State<SkinWidget> {
   final _SkinWidgetGame game;
 
   _SkinWidgetState(String skin) : game = _SkinWidgetGame(skin);
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
-  }
-
-  @override
-  void didUpdateWidget(SkinWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
-  }
-
-  void _afterLayout(_) {
-    final RenderBox box = context.findRenderObject();
-    final pos = box.localToGlobal(Offset.zero);
-    game.camera.x = -pos.dx;
-    game.camera.y = -pos.dy;
-  }
 
   @override
   Widget build(BuildContext context) {

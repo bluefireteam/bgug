@@ -6,12 +6,13 @@ dependencies:
   flutter:
     sdk: flutter
   flame: ^0.20.2
-  play_games: ^0.5.3
+  play_games:
+    path: ../play_games
   json_annotation: ^3.0.1
   shared_preferences: 0.5.3+4
   firebase_admob: ^0.9.0+3
   url_launcher: ^5.1.1
-  flutter_inapp_purchase: ^1.0.1
+  flutter_inapp_purchase: ^2.0.0
   flame_gamepad: ^0.0.2
   uuid: ^2.0.2
   firebase_crashlytics: ^0.0.4+3
