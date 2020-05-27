@@ -1,6 +1,6 @@
 name: bgug
 description: Break Guns Using Gems!
-version: 0.7.4+1
+version: 0.7.4+2
 
 dependencies:
   flutter:
