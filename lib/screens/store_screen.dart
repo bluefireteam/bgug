@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -54,7 +55,7 @@ class _StoreState extends State<StoreScreen> {
       return const Center(child: const Text('You have the full version, thanks!', style: text));
     }
     if (IAP.iap == null) {
-      return const Center(child: const Text('You must have Google Play Services to buy the game.', style: text));
+      return Center(child: Text('You must have the ${Platform.isAndroid ? 'Google Play' : 'App Store'} Services to buy the game.', style: text));
     }
     return LayoutBuilder(builder: (ctx, constraints) {
       return Stack(
