@@ -1,4 +1,5 @@
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'dart:async';
 
 import 'constants.dart';
 import 'data.dart';
@@ -30,11 +31,23 @@ class IAP {
   }
 
   static Future purchase() async {
-    final purchased = await FlutterInappPurchase.instance.requestPurchase(PRODUCT_ID);
-    print('Purchace: $purchased');
+    final _completer = Completer();
+    FlutterInappPurchase.instance.requestPurchase(PRODUCT_ID);
 
-    pro = true;
-    Data.validatePro(pro);
-    await Data.save();
+    final _updateSub = FlutterInappPurchase.purchaseUpdated.listen((purchase) async {
+      pro = true;
+      Data.validatePro(pro);
+      await Data.save();
+      _completer.complete();
+    });
+
+    final _errorSub = FlutterInappPurchase.purchaseError.listen((purchase) async {
+      _completer.completeError('Could not process purchase');
+    });
+
+    return _completer.future.whenComplete((){
+      _updateSub.cancel();
+      _errorSub.cancel();
+    });
   }
 }
