@@ -321,7 +321,9 @@ class _HomeScreenState extends State<HomeScreen> {
     if (IAP.pro == true) {
       result.add(ProBadge());
     }
-    result.add(StoreButtonWidget());
+    result.add(StoreButtonWidget(onBack: () {
+      setState(() {});
+    }));
     return result;
   }
 

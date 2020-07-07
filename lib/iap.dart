@@ -1,4 +1,5 @@
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 import 'constants.dart';
@@ -10,6 +11,8 @@ class IAP {
   static IAPItem iap;
   static bool pro;
 
+  static const _PURCHASED_KEY = 'BGUG_PURCHASED_PRO';
+
   static Future setup() async {
     if (!ENABLE_IAP) {
       iap = null;
@@ -18,16 +21,36 @@ class IAP {
     }
 
     try {
-      await FlutterInappPurchase.instance.initConnection;
-      final items = await FlutterInappPurchase.instance.getProducts([PRODUCT_ID]);
-      final purchases = await FlutterInappPurchase.instance.getPurchaseHistory();
-      iap = items.first;
-      pro = purchases.isNotEmpty && purchases.first.productId == PRODUCT_ID;
+      final prefs = await SharedPreferences.getInstance();
+      final purchased = prefs.getBool(_PURCHASED_KEY);
+      if (purchased != null && purchased) {
+        pro = true;
+      } else {
+        pro = false;
+        await FlutterInappPurchase.instance.initConnection;
+        final items = await FlutterInappPurchase.instance.getProducts([PRODUCT_ID]);
+        iap = items.first;
+      }
     } catch (ex) {
       print('Error with IAP setup: $ex');
       iap = null;
       pro = false;
     }
+  }
+
+  static Future<bool> restore() async {
+      await FlutterInappPurchase.instance.initConnection;
+      final purchases = await FlutterInappPurchase.instance.getPurchaseHistory();
+      if (purchases.isNotEmpty && purchases.first.productId == PRODUCT_ID) {
+        pro = true;
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setBool(_PURCHASED_KEY, true);
+        Data.validatePro(pro);
+        await Data.save();
+        return true;
+      }
+
+      return false;
   }
 
   static Future purchase() async {
@@ -38,6 +61,8 @@ class IAP {
       pro = true;
       Data.validatePro(pro);
       await Data.save();
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool(_PURCHASED_KEY, true);
       _completer.complete();
     });
 

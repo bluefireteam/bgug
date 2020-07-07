@@ -27,6 +27,20 @@ class _StoreState extends State<StoreScreen> {
             Center(child: pad(const Text('StOrE', style: title), 20.0)),
             Positioned(child: CoinWidget(), top: 20.0, left: 20.0),
             Positioned(child: btn('go back', () => back()), top: 20.0, right: 20.0),
+            Positioned(
+                child: IAP.pro
+                  ? Container()
+                  : btn('restore\npurchases', () async {
+                    if (await IAP.restore()) {
+                      setState(() {});
+                      showToast('Congratulations, you just restored your purchase! Thanks ;)');
+                    } else {
+                      showToast('No purchase available for restore.');
+                    }
+                  }),
+                top: 55.0,
+                right: 20.0,
+            ),
           ]),
           Expanded(
               child: Row(
